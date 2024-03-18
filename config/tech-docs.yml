@@ -13,7 +13,7 @@ header_links:
   GitHub: https://github.com/ministryofjustice/staff-identity-technical-documentation
 
 # Enables search functionality. This indexes pages only and is not recommended for single-page sites.
-enable_search: true
+enable_search: false
 
 # Tracking ID from Google Analytics (e.g. UA-XXXX-Y)
 ga_tracking_id:
