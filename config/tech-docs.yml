@@ -5,7 +5,7 @@ host: https://ministryofjustice.github.io/staff-identity-technical-documentation
 
 # Header-related options
 show_govuk_logo: true
-service_name: EUCS IDAM
+service_name: EUCS IDAM Documentation
 service_link: /
 
 # Links to show on right-hand-side of header
