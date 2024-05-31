@@ -1,10 +1,144 @@
 <!-- Do not delete this file it is the website entry point -->
 
-# EUCS IDAM guidance
+# EUCS IDAM End User Guidance
 
-## Renewing existing Application Registration credentials
+## Entra Security Groups
 
-### Application Registration Client Secret Renewal
+Entra Security Groups have the following uses.
+
+* Allow you to control who has access to authenticate with your integrated application
+* Classify groups of users to manage Roles and Permissions within an integrated application (see [Send Security Groups user belongs to in the authentication token](#send-security-groups-in-user-access-token-claim))
+
+Entra Security Groups are different from Azure Groups which provide permissions to resources within Azure.
+
+A user can belong to 1 or many groups at one time.
+
+There are four types of configuration your Application Registration may use for Entra Security Groups.
+
+| Name                   | Description                                                                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| All MoJ Users Security Group | Anyone who has an identity within the Ministry of Justice in Entra will be able to Authenticate to your application. Any Joiners or Leavers will automatically be added or removed for you. |
+| Dynamic Security Group       | Built around pattern matching, this type of group allows you to specify automatic group assignment of Joiners and Leavers. This can be for example `Judiciary Only Group` that is setup to automatically add any users where their email address ends in `@judiciary.uk`. |
+| [IDAM Team Managed Static Security Group](#idam-team-managed-static-security-group)                 | A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application. |
+| [Self Service Security Group](#self-service-security-group)                 | The ability to delegate responsibility for the management of users in the Security Group to a set of defined Owners. |
+
+### Self Service Security Group
+
+Upon request, the IDAM Team will set up 1 or many Security Groups for you and assign 2 or more people within your team as Owners of the group. These Owners will be responsible for the management of Users and Owners assigned to the group moving forward.
+
+#### Governance
+
+The IDAM Team will monitor Governance policies on the groups created. This includes
+
+* Does the group have a minimum of 2 Owners
+* Does the group only contain Members and not Guest users
+* After 365 days, check if the group is still required
+
+We will use the Owners of the group for any automated notifications for these policies where they are not met. This is to ensure groups are maintained and secure over time.
+
+#### How to manage your Security Group
+
+To manage your Security Groups, you will use the [Microsoft My Groups](https://myaccount.microsoft.com/groups/) interface.
+
+##### Adding/Removing Users
+
+* Go to the [Microsoft My Groups](https://myaccount.microsoft.com/groups/) web site
+* Sign in with your Justice account
+* Click `Groups I own`
+* Click on the Group they wish to manage
+* Click `Members`
+* Click the `Add` button to begin adding new members
+
+##### Adding/Removing Owners
+
+* Go to the [Microsoft My Groups](https://myaccount.microsoft.com/groups/) web site
+* Sign in with your Justice account
+* Click `Groups I own`
+* Click on the Group they wish to manage
+* Click `Owners`
+* Click the `Add` button to begin adding new owners
+
+### IDAM Team Managed Static Security Group
+
+#### Adding a new Entra Security Group
+
+You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.
+
+The link to the demand process can be found at [Technology Services New Demand Request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx)
+
+You should provide the following information with the demand request.
+
+* Who will be the Group Owners
+    * minimum of 2 people, these people will be responsible for sign off of adding and removing users in the future
+    * 1 or more Business Owners
+    * 1 or more Technical Owners
+* Name of the group
+    * Pattern should be all lowercase `<organisation>-<team>-<function-of-group>`. e.g. `eucs-idam-cmsadministrators`
+* Description on the purpose of the group (max 250 charaters)
+
+> It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.
+
+#### Adding new users to a Entra Security Group
+
+To add new users to a Entra Security Group, you can make a request to the IDAM team via the [ServiceNow Catalogue Item - Users in Microsoft Entra Groups- Add](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=a784b93f1b118610a1e2ddf0b24bcbdc).
+
+> Note: Before the IDAM Team can add or remove users, we must get approval from the Owners of the Security Group. If the requestor exists within the Owners group then this is sufficient.
+
+You will need to provide the following details
+
+| Field       | Description                                         |
+|-------------|-----------------------------------------------------|
+| Users       | List of users email addresses to add to the group.  |
+| Group Name  | Group name in Entra ID to add users too.            |
+| Environment | Is this for the Entra DEV, NLE or LIVE environment. |
+
+This will then be assigned to the IDAM team to schedule and communicate when we will complete the request.
+
+[ServiceNow Catalogue Item - Users in Microsoft Entra Groups- Add](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=a784b93f1b118610a1e2ddf0b24bcbdc)
+
+#### Removing users from a Entra Security Group
+
+To remove users from a Entra Security Group, you can make a request to the IDAM team via the [ServiceNow Catalogue Item - Users in Microsoft Entra Groups - Delete](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=e4e6c73b1bd5861025dc6351f54bcba6).
+
+> Note: Before the IDAM Team can add or remove users, we must get approval from the Owners of the Security Group. If the requestor exists within the Owners group then this is sufficient.
+
+You will need to provide the following details
+
+| Field       | Description                                         |
+|-------------|-----------------------------------------------------|
+| Users       | List of users email addresses to add to the group.  |
+| Group Name  | Group name in Entra ID to add users too.            |
+| Environment | Is this for the Entra DEV, NLE or LIVE environment. |
+
+This will then be assigned to the IDAM team to schedule and communicate when we will complete the request.
+
+[ServiceNow Catalogue Item - Users in Microsoft Entra Groups - Delete](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=e4e6c73b1bd5861025dc6351f54bcba6)
+
+### Send Security Groups in user Access token claim
+
+Optionally, we can enable your SSO Application Registration to send a list of Security Group GUIDs that the user belongs too.
+
+This can be benefitial for modern applications that require levels of authorisation within their application.
+
+For example, you could create 3 Security Groups as shown below and when a user logs in, the GUID will be passed down to the application. From here you can setup your application to assign the role appropriate for their group.
+
+| Security Group Name        | GUID                                      | Description                                                         |
+| -------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
+| eucs-idamn-cms-admins      | d7bbc93a-03e4-4f7f-83c9-5a6587b5412f      | Users assigned to this group have full admin access to application  |
+| eucs-idam-cms-contributors | bb944abe-c965-43d2-81e5-ab2583d95b53      | Users assigned to this group have contributor access to application |
+| eucs-idam-cms-readers      | 1c0500ad-df00-4101-9050-9b90440043c8      | Users assigned to this group have read only access to application   |
+
+Instead of creating more resources to manage users and groups, you can use the Self Service Security Groups within Entra ID to manage users, and the groups they belong too via the [Microsoft My Groups interface](https://myaccount.microsoft.com/groups/).
+
+Once the IDAM Team have setup the Security Group for you, we will pass the GUIDs to you and enable this functionality for your application.
+
+For more information on what information exists within the access token, see this Microsoft article [https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference)
+
+## Application Registrations (SSO)
+
+### Renewing credentials
+
+#### Client Secret Renewal
 
 To renew a Client Secret used by your integration, you can make a request to the IDAM team via the [ServiceNow Catalogue Item - App Registration Secret - Renew](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14).
 
@@ -25,7 +159,7 @@ You should store this new value in a secure vault once received and remove any t
 
 [ServiceNow Catalogue Item - App Registration Secret - Renew](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14)
 
-### Application Registration Certificate Renewal
+#### Certificate Renewal
 
 If you Application Registration uses Certificate Authentication for OIDC authentication, the following process will enable you to update your certificate in Entra ID.
 
@@ -47,54 +181,6 @@ Once the demand has been raised, the demand team will pass the information to th
 The average implementation time for a demand is 6-8 days. This is due to the IDAM team having to raise a Change Request to update the certificate.
 
 [Technology Services New Demand Request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx)
-
-## Managing Entra Security Groups
-
-Entra Security Groups allow you to control who has access to authenticate with your integrated application. Entra Security Groups are different from Azure Groups which provide permissions to resources within Azure.
-
-A user can belong to 1 or many groups at one time.
-
-There are three types of configuration your application may use for Entra Security Groups.
-
-| Name                   | Description                                                                                                                   |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| All MoJ Users Group Assigned | Anyone who has an identity within the Ministry of Justice in Entra will be able to Authenticate to your application. Any Joiners or Leavers will automatically be added or removed for you.                                                                                                          |
-| Dynamic Group Assigned       | Built around pattern matching, this type of group allows you to specify automatic group assignment of Joiners and Leavers. This can be for example `Judiciary Only Group` that is setup to automatically add any users where their email address ends in `@judiciary.uk`. |
-| Static Group                 | A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application.                                                                                                                    |
-
-When your application was first created, you may have set up a Entra Security Group. If you have setup a group type of `Static Group` then the following items provide an overview of how you can add or remove users to existing Entra Security Groups that are used by your application.
-
-### Adding new users to a Entra Security Group
-
-To add new users to a Entra Security Group, you can make a request to the IDAM team via the [ServiceNow Catalogue Item - Users in Microsoft Entra Groups- Add](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=a784b93f1b118610a1e2ddf0b24bcbdc).
-
-You will need to provide the following details
-
-| Field       | Description                                         |
-|-------------|-----------------------------------------------------|
-| Users       | List of users email addresses to add to the group.  |
-| Group Name  | Group name in Entra ID to add users too.            |
-| Environment | Is this for the Entra DEV, NLE or LIVE environment. |
-
-This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
-
-[ServiceNow Catalogue Item - Users in Microsoft Entra Groups- Add](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=a784b93f1b118610a1e2ddf0b24bcbdc)
-
-### Removing users from a Entra Security Group
-
-To remove users from a Entra Security Group, you can make a request to the IDAM team via the [ServiceNow Catalogue Item - Users in Microsoft Entra Groups - Delete](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=e4e6c73b1bd5861025dc6351f54bcba6).
-
-You will need to provide the following details
-
-| Field       | Description                                         |
-|-------------|-----------------------------------------------------|
-| Users       | List of users email addresses to add to the group.  |
-| Group Name  | Group name in Entra ID to add users too.            |
-| Environment | Is this for the Entra DEV, NLE or LIVE environment. |
-
-This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
-
-[ServiceNow Catalogue Item - Users in Microsoft Entra Groups - Delete](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=e4e6c73b1bd5861025dc6351f54bcba6)
 
 ## Resources
 
