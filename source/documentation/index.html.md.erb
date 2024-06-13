@@ -138,49 +138,7 @@ For more information on what information exists within the access token, see thi
 
 ### Renewing credentials
 
-#### Client Secret Renewal
-
-To renew a Client Secret used by your integration, you can make a request to the IDAM team via the [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14).
-
-You will need to provide the following details
-
-| Field                  | Description                                                                                                                   |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Application Name       | Name of your application this secret is assigned to.                                                                          |
-| Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
-| Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
-| Please select what you would like to update | Select Certificate. |
-| Old Secret Expiry Date | This will allow you to have two valid secrets while you update your integrations. We will remove the old secret on this date. |
-
-This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
-
-Once we have generated a new Secret, we will send the requestor of the catalogue item an email with a secure link to access the new credentials. This link will expire after an hour.
-
-You should store this new value in a secure vault once received and remove any traces of it from your computer systems.
-
-[Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14)
-
-#### Certificate Renewal
-
-To renew a Client Certificate used by your integration, you can make a request to the IDAM team via the [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14).
-
-Ensure you have exported your Public Key (.cer, .pem, .crt) ready to attach to the ServiceNow request.
-
-You will need to provide the following details
-
-| Field                  | Description                                                                                                                   |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Application Name       | Name of your application this certificate should be assigned to.                                                                         |
-| Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
-| Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
-| Please select what you would like to update | Select Certificate. |
-| Attachements            | Add your certificate here (.cer, .pem, .crt).                                                                           |
-
-This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
-
-[Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14)
-
-#### Self-service Renewal
+#### Self Service Renewal
 
 If you are assigned as an Owner of an App Registration, you are able to renew your credentials without requiring contact with the IDAM team.
 
@@ -207,7 +165,7 @@ To check if you are able to, follow these steps
 * Click the App Registration to open the dashboard
 * Under `Manage`, select `Certificates & secrets`
 
-###### Client Secret
+##### Client Secret
 
 * Click on `Client secrets`
 * Click the button `New client secret`
@@ -217,7 +175,7 @@ To check if you are able to, follow these steps
 * Copy the new secret `Value` and store in a secure place (this will only be visible this one time)
 * When possible, ensure any old secrets are removed from your App Registration
 
-###### Client Certificate
+##### Client Certificate
 
 * Click on `Certificates`
 * Click the button `Upload certificate`
@@ -226,6 +184,48 @@ To check if you are able to, follow these steps
     * Enter a description
 * Click `Add`
 * When possible, ensure any invalid certificates are removed from your App Registration
+
+#### ServiceNow Client Secret Renewal
+
+To renew a Client Secret used by your integration, you can make a request to the IDAM team via the [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14).
+
+You will need to provide the following details
+
+| Field                  | Description                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Application Name       | Name of your application this secret is assigned to.                                                                          |
+| Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
+| Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
+| Please select what you would like to update | Select Certificate. |
+| Old Secret Expiry Date | This will allow you to have two valid secrets while you update your integrations. We will remove the old secret on this date. |
+
+This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
+
+Once we have generated a new Secret, we will send the requestor of the catalogue item an email with a secure link to access the new credentials. This link will expire after an hour.
+
+You should store this new value in a secure vault once received and remove any traces of it from your computer systems.
+
+[Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14)
+
+#### ServiceNow Certificate Renewal
+
+To renew a Client Certificate used by your integration, you can make a request to the IDAM team via the [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14).
+
+Ensure you have exported your Public Key (.cer, .pem, .crt) ready to attach to the ServiceNow request.
+
+You will need to provide the following details
+
+| Field                  | Description                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Application Name       | Name of your application this certificate should be assigned to.                                                                         |
+| Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
+| Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
+| Please select what you would like to update | Select Certificate. |
+| Attachements            | Add your certificate here (.cer, .pem, .crt).                                                                           |
+
+This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
+
+[Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14)
 
 ## Resources
 
