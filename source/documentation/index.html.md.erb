@@ -164,7 +164,7 @@ You should store this new value in a secure vault once received and remove any t
 
 To renew a Client Certificate used by your integration, you can make a request to the IDAM team via the [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14).
 
-Ensure you have exported your Public Key (.cer) ready to attach to the ServiceNow request.
+Ensure you have exported your Public Key (.cer, .pem, .crt) ready to attach to the ServiceNow request.
 
 You will need to provide the following details
 
@@ -174,11 +174,58 @@ You will need to provide the following details
 | Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
 | Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
 | Please select what you would like to update | Select Certificate. |
-| Attachements            | Add your .cer here.                                                                           |
+| Attachements            | Add your certificate here (.cer, .pem, .crt).                                                                           |
 
 This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
 
 [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14)
+
+#### Self-service Renewal
+
+If you are assigned as an Owner of an App Registration, you are able to renew your credentials without requiring contact with the IDAM team.
+
+##### Checking for Ownership
+
+To check if you are able to, follow these steps
+
+* Go to [https://portal.azure.com/](https://portal.azure.com/)
+* Sign in with your identity
+* In the search bar, type `Microsoft Entra ID` and select the feature
+* Click on `App registrations`
+* In the list of `Owned applications`, you will be able to see your App Registration
+* Click the App Registration to open the dashboard
+* Under `Manage`, select `Certificates & secrets`
+* The button `New client secret` should be available for you to click
+
+##### Updating your Credential
+
+* Go to [https://portal.azure.com/](https://portal.azure.com/)
+* Sign in with your identity
+* In the search bar, type `Microsoft Entra ID` and select the feature
+* Click on `App registrations`
+* In the list of `Owned applications`, you will be able to see your App Registration
+* Click the App Registration to open the dashboard
+* Under `Manage`, select `Certificates & secrets`
+
+###### Client Secret
+
+* Click on `Client secrets`
+* Click the button `New client secret`
+* In the pop up
+    * Enter a description
+    * Choose an expiry period (up to 2 years)
+* Copy the new secret `Value` and store in a secure place (this will only be visible this one time)
+* When possible, ensure any old secrets are removed from your App Registration
+
+###### Client Certificate
+
+* Click on `Certificates`
+* Click the button `Upload certificate`
+* In the pop up
+    * Upload your new .cer, .pem or .crt certificate file
+    * Enter a description
+* Click `Add`
+* When possible, ensure any invalid certificates are removed from your App Registration
 
 ## Resources
 
