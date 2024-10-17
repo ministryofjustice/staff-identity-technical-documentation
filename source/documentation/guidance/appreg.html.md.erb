@@ -125,19 +125,25 @@ This will then be assigned to the IDAM team to schedule and communicate when we 
 
 As a Developer, I want to create end to end integration tests for my application that integrates SSO with Entra ID and have access to test users in a Dev and Staging environment to test against in my GitHub PR Pipelines.
 
-### Problem with Integration Testing in Entra ID
+### What can you test
 
-Our DEVL and NLE environments provide the ability for us to create test users, however there are issues with trying to use these in automated testing.
+The IDAM team can provide you with a set of test users in our DEVL environment. These can be used in your automated testing.
 
-* Conditional Access Policies will prevent users from logging in if they are not on a compliant device. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.
-* NLE and DEVL users require MFA, meaning any automation will be required to integrate MFA as part of their process.
-* Generic test users pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.
+To request test users and access to automated testing you should raise a Demand with the Demand team for the IDAM team to create the users and configure the Application Registration ready for use.
 
-Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests. To overcome the above scenarios, we would have to reduce our Security and Governance practices.
+**We do not allow automated testing against our NLE and LIVE environment.**
 
-**We therefore cannot support teams to integrate automated testing with Entra ID.**
+#### Reasons for not allowing automated testing in NLE and LIVE
 
-### Solution
+Due to security and governance standards, we cannot allow testing in these environments for the following reasons.
+
+* Conditional Access Policies will prevent users from logging in. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.
+* NLE and LIVE users will require certain compliance rules preventing access in an automated way.
+* Generic test users in NLE and LIVE pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.
+
+Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests in any environment apart from DEVL. To overcome the above scenarios, we would have to reduce our Security and Governance practices.
+
+### Solution for testing in NLE and LIVE
 
 We recommend you use a Mock OAuth Provider as part of your pipelines. This will enable you to have full control over Authorisation test scenarios during your testing and a faster feedback loop.
 
