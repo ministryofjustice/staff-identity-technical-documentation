@@ -135,9 +135,9 @@ We do not allow automated testing against our NLE and LIVE environment.
 
 Due to security and governance standards, we cannot allow testing in these environments for the following reasons.
 
-* Conditional Access Policies will prevent users from logging in if they are not on a compliant device. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.
-* NLE and LIVE users will require MFA and certain compliance rules preventing access in an automated way.
-* Generic test users pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.
+* Conditional Access Policies will prevent users from logging in. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.
+* NLE and LIVE users will require certain compliance rules preventing access in an automated way.
+* Generic test users in NLE and LIVE pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.
 
 Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests in any environment apart from DEVL. To overcome the above scenarios, we would have to reduce our Security and Governance practices.
 
