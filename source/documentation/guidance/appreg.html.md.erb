@@ -151,6 +151,41 @@ Many existing integrations follow this pattern, an example can be found below by
 
 [https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider](https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider)
 
+
+## Role-based access control (RBAC)
+
+### App Roles
+
+When considering using Entra ID to provide Authorisation as well as Authentication, we prefer using `App roles` to manage permissions.
+
+Entra ID Application Registrations have the ability for you to implement RBAC rules via Application Roles and assign Groups of users to them.
+
+Within the `App roles` option of your Application Registration, you can create custom App roles for each RBAC role type and link each Role to a Security Group. For example
+
+| Role Name     | Security Group                                      |
+|---------------|-----------------------------------------------------|
+| Administrator | eucs-idam-wordpress-administrators                  |
+| Writer        | eucs-idam-wordpress-writers                         |
+| Approver      | eucs-idam-wordpress-approvers                       |
+
+When a user authenticates with Entra ID and is passed back to your application, Entra ID will check the user against these roles and pass a `roles` claim via the authentication token for your application to parse.
+
+The Security Group(s) assigned to each Role can be any of the following
+
+* Dynamic Security Group
+* IDAM Team Managed Static Security Group
+* Self Service Security Group
+
+Security Groups and types available are explained in the [Entra Security Groups documentation](sg.html#entra-security-groups).
+
+For implementation guidance using App roles in your application, follow the Microsoft guidance in the links below.
+
+* [Add app roles to your application and receive them in the token](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps)
+* [Implement RBAC in your Application](https://learn.microsoft.com/en-us/entra/identity-platform/howto-implement-rbac-for-apps)
+
+## Token Lifetime Policy
+
+
 ## Resources
 
 * [EUCS IDAM Team Shared Inbox](mailto:idamteam@justice.gov.uk)
