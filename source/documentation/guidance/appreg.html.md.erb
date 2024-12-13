@@ -151,7 +151,6 @@ Many existing integrations follow this pattern, an example can be found below by
 
 [https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider](https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider)
 
-
 ## Role-based access control (RBAC)
 
 ### App Roles
@@ -187,7 +186,7 @@ For implementation guidance using App roles in your application, follow the Micr
 
 We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.
 
-e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired. 
+e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.
 
 You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to reauthenticate.
 
