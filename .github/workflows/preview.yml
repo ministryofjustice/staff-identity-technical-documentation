@@ -8,19 +8,40 @@ on:
       - synchronize
       - closed
 jobs:
-  deploy-preview:
+  build:
     runs-on: ubuntu-latest
     container:
       image: ministryofjustice/tech-docs-github-pages-publisher:v3
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Compile Markdown to HTML and create artifact
         run: |
           /scripts/deploy.sh
+      - name: Upload artifact to be published
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: artifact.tar
+          retention-days: 1
+
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download a Build Artifact from build
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: github-pages
+      - name: Unpack files and check URL links
+        run: |
+          cd github-pages
+          tar -xvf artifact.tar
         if: github.event.action != 'closed'
       - uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: github-pages
+          source-dir: gh-pages
           preview-branch: gh-pages
           umbrella-dir: pr-preview
           action: auto
