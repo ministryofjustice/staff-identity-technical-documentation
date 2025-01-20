@@ -10,9 +10,13 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    container:
+      image: ministryofjustice/tech-docs-github-pages-publisher:v3
     steps:
       - uses: actions/checkout@v4
-      - run: npm i && npm run build
+      - name: Compile Markdown to HTML and create artifact
+        run: |
+          /scripts/deploy.sh
         if: github.event.action != 'closed'
       - uses: rossjrw/pr-preview-action@v1
         with:
