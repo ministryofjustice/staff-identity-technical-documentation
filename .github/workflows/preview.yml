@@ -17,10 +17,14 @@ jobs:
       - name: Compile Markdown to HTML and create artifact
         run: |
           /scripts/deploy.sh
+      - name: Unpack files
+        run: |
+          cd github-pages
+          tar -xvf artifact.tar
         if: github.event.action != 'closed'
       - uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: .
+          source-dir: github-pages
           preview-branch: gh-pages
           umbrella-dir: pr-preview
           action: auto
