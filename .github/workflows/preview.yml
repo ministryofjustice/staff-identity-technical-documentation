@@ -35,14 +35,14 @@ jobs:
         with:
           name: github-pages
           path: github-pages
-      - name: Unpack files and check URL links
+      - name: Unpack files
         run: |
           cd github-pages
           tar -xvf artifact.tar
         if: github.event.action != 'closed'
       - uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: gh-pages
+          source-dir: .
           preview-branch: gh-pages
           umbrella-dir: pr-preview
           action: auto
