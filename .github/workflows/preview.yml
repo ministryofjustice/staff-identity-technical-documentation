@@ -17,12 +17,6 @@ jobs:
       - name: Compile Markdown to HTML and create artifact
         run: |
           /scripts/deploy.sh
-      - name: Unpack files
-        run: |
-          mkdir github-pages
-          mv artifact.tar /github-pages
-          cd github-pages
-          tar -xvf artifact.tar
         if: github.event.action != 'closed'
       - uses: rossjrw/pr-preview-action@v1
         with:
