@@ -21,3 +21,22 @@ check:
 		-v $$(pwd)/config:/app/config \
 		-v $$(pwd)/source:/app/source \
 		-it $(IMAGE) /scripts/check-url-links.sh
+
+preview-w:
+	docker run --rm \
+		-v "%cd%"/config:/app/config \
+		-v "%cd%"/source:/app/source \
+		-p 4567:4567 \
+		-it $(IMAGE) /scripts/preview.sh
+
+deploy-w:
+	docker run --rm \
+		-v "%cd%"/config:/app/config \
+		-v "%cd%"/source:/app/source \
+		-it $(IMAGE) /scripts/deploy.sh
+
+check-w:
+	docker run --rm \
+		-v "%cd%"/config:/app/config \
+		-v "%cd%"/source:/app/source \
+		-it $(IMAGE) /scripts/check-url-links.sh
