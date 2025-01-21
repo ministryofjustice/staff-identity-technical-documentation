@@ -59,21 +59,3 @@ jobs:
           branch: gh-pages
           folder: github-pages
           clean: true
-
-  url-check:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download a Build Artifact from build
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages
-          path: github-pages
-      - name: Unpack files and check URL links
-        run: |
-          cd github-pages
-          tar -xvf artifact.tar
-          npm install linkinator
-          npx linkinator . --recurse --markdown \
-            --skip https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png \
-          # "URL Check will fail on private and internal GitHub repositories"
