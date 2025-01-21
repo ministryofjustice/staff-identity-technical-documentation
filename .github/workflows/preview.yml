@@ -1,23 +1,9 @@
-name: Publish gh-pages
-
+name: Deploy PR previews
+concurrency: preview-${{ github.ref }}
 on:
-  workflow_dispatch:
-  push:
+  pull_request:
     branches:
       - "main"
-    paths-ignore:
-      - "docs/**"
-
-# GITHUB_TOKEN permissions to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
   build:
@@ -37,13 +23,11 @@ jobs:
           path: artifact.tar
           retention-days: 1
 
-  deploy:
+  deploy-preview:
     needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Download a Build Artifact from build
         uses: actions/download-artifact@v4
         with:
@@ -53,9 +37,19 @@ jobs:
         run: |
           cd github-pages
           tar -xvf artifact.tar
+      - name: Generate slug
+        id: generate_slug
+        run: echo "##[set-output name=slug;]$(echo ${GITHUB_HEAD_REF#refs/heads/} | sed -r 's/[~\^]+//g' | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r 's/^-+\|-+$//g' | tr A-Z a-z)"
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.7.2
         with:
           branch: gh-pages
           folder: github-pages
-          clean: true
+          target-folder: pr/${{ steps.generate_slug.outputs.slug }}
+      - name: Publish env
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Preview environment
+          message: |
+            ## Preview environment
+            https://user-guide.staff-identity.service.justice.gov.uk/pr/${{ steps.generate_slug.outputs.slug }}/
