@@ -155,34 +155,54 @@ Many existing integrations follow this pattern, an example can be found below by
 
 ## Role-based access control (RBAC)
 
-### App Roles
+### App Roles and Access Packages
 
-When considering using Entra ID to provide Authorisation as well as Authentication, we prefer using `App roles` to manage permissions.
+#### Overview
 
-Entra ID Application Registrations have the ability for you to implement RBAC rules via Application Roles and assign Groups of users or individual users to them.
+As well as using Entra ID for your Authentication, you can also take advantage of App Roles and Access Packages to manage your integrating applications Authorisation.
 
-Within the `App roles` option of your Application Registration, you can create custom App roles for each RBAC role type and link each Role to a Security Group. For example
+Managing users this way over Security Groups or custom Authorisation layers in your application have multiple advantages
 
-| Role Name     | Security Group                                      |
+* JML processes will automatically remove access from your application when a user is deleted within Entra ID
+* Approvals are handled through the Microsoft My Access portal requiring user authentication before assignment
+* Audit trail of access requests
+* Automated Access Reviews to ensure users have the right access
+* Further Governance, i.e., those that do not have the Entra Role “Identity Governance Administrator” or assigned either [Delegation and roles in entitlement management - Microsoft Entra ID Governance](https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate#entitlement-management-roles) will not be able to add members to group without adding members to the access package
+* Integration with wider Azure and Entra permissions and groups for automated assignment (future)
+
+Access Packages sit under the Microsoft Entitlement Management offering. To learn more about Entitlement Management, Access Packages and App Roles, use the following links
+
+* [What is entitlement management? - Microsoft Entra ID Governance](https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-overview)
+* [Add app roles to your application and receive them in the token.](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps)
+
+#### How App Roles works
+
+Within the `App roles` option of your Application Registration, you can create custom App roles for each RBAC role type and link each Role to a Access Package. For example
+
+| Role Name     | Access Package                                      |
 |---------------|-----------------------------------------------------|
 | Administrator | eucs-idam-wordpress-administrators                  |
 | Writer        | eucs-idam-wordpress-writers                         |
 | Approver      | eucs-idam-wordpress-approvers                       |
 
-When a user authenticates with Entra ID and is passed back to your application, Entra ID will check the user against these roles and pass a `roles` claim via the authentication token for your application to parse.
-
-The Security Group(s) assigned to each Role can be any of the following
-
-* Dynamic Security Group
-* IDAM Team Managed Static Security Group
-* Self Service Security Group
-
-Security Groups and types available are explained in the [Entra Security Groups documentation](sg.html#entra-security-groups).
-
-For implementation guidance using App roles in your application, follow the Microsoft guidance in the links below.
+When a user authenticates with Entra ID and is passed back to your application, Entra ID will check the user is a part of the Access Package and pass a `roles` claim via the authentication token for your application to parse.
 
 * [Add app roles to your application and receive them in the token](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps)
 * [Implement RBAC in your Application](https://learn.microsoft.com/en-us/entra/identity-platform/howto-implement-rbac-for-apps)
+
+#### How Access Packages works
+
+TODO: Overview of Access Packages - include screenshots
+
+#### Requesting App Roles and Access Packages
+
+You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.
+
+The link to the demand process can be found at [Technology Services New Demand Request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx)
+
+You should provide the following information with the demand request.
+
+TODO: Minimum data set
 
 ## Token Lifetime Policy
 
@@ -196,10 +216,6 @@ For guidance on using refresh tokens, see these following links
 
 * [Refresh tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
 * [Access tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
-
-## App Roles
-
-TODO
 
 ## Resources
 
