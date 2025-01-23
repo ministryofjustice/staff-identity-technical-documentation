@@ -361,6 +361,7 @@
 
 <ul>
 <li><a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-overview">What is entitlement management? - Microsoft Entra ID Governance</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a></li>
 <li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps">Add app roles to your application and receive them in the token.</a></li>
 </ul>
 <h4 id="how-app-roles-works">How App Roles works</h4>
@@ -388,19 +389,23 @@
 <li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-implement-rbac-for-apps">Implement RBAC in your Application</a></li>
 </ul>
 <h4 id="how-access-packages-works">How Access Packages works</h4>
-<p>TODO: Overview of Access Packages - include screenshots</p>
 
-<ul>
-<li>IDAM Provide team with unique urls they can give users to request access</li>
-<li>User goes to link and requests access with justification</li>
-<li>Assignees approve/decline access</li>
-<li>Optionally we can provide regular access reviews to owners</li>
-</ul>
+<blockquote>
+<p>For a detailed overview of Access Packages and how they are used to manage user access to resources, see <a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-process">Request process and email notifications in entitlement management</a>.</p>
+</blockquote>
+<p>The IDAM Team will provide you with unique urls you can give to your users so that they can request access to the resource.</p>
+<p>A user that needs access to a role for your application can submit an access request. When a request is approved, a process begins to assign the user access to the role for that application in the access package. The following diagram shows an overview of the process and the different states:</p>
+<p><a href="../../img/ap-request-process.png" rel="noopener noreferrer"><img src="../../img/ap-request-process.png" title="Approval process diagram" alt="Approval process diagram" /></a></p>
+<p>If you&rsquo;re an approver, you&rsquo;re sent email notifications when you need to approve an access request. You also receive notifications when an access request has been completed. You&rsquo;re also sent email notifications that indicate the status of your request if you&rsquo;re a requestor.</p>
+<p>Example email</p>
+<p><a href="../../img/ap-approver-request-email.png" rel="noopener noreferrer"><img src="../../img/ap-approver-request-email.png" title="Approve request to access package email" alt="Approve request to access package email" /></a></p>
+<p>If you have chosen to have Access Reviews for your Access Package, you will be sent regular emails to review each user within the Access Package. This can help maintain Just Enough Access for users in your system. For more information on how this process works, please see <a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a>.</p>
 <h4 id="requesting-app-roles-and-access-packages">Requesting App Roles and Access Packages</h4>
 <p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
 <p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
 <p>You should provide the following information with the demand request.</p>
 <h5 id="list-of-application-roles">List of Application Roles</h5>
+<p>Provide a list of required Application Roles in a list providing the information for each as outlined below.</p>
 <div class="table-container">
         <table>
           <tr>
@@ -453,13 +458,14 @@
 <td>List of <code>@justice.gov.uk</code> addresses.</td>
 </tr><tr>
 <td>Require Access Reviews?</td>
-<td>Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below.</td>
+<td>Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below. For more information, see <a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a>
+</td>
 <td>
 <code>ServiceNow</code>, <code>Slack</code>
 </td>
 </tr>
         </table>
-      </div><h5 id="access-review-details">Access Review Details</h5>
+      </div><h5 id="access-review-details-optional">Access Review Details (optional)</h5>
 <div class="table-container">
         <table>
           <tr>
