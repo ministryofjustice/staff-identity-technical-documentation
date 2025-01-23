@@ -113,30 +113,21 @@
         </ul>
       </li>
       <li>
-        <a href="#renewing-credentials"><span>Renewing credentials</span></a>
+        <a href="#credentials"><span>Credentials</span></a>
         <ul>
           <li>
-            <a href="#self-service-renewal"><span>Self Service Renewal</span></a>
+            <a href="#renewing-credentials"><span>Renewing credentials</span></a>
             <ul>
               <li>
-                <a href="#checking-for-ownership"><span>Checking for Ownership</span></a>
+                <a href="#self-service-renewal"><span>Self Service Renewal</span></a>
               </li>
               <li>
-                <a href="#updating-your-credential"><span>Updating your Credential</span></a>
+                <a href="#servicenow-client-secret-renewal"><span>ServiceNow Client Secret Renewal</span></a>
               </li>
               <li>
-                <a href="#client-secret"><span>Client Secret</span></a>
-              </li>
-              <li>
-                <a href="#client-certificate"><span>Client Certificate</span></a>
+                <a href="#servicenow-certificate-renewal"><span>ServiceNow Certificate Renewal</span></a>
               </li>
             </ul>
-          </li>
-          <li>
-            <a href="#servicenow-client-secret-renewal"><span>ServiceNow Client Secret Renewal</span></a>
-          </li>
-          <li>
-            <a href="#servicenow-certificate-renewal"><span>ServiceNow Certificate Renewal</span></a>
           </li>
         </ul>
       </li>
@@ -163,7 +154,21 @@
         <a href="#role-based-access-control-rbac"><span>Role-based access control (RBAC)</span></a>
         <ul>
           <li>
-            <a href="#app-roles"><span>App Roles</span></a>
+            <a href="#app-roles-and-access-packages"><span>App Roles and Access Packages</span></a>
+            <ul>
+              <li>
+                <a href="#overview"><span>Overview</span></a>
+              </li>
+              <li>
+                <a href="#how-app-roles-works"><span>How App Roles works</span></a>
+              </li>
+              <li>
+                <a href="#how-access-packages-works"><span>How Access Packages works</span></a>
+              </li>
+              <li>
+                <a href="#requesting-app-roles-and-access-packages"><span>Requesting App Roles and Access Packages</span></a>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>
@@ -205,10 +210,11 @@
 </ul>
 <h4 id="problems-guidance-or-incidents">Problems, guidance, or incidents</h4>
 <p>If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (IDAMTeam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.</p>
-<h2 id="renewing-credentials">Renewing credentials</h2>
-<h3 id="self-service-renewal">Self Service Renewal</h3>
+<h2 id="credentials">Credentials</h2>
+<h3 id="renewing-credentials">Renewing credentials</h3>
+<h4 id="self-service-renewal">Self Service Renewal</h4>
 <p>If you are assigned as an Owner of an App Registration, you are able to renew your credentials without requiring contact with the IDAM team.</p>
-<h4 id="checking-for-ownership">Checking for Ownership</h4>
+<h5 id="checking-for-ownership">Checking for Ownership</h5>
 <p>To check if you are able to, follow these steps</p>
 
 <ul>
@@ -221,7 +227,7 @@
 <li>Under <code>Manage</code>, select <code>Certificates &amp; secrets</code></li>
 <li>The button <code>New client secret</code> should be available for you to click</li>
 </ul>
-<h4 id="updating-your-credential">Updating your Credential</h4>
+<h5 id="updating-your-credential">Updating your Credential</h5>
 
 <ul>
 <li>Go to <a href="https://portal.azure.com/">https://portal.azure.com/</a></li>
@@ -232,7 +238,7 @@
 <li>Click the App Registration to open the dashboard</li>
 <li>Under <code>Manage</code>, select <code>Certificates &amp; secrets</code></li>
 </ul>
-<h4 id="client-secret">Client Secret</h4>
+<h5 id="client-secret">Client Secret</h5>
 
 <ul>
 <li>Click on <code>Client secrets</code></li>
@@ -246,7 +252,7 @@
 <li>Copy the new secret <code>Value</code> and store in a secure place (this will only be visible this one time)</li>
 <li>When possible, ensure any old secrets are removed from your App Registration</li>
 </ul>
-<h4 id="client-certificate">Client Certificate</h4>
+<h5 id="client-certificate">Client Certificate</h5>
 
 <ul>
 <li>Click on <code>Certificates</code></li>
@@ -260,7 +266,7 @@
 <li>Click <code>Add</code></li>
 <li>When possible, ensure any invalid certificates are removed from your App Registration</li>
 </ul>
-<h3 id="servicenow-client-secret-renewal">ServiceNow Client Secret Renewal</h3>
+<h4 id="servicenow-client-secret-renewal">ServiceNow Client Secret Renewal</h4>
 <p>To renew a Client Secret used by your integration, you can make a request to the IDAM team via the <a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14">Entra Id - Renew App Registration Certificate / Secret</a>.</p>
 <p>You will need to provide the following details</p>
 <div class="table-container">
@@ -289,7 +295,7 @@
 <p>Once we have generated a new Secret, we will send the requestor of the catalogue item an email with a secure link to access the new credentials. This link will expire after an hour.</p>
 <p>You should store this new value in a secure vault once received and remove any traces of it from your computer systems.</p>
 <p><a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14">Entra Id - Renew App Registration Certificate / Secret</a></p>
-<h3 id="servicenow-certificate-renewal">ServiceNow Certificate Renewal</h3>
+<h4 id="servicenow-certificate-renewal">ServiceNow Certificate Renewal</h4>
 <p>To renew a Client Certificate used by your integration, you can make a request to the IDAM team via the <a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=4eaffa8d1b2dce10a1e2ddf0b24bcb14">Entra Id - Renew App Registration Certificate / Secret</a>.</p>
 <p>Ensure you have exported your Public Key (.cer, .pem, .crt) ready to attach to the ServiceNow request.</p>
 <p>You will need to provide the following details</p>
@@ -338,15 +344,33 @@
 <p>Many existing integrations follow this pattern, an example can be found below by OPG in their Sirius codebase which integrates with Entra ID.</p>
 <p><a href="https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider">https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider</a></p>
 <h2 id="role-based-access-control-rbac">Role-based access control (RBAC)</h2>
-<h3 id="app-roles">App Roles</h3>
-<p>When considering using Entra ID to provide Authorisation as well as Authentication, we prefer using <code>App roles</code> to manage permissions.</p>
-<p>Entra ID Application Registrations have the ability for you to implement RBAC rules via Application Roles and assign Groups of users or individual users to them.</p>
-<p>Within the <code>App roles</code> option of your Application Registration, you can create custom App roles for each RBAC role type and link each Role to a Security Group. For example</p>
+<h3 id="app-roles-and-access-packages">App Roles and Access Packages</h3>
+<h4 id="overview">Overview</h4>
+<p>As well as using Entra ID for your Authentication, you can also take advantage of App Roles and Access Packages to manage your integrating applications Authorisation.</p>
+<p>Managing users this way over Security Groups or custom Authorisation layers in your application have multiple advantages</p>
+
+<ul>
+<li>JML processes will automatically remove access from your application when a user is deleted within Entra ID</li>
+<li>Approvals are handled through the Microsoft My Access portal requiring user authentication before assignment</li>
+<li>Audit trail of access requests</li>
+<li>Automated Access Reviews to ensure users have the right access</li>
+<li>Further Governance, i.e., those that do not have the Entra Role “Identity Governance Administrator” or assigned either <a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate#entitlement-management-roles">Delegation and roles in entitlement management - Microsoft Entra ID Governance</a> will not be able to add members to group without adding members to the access package</li>
+<li>Integration with wider Azure and Entra permissions and groups for automated assignment (future)</li>
+</ul>
+<p>Access Packages sit under the Microsoft Entitlement Management offering. To learn more about Entitlement Management, Access Packages and App Roles, use the following links</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-overview">What is entitlement management? - Microsoft Entra ID Governance</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps">Add app roles to your application and receive them in the token.</a></li>
+</ul>
+<h4 id="how-app-roles-works">How App Roles works</h4>
+<p>Within the <code>App roles</code> option of your Application Registration, you can create custom App roles for each RBAC role type and link each Role to a Access Package. For example</p>
 <div class="table-container">
         <table>
           <tr>
 <th>Role Name</th>
-<th>Security Group</th>
+<th>Access Package</th>
 </tr><tr>
 <td>Administrator</td>
 <td>eucs-idam-wordpress-administrators</td>
@@ -358,22 +382,107 @@
 <td>eucs-idam-wordpress-approvers</td>
 </tr>
         </table>
-      </div><p>When a user authenticates with Entra ID and is passed back to your application, Entra ID will check the user against these roles and pass a <code>roles</code> claim via the authentication token for your application to parse.</p>
-<p>The Security Group(s) assigned to each Role can be any of the following</p>
-
-<ul>
-<li>Dynamic Security Group</li>
-<li>IDAM Team Managed Static Security Group</li>
-<li>Self Service Security Group</li>
-</ul>
-<p>Security Groups and types available are explained in the <a href="sg.html#entra-security-groups">Entra Security Groups documentation</a>.</p>
-<p>For implementation guidance using App roles in your application, follow the Microsoft guidance in the links below.</p>
+      </div><p>When a user authenticates with Entra ID and is passed back to your application, Entra ID will check the user is a part of the Access Package and pass a <code>roles</code> claim via the authentication token for your application to parse.</p>
 
 <ul>
 <li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps">Add app roles to your application and receive them in the token</a></li>
 <li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-implement-rbac-for-apps">Implement RBAC in your Application</a></li>
 </ul>
-<h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
+<h4 id="how-access-packages-works">How Access Packages works</h4>
+
+<blockquote>
+<p>For a detailed overview of Access Packages and how they are used to manage user access to resources, see <a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-process">Request process and email notifications in entitlement management</a>.</p>
+</blockquote>
+<p>The IDAM Team will provide you with unique urls you can give to your users so that they can request access to the resource.</p>
+<p>A user that needs access to a role for your application can submit an access request. When a request is approved, a process begins to assign the user access to the role for that application in the access package. The following diagram shows an overview of the process and the different states:</p>
+<p><a href="../../img/ap-request-process.png" rel="noopener noreferrer"><img src="../../img/ap-request-process.png" title="Approval process diagram" alt="Approval process diagram" /></a></p>
+<p>If you&rsquo;re an approver, you&rsquo;re sent email notifications when you need to approve an access request. You also receive notifications when an access request has been completed. You&rsquo;re also sent email notifications that indicate the status of your request if you&rsquo;re a requestor.</p>
+<p>Example email</p>
+<p><a href="../../img/ap-approver-request-email.png" rel="noopener noreferrer"><img src="../../img/ap-approver-request-email.png" title="Approve request to access package email" alt="Approve request to access package email" /></a></p>
+<p>If you have chosen to have Access Reviews for your Access Package, you will be sent regular emails to review each user within the Access Package. This can help maintain Just Enough Access for users in your system. For more information on how this process works, please see <a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a>.</p>
+<h4 id="requesting-app-roles-and-access-packages">Requesting App Roles and Access Packages</h4>
+<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
+<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
+<p>You should provide the following information with the demand request.</p>
+<h5 id="list-of-application-roles">List of Application Roles</h5>
+<p>Provide a list of required Application Roles in a list providing the information for each as outlined below.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Display Name</td>
+<td>Display name for the App role that appears, for e.g. in the assignment and consent experiences.</td>
+<td>e.g. <code>Admin</code>, <code>Write</code>, <code>Read</code>, <code>ReadWrite</code>, etc</td>
+</tr><tr>
+<td>Role Value</td>
+<td>Specifies the value which will be included in the &ldquo;roles&rdquo; claim of a token identifying a user or app which has been granted this app role.</td>
+<td>e.g. <code>Users.Admin</code>, <code>Users.Write</code>, <code>Users.ReadWrite</code>
+</td>
+</tr><tr>
+<td>Description</td>
+<td>App role help text that appears in the app assignment and consent experiences.</td>
+<td>e.g. <code>Allows users Administrator rights over the Blog</code>.</td>
+</tr>
+        </table>
+      </div><h5 id="access-package-details">Access Package Details</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>OrganisationName</td>
+<td>Your organisation name.</td>
+<td>
+<code>Justice Digital</code>, <code>Tech Services EUCS</code>, <code>CICA</code>
+</td>
+</tr><tr>
+<td>DepartmentName</td>
+<td>Your departments name.</td>
+<td>
+<code>LAA</code>, <code>OPG</code>, <code>IDAM</code>
+</td>
+</tr><tr>
+<td>ApplicationName</td>
+<td>Your application name.</td>
+<td>
+<code>ServiceNow</code>, <code>Slack</code>
+</td>
+</tr><tr>
+<td>Access Package Approvers</td>
+<td>A list of people who will be responsible for the approval of access to the packages. This should ideally be more than 2 people.</td>
+<td>List of <code>@justice.gov.uk</code> addresses.</td>
+</tr><tr>
+<td>Require Access Reviews?</td>
+<td>Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below. For more information, see <a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a>
+</td>
+<td>
+<code>ServiceNow</code>, <code>Slack</code>
+</td>
+</tr>
+        </table>
+      </div><h5 id="access-review-details-optional">Access Review Details (optional)</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Access Package Reviewers</td>
+<td>A list of people who will be responsible for the review of users who have access to the packages. This should ideally be more than 2 people.</td>
+<td>List of <code>@justice.gov.uk</code> addresses.</td>
+</tr><tr>
+<td>Review frequency</td>
+<td>How often do you want to review users access? This should be in days with a minimum of 30 days up to 365 days.</td>
+<td><code>365 days</code></td>
+</tr>
+        </table>
+      </div><h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
 <p>We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.</p>
 <p>e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.</p>
 <p>You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to reauthenticate.</p>
