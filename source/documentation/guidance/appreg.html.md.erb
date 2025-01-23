@@ -194,6 +194,11 @@ When a user authenticates with Entra ID and is passed back to your application, 
 
 TODO: Overview of Access Packages - include screenshots
 
+* IDAM Provide team with unique urls they can give users to request access
+* User goes to link and requests access with justification
+* Assignees approve/decline access
+* Optionally we can provide regular access reviews to owners
+
 #### Requesting App Roles and Access Packages
 
 You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.
@@ -202,7 +207,30 @@ The link to the demand process can be found at [Technology Services New Demand R
 
 You should provide the following information with the demand request.
 
-TODO: Minimum data set
+##### List of Application Roles
+
+| Field | Description | Example
+|--|--|--|
+| Display Name | Display name for the App role that appears, for e.g. in the assignment and consent experiences. | e.g. `Admin`, `Write`, `Read`, `ReadWrite`, etc |
+| Role Value | Specifies the value which will be included in the "roles" claim of a token identifying a user or app which has been granted this app role. | e.g. `Users.Admin`, `Users.Write`, `Users.ReadWrite` |
+| Description | App role help text that appears in the app assignment and consent experiences. | e.g. `Allows users Administrator rights over the Blog`. |
+
+##### Access Package Details
+
+| Field | Description | Example
+|--|--|--|
+| OrganisationName | Your organisation name. | `Justice Digital`, `Tech Services EUCS`, `CICA` |
+| DepartmentName | Your departments name. | `LAA`, `OPG`, `IDAM` |
+| ApplicationName | Your application name. | `ServiceNow`, `Slack`  |
+| Access Package Approvers | A list of people who will be responsible for the approval of access to the packages. This should ideally be more than 2 people. | List of `@justice.gov.uk` addresses. |
+| Require Access Reviews? | Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below. | `ServiceNow`, `Slack`  |
+
+##### Access Review Details
+
+| Field | Description | Example
+|--|--|--|
+| Access Package Reviewers | A list of people who will be responsible for the review of users who have access to the packages. This should ideally be more than 2 people. | List of `@justice.gov.uk` addresses. |
+| Review frequency | How often do you want to review users access? This should be in days with a minimum of 30 days up to 365 days. | `365 days` |
 
 ## Token Lifetime Policy
 
