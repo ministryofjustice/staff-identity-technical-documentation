@@ -389,12 +389,94 @@
 </ul>
 <h4 id="how-access-packages-works">How Access Packages works</h4>
 <p>TODO: Overview of Access Packages - include screenshots</p>
+
+<ul>
+<li>IDAM Provide team with unique urls they can give users to request access</li>
+<li>User goes to link and requests access with justification</li>
+<li>Assignees approve/decline access</li>
+<li>Optionally we can provide regular access reviews to owners</li>
+</ul>
 <h4 id="requesting-app-roles-and-access-packages">Requesting App Roles and Access Packages</h4>
 <p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
 <p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
 <p>You should provide the following information with the demand request.</p>
-<p>TODO: Minimum data set</p>
-<h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
+<h5 id="list-of-application-roles">List of Application Roles</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Display Name</td>
+<td>Display name for the App role that appears, for e.g. in the assignment and consent experiences.</td>
+<td>e.g. <code>Admin</code>, <code>Write</code>, <code>Read</code>, <code>ReadWrite</code>, etc</td>
+</tr><tr>
+<td>Role Value</td>
+<td>Specifies the value which will be included in the &ldquo;roles&rdquo; claim of a token identifying a user or app which has been granted this app role.</td>
+<td>e.g. <code>Users.Admin</code>, <code>Users.Write</code>, <code>Users.ReadWrite</code>
+</td>
+</tr><tr>
+<td>Description</td>
+<td>App role help text that appears in the app assignment and consent experiences.</td>
+<td>e.g. <code>Allows users Administrator rights over the Blog</code>.</td>
+</tr>
+        </table>
+      </div><h5 id="access-package-details">Access Package Details</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>OrganisationName</td>
+<td>Your organisation name.</td>
+<td>
+<code>Justice Digital</code>, <code>Tech Services EUCS</code>, <code>CICA</code>
+</td>
+</tr><tr>
+<td>DepartmentName</td>
+<td>Your departments name.</td>
+<td>
+<code>LAA</code>, <code>OPG</code>, <code>IDAM</code>
+</td>
+</tr><tr>
+<td>ApplicationName</td>
+<td>Your application name.</td>
+<td>
+<code>ServiceNow</code>, <code>Slack</code>
+</td>
+</tr><tr>
+<td>Access Package Approvers</td>
+<td>A list of people who will be responsible for the approval of access to the packages. This should ideally be more than 2 people.</td>
+<td>List of <code>@justice.gov.uk</code> addresses.</td>
+</tr><tr>
+<td>Require Access Reviews?</td>
+<td>Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below.</td>
+<td>
+<code>ServiceNow</code>, <code>Slack</code>
+</td>
+</tr>
+        </table>
+      </div><h5 id="access-review-details">Access Review Details</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Access Package Reviewers</td>
+<td>A list of people who will be responsible for the review of users who have access to the packages. This should ideally be more than 2 people.</td>
+<td>List of <code>@justice.gov.uk</code> addresses.</td>
+</tr><tr>
+<td>Review frequency</td>
+<td>How often do you want to review users access? This should be in days with a minimum of 30 days up to 365 days.</td>
+<td><code>365 days</code></td>
+</tr>
+        </table>
+      </div><h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
 <p>We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.</p>
 <p>e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.</p>
 <p>You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to reauthenticate.</p>
