@@ -173,6 +173,7 @@ Managing users this way over Security Groups or custom Authorisation layers in y
 Access Packages sit under the Microsoft Entitlement Management offering. To learn more about Entitlement Management, Access Packages and App Roles, use the following links
 
 * [What is entitlement management? - Microsoft Entra ID Governance](https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-overview)
+* [What are access reviews? - Microsoft Entra ID Governance](https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview)
 * [Add app roles to your application and receive them in the token.](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps)
 
 #### How App Roles works
@@ -192,12 +193,21 @@ When a user authenticates with Entra ID and is passed back to your application, 
 
 #### How Access Packages works
 
-TODO: Overview of Access Packages - include screenshots
+> For a detailed overview of Access Packages and how they are used to manage user access to resources, see [Request process and email notifications in entitlement management](https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-process).
 
-* IDAM Provide team with unique urls they can give users to request access
-* User goes to link and requests access with justification
-* Assignees approve/decline access
-* Optionally we can provide regular access reviews to owners
+The IDAM Team will provide you with unique urls you can give to your users so that they can request access to the resource.
+
+A user that needs access to a role for your application can submit an access request. When a request is approved, a process begins to assign the user access to the role for that application in the access package. The following diagram shows an overview of the process and the different states:
+
+![Approval process diagram](../../img/ap-request-process.png "Approval process diagram")
+
+If you're an approver, you're sent email notifications when you need to approve an access request. You also receive notifications when an access request has been completed. You're also sent email notifications that indicate the status of your request if you're a requestor.
+
+Example email
+
+![Approve request to access package email](../../img/ap-approver-request-email.png "Approve request to access package email")
+
+If you have chosen to have Access Reviews for your Access Package, you will be sent regular emails to review each user within the Access Package. This can help maintain Just Enough Access for users in your system. For more information on how this process works, please see [What are access reviews? - Microsoft Entra ID Governance](https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview).
 
 #### Requesting App Roles and Access Packages
 
@@ -208,6 +218,8 @@ The link to the demand process can be found at [Technology Services New Demand R
 You should provide the following information with the demand request.
 
 ##### List of Application Roles
+
+Provide a list of required Application Roles in a list providing the information for each as outlined below.
 
 | Field | Description | Example
 |--|--|--|
@@ -223,9 +235,9 @@ You should provide the following information with the demand request.
 | DepartmentName | Your departments name. | `LAA`, `OPG`, `IDAM` |
 | ApplicationName | Your application name. | `ServiceNow`, `Slack`  |
 | Access Package Approvers | A list of people who will be responsible for the approval of access to the packages. This should ideally be more than 2 people. | List of `@justice.gov.uk` addresses. |
-| Require Access Reviews? | Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below. | `ServiceNow`, `Slack`  |
+| Require Access Reviews? | Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below. For more information, see [What are access reviews? - Microsoft Entra ID Governance](https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview) | `ServiceNow`, `Slack`  |
 
-##### Access Review Details
+##### Access Review Details (optional)
 
 | Field | Description | Example
 |--|--|--|
