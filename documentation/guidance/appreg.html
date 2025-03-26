@@ -94,8 +94,22 @@
     <a href="#application-registrations-sso"><span>Application Registrations (SSO)</span></a>
     <ul>
       <li>
+        <a href="#new-application-registrations"><span>New Application Registrations</span></a>
+        <ul>
+          <li>
+            <a href="#minimum-dataset"><span>Minimum Dataset</span></a>
+          </li>
+          <li>
+            <a href="#demand-process"><span>Demand Process</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
         <a href="#best-practices"><span>Best Practices</span></a>
         <ul>
+          <li>
+            <a href="#integration-best-practices"><span>Integration Best Practices</span></a>
+          </li>
           <li>
             <a href="#client-secrets"><span>Client Secrets</span></a>
             <ul>
@@ -190,7 +204,144 @@
         <div class="app-pane__content toc-open-disabled">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="application-registrations-sso">Application Registrations (SSO)</h1>
+<p>Application Registrations are a great way to integrate third party applications into the Justice M365 tenant. These can be used for SSO or more advanced applications that require MSGraph access to data held in the tenant.</p>
+<p>The below outlines ways of creating and managing these applications through the IDAM team.</p>
+<h2 id="new-application-registrations">New Application Registrations</h2>
+<h3 id="minimum-dataset">Minimum Dataset</h3>
+<p>When requesting a new Application Registration we require a minimum amount of information to set it up. Please use the two tables below for reference and include these in any requests, either in the Demand or a Pull Request.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field Name</th>
+<th>Required</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Department Name</td>
+<td><code>true</code></td>
+<td>Department name such as EUCS, OPG, LAA, etc.</td>
+<td><code>EUCS</code></td>
+</tr><tr>
+<td>Team Name</td>
+<td><code>true</code></td>
+<td>Team name acronym such as IDAM, MWP, AP, etc.</td>
+<td><code>IDAM</code></td>
+</tr><tr>
+<td>Owners</td>
+<td><code>true</code></td>
+<td>Owners that are assignable on the LIVE tenant. There should be at least two owners and/or a shared mailbox user that belong in the justice tenant.</td>
+<td><code>"john.nolan@justice.gov.uk", "idamteam@justice.gov.uk"</code></td>
+</tr><tr>
+<td>Technical Point of Contact</td>
+<td><code>true</code></td>
+<td>Who should we engage with for follow up conversations and sending credentials to.</td>
+<td><code>"john.nolan@justice.gov.uk", "tony.stark@justice.gov.uk"</code></td>
+</tr><tr>
+<td>Application Display Name</td>
+<td><code>true</code></td>
+<td>Friendly application name that users will see when authenticating through Entra ID.</td>
+<td><code>EUCS IDAM CMS Application</code></td>
+</tr><tr>
+<td>Application Description</td>
+<td><code>true</code></td>
+<td>Description of what the applications purpose is.</td>
+<td><code>SSO Application for internal CMS Custom Web Application</code></td>
+</tr><tr>
+<td>Allowed Users</td>
+<td><code>false</code></td>
+<td>Should access to this application be for all users in the Justice tenant or a group. If a group, provide details.</td>
+<td>Defaults to All Justice Users</td>
+</tr><tr>
+<td>Delegated Permissions</td>
+<td><code>false</code></td>
+<td>Graph Delegated Permissions required on the Application such as User.Read. By default, for standard SSO integrations, this can be left blank.</td>
+<td><code>"User.Read"</code></td>
+</tr><tr>
+<td>Application Permissions</td>
+<td><code>false</code></td>
+<td>Graph Application Permissions required on the Application such as User.Read.All. By default, for standard SSO integrations, this can be left blank.</td>
+<td><code>"User.Read.All, Groups.Read.All"</code></td>
+</tr><tr>
+<td>Redirect URLs</td>
+<td><code>true</code></td>
+<td>The URIs we will accept as destinations when returning authentication responses (tokens) after successfully authenticating or signing out users. The redirect URI you send in the request to the login server should match one listed here. Also referred to as reply URLs.</td>
+<td><code>"https://example.com/account", "https://example2.com/redirect"</code></td>
+</tr><tr>
+<td>Environments</td>
+<td><code>true</code></td>
+<td>Which tenants you want this application to be available on. For testing you may initially only require DEVL to be setup and subsequently release to other tenants.</td>
+<td><code>"DEVL", "NLE", "LIVE"</code></td>
+</tr><tr>
+<td>Credential Type</td>
+<td><code>true</code></td>
+<td>What type of credential you are securing your integration with. Is it SAML, Certificate or Secret.</td>
+<td><code>"Secret"</code></td>
+</tr>
+        </table>
+      </div><p>You can copy and paste the following table, fill in the details and send it along with the demand.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Value</th>
+</tr><tr>
+<td>Department Name</td>
+<td></td>
+</tr><tr>
+<td>Team Name</td>
+<td></td>
+</tr><tr>
+<td>Owners</td>
+<td></td>
+</tr><tr>
+<td>Technical Point of Contact</td>
+<td></td>
+</tr><tr>
+<td>Application Display Name</td>
+<td></td>
+</tr><tr>
+<td>Application Description</td>
+<td></td>
+</tr><tr>
+<td>Allowed Users</td>
+<td></td>
+</tr><tr>
+<td>Delegated Permissions</td>
+<td></td>
+</tr><tr>
+<td>Application Permissions</td>
+<td></td>
+</tr><tr>
+<td>Redirect URLs</td>
+<td></td>
+</tr><tr>
+<td>Environments</td>
+<td></td>
+</tr><tr>
+<td>Credential Type</td>
+<td></td>
+</tr>
+        </table>
+      </div><h3 id="demand-process">Demand Process</h3>
+<p>To request the IDAM Team to setup an Application Registration, you can use the Demand Process.</p>
+
+<ol>
+<li><a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></li>
+<li>Raise a new Demand including the Minimum Data Set details as above.</li>
+<li>If you do not know all the details above, include as much information as you can and the IDAM team can contact you to discuss further</li>
+<li>Once we recieve the Demand we will move this into our backlog and begin work or reach out for any more information.</li>
+</ol>
 <h2 id="best-practices">Best Practices</h2>
+<h3 id="integration-best-practices">Integration Best Practices</h3>
+<p>When implementing SSO with an identity provider, your application should follow the best practices outlined by the Microsoft documentation. We encourage you to read through these documents before integrating. A list of resources are linked below.</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts">Identity and access management (IAM) fundamental concepts</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference">Access token claim and using <code>sub</code> in place of email address</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-spa">Single Page Application (SPA) integration</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-web-app">Web App Integration</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-web-api">Web API Integration</a></li>
+</ul>
 <h3 id="client-secrets">Client Secrets</h3>
 <h4 id="storing-your-new-secret-securely">Storing your new secret securely</h4>
 <p>Once we have sent you your new secret, it is essential that you store your new secret in a secure location such as</p>
