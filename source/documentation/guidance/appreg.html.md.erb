@@ -4,7 +4,68 @@ title: Application Registrations (SSO)
 
 # Application Registrations (SSO)
 
+Application Registrations are a great way to integrate third party applications into the Justice M365 tenant. These can be used for SSO or more advanced applications that require MSGraph access to data held in the tenant.
+
+The below outlines ways of creating and managing these applications through the IDAM team.
+
+## New Application Registrations
+
+### Minimum Dataset
+
+When requesting a new Application Registration we require a minimum amount of information to set it up. Please use the two tables below for reference and include these in any requests, either in the Demand or a Pull Request.
+
+| Field Name | Required | Description | Example |
+|--|--|--|--|
+| Department Name | `true` | Department name such as EUCS, OPG, LAA, etc. | `EUCS` |
+| Team Name | `true` | Team name acronym such as IDAM, MWP, AP, etc. | `IDAM` |
+| Owners | `true` | Owners that are assignable on the LIVE tenant. There should be at least two owners and/or a shared mailbox user that belong in the justice tenant. | `"john.nolan@justice.gov.uk", "idamteam@justice.gov.uk"` |
+| Technical Point of Contact | `true` | Who should we engage with for follow up conversations and sending credentials to. | `"john.nolan@justice.gov.uk", "tony.stark@justice.gov.uk"` |
+| Application Display Name | `true` | Friendly application name that users will see when authenticating through Entra ID. | `EUCS IDAM CMS Application` |
+| Application Description | `true` | Description of what the applications purpose is. | `SSO Application for internal CMS Custom Web Application` |
+| Allowed Users | `false` | Should access to this application be for all users in the Justice tenant or a group. If a group, provide details. | Defaults to All Justice Users |
+| Delegated Permissions | `false` | Graph Delegated Permissions required on the Application such as User.Read. By default, for standard SSO integrations, this can be left blank. | `"User.Read"` |
+| Application Permissions | `false` | Graph Application Permissions required on the Application such as User.Read.All. By default, for standard SSO integrations, this can be left blank. | `"User.Read.All, Groups.Read.All"` |
+| Redirect URLs | `true` | The URIs we will accept as destinations when returning authentication responses (tokens) after successfully authenticating or signing out users. The redirect URI you send in the request to the login server should match one listed here. Also referred to as reply URLs. | `"https://example.com/account", "https://example2.com/redirect"` |
+| Environments | `true` | Which tenants you want this application to be available on. For testing you may initially only require DEVL to be setup and subsequently release to other tenants. | `"DEVL", "NLE", "LIVE"` |
+| Credential Type | `true` | What type of credential you are securing your integration with. Is it SAML, Certificate or Secret. | `"Secret"` |
+
+You can copy and paste the following table, fill in the details and send it along with the demand.
+
+| Field | Value |
+| - | - |
+| Department Name |   |
+| Team Name |   |
+| Owners |   |
+| Technical Point of Contact |   |
+| Application Display Name |   |
+| Application Description |   |
+| Allowed Users |   |
+| Delegated Permissions |   |
+| Application Permissions |   |
+| Redirect URLs |   |
+| Environments |   |
+| Credential Type |   |
+
+### Demand Process
+
+To request the IDAM Team to setup an Application Registration, you can use the Demand Process.
+
+1. [Technology Services New Demand Request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx)
+2. Raise a new Demand including the Minimum Data Set details as above.
+3. If you do not know all the details above, include as much information as you can and the IDAM team can contact you to discuss further
+4. Once we recieve the Demand we will move this into our backlog and begin work or reach out for any more information.
+
 ## Best Practices
+
+### Integration Best Practices
+
+When implementing SSO with an identity provider, your application should follow the best practices outlined by the Microsoft documentation. We encourage you to read through these documents before integrating. A list of resources are linked below.
+
+* [Identity and access management (IAM) fundamental concepts](https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts)
+* [Access token claim and using `sub` in place of email address](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference)
+* [Single Page Application (SPA) integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-spa)
+* [Web App Integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-web-app)
+* [Web API Integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-web-api)
 
 ### Client Secrets
 
