@@ -213,79 +213,66 @@
         <table>
           <tr>
 <th>Field Name</th>
-<th>Type</th>
 <th>Required</th>
 <th>Description</th>
 <th>Example</th>
 </tr><tr>
 <td>Department Name</td>
-<td><code>string</code></td>
 <td><code>true</code></td>
 <td>Department name such as EUCS, OPG, LAA, etc.</td>
 <td><code>EUCS</code></td>
 </tr><tr>
 <td>Team Name</td>
-<td><code>string</code></td>
 <td><code>true</code></td>
 <td>Team name acronym such as IDAM, MWP, AP, etc.</td>
 <td><code>IDAM</code></td>
 </tr><tr>
 <td>Owners</td>
-<td><code>list&lt;string&gt;</code></td>
 <td><code>true</code></td>
 <td>Owners that are assignable on the LIVE tenant. There should be at least two owners and/or a shared mailbox user that belong in the justice tenant.</td>
 <td><code>"john.nolan@justice.gov.uk", "idamteam@justice.gov.uk"</code></td>
 </tr><tr>
 <td>Technical Point of Contact</td>
-<td><code>list&lt;string&gt;</code></td>
 <td><code>true</code></td>
 <td>Who should we engage with for follow up conversations and sending credentials to.</td>
 <td><code>"john.nolan@justice.gov.uk", "tony.stark@justice.gov.uk"</code></td>
 </tr><tr>
 <td>Application Display Name</td>
-<td><code>string</code></td>
 <td><code>true</code></td>
 <td>Friendly application name that users will see when authenticating through Entra ID.</td>
 <td><code>EUCS IDAM CMS Application</code></td>
 </tr><tr>
 <td>Application Description</td>
-<td><code>string</code></td>
 <td><code>true</code></td>
 <td>Description of what the applications purpose is.</td>
 <td><code>SSO Application for internal CMS Custom Web Application</code></td>
 </tr><tr>
 <td>Allowed Users</td>
-<td><code>string</code></td>
 <td><code>false</code></td>
 <td>Should access to this application be for all users in the Justice tenant or a group. If a group, provide details.</td>
 <td>Defaults to All Justice Users</td>
 </tr><tr>
 <td>Delegated Permissions</td>
-<td><code>list&lt;string&gt;</code></td>
 <td><code>false</code></td>
 <td>Graph Delegated Permissions required on the Application such as User.Read. By default, for standard SSO integrations, this can be left blank.</td>
 <td><code>"User.Read"</code></td>
 </tr><tr>
 <td>Application Permissions</td>
-<td><code>list&lt;string&gt;</code></td>
 <td><code>false</code></td>
 <td>Graph Application Permissions required on the Application such as User.Read.All. By default, for standard SSO integrations, this can be left blank.</td>
 <td><code>"User.Read.All, Groups.Read.All"</code></td>
 </tr><tr>
 <td>Redirect URLs</td>
-<td><code>list&lt;string&gt;</code></td>
 <td><code>true</code></td>
 <td>The URIs we will accept as destinations when returning authentication responses (tokens) after successfully authenticating or signing out users. The redirect URI you send in the request to the login server should match one listed here. Also referred to as reply URLs.</td>
 <td><code>"https://example.com/account", "https://example2.com/redirect"</code></td>
 </tr><tr>
 <td>Environments</td>
-<td><code>list&lt;string&gt;</code></td>
 <td><code>true</code></td>
 <td>Which tenants you want this application to be available on. For testing you may initially only require DEVL to be setup and subsequently release to other tenants.</td>
 <td><code>"DEVL", "NLE", "LIVE"</code></td>
 </tr><tr>
 <td>Credential Type</td>
-<td><code>choice</code></td>
 <td><code>true</code></td>
 <td>What type of credential you are securing your integration with. Is it SAML, Certificate or Secret.</td>
 <td><code>"Secret"</code></td>
