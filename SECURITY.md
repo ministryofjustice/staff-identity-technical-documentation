@@ -4,7 +4,7 @@ If you believe you have found a security vulnerability, please report it to us a
 
 ## Reporting Security Issues
 
-**Please do not report security vulnerabilities through public GitHub issues.** Instead, please report them to me directly at [security@justice.gov.uk](mailto:security@justice.gov.uk).
+**Please do not report security vulnerabilities through public GitHub issues.** Instead, please report them to me directly at [EUCSSecurity@justice.gov.uk](mailto:EUCSSecurity@justice.gov.uk).
 
 Please include the requested information listed below (as much as you can provide) to help better understand the nature and scope of the possible issue:
 
