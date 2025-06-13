@@ -5,24 +5,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>EUCS IDAM End User Guidance - End User Compute Services - Identity & Access Management End User Guidance</title>
+    <title>End User Compute Services - Identity & Access Management End User Guidance</title>
 
-    <link href="stylesheets/manifest.css" rel="stylesheet" />
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/">
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/external/adminaccess.html">
 
       <meta name="robots" content="noindex" />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
-      <meta name="twitter:title" content="EUCS IDAM End User Guidance - End User Compute Services - Identity &amp; Access Management End User Guidance" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/" />
+      <meta name="twitter:title" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/external/adminaccess.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
       <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
-      <meta property="og:title" content="EUCS IDAM End User Guidance" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/external/adminaccess.html" />
 
     
   </head>
@@ -91,18 +90,16 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#eucs-idam-end-user-guidance"><span>EUCS IDAM End User Guidance</span></a>
+    <a href="#administrator-account-access"><span>Administrator Account Access</span></a>
     <ul>
       <li>
-        <a href="#services"><span>Services</span></a>
-        <ul>
-          <li>
-            <a href="#entra-id-internal-justice-tenant"><span>Entra ID - Internal Justice Tenant</span></a>
-          </li>
-          <li>
-            <a href="#entra-id-external-facing-tenant-for-professional-bodies"><span>Entra ID -  External Facing Tenant for Professional Bodies</span></a>
-          </li>
-        </ul>
+        <a href="#section-contents"><span>Section Contents</span></a>
+      </li>
+      <li>
+        <a href="#requesting-an-administrator-account"><span>Requesting an Administrator Account</span></a>
+      </li>
+      <li>
+        <a href="#request-being-added-to-a-access-package"><span>Request being added to a Access Package</span></a>
       </li>
       <li>
         <a href="#resources"><span>Resources</span></a>
@@ -118,31 +115,30 @@
 
         <div class="app-pane__content toc-open-disabled">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <!-- This means open the file documentation/index.html as the entry point -->
-
-<h1 id="eucs-idam-end-user-guidance">EUCS IDAM End User Guidance</h1>
-
-<h2 id="services">Services</h2>
-
-<h3 id="entra-id-internal-justice-tenant">Entra ID - Internal Justice Tenant</h3>
-
-<p>Guidance for our internal Justice Entra ID tenant. Used for the integration of the internal Ministry of Justice workforce.</p>
+            <h1 id="administrator-account-access">Administrator Account Access</h1>
+<p>In order to access the Entra portal you will require a seperate Admin account. This account is seperate to your normal justice account and requires a higher form of MFA.</p>
+<h2 id="section-contents">Section Contents</h2>
 
 <ul>
-<li><a href="documentation/guidance/appreg.html">Application Registrations (SSO)</a></li>
-<li><a href="documentation/guidance/sg.html">Security Groups</a></li>
+<li><a href="./">Overview</a></li>
+<li><a href="appregistration.html">Application Registrations (SSO)</a></li>
+<li><a href="adminaccess.html">Administrator Account Access</a></li>
 </ul>
-
-<h3 id="entra-id-external-facing-tenant-for-professional-bodies">Entra ID -  External Facing Tenant for Professional Bodies</h3>
-
-<p>Guidance for our external facing Entra ID tenant. This platform provides teams with a unified way to sign in non Ministry of Justice users into their internal applications.</p>
+<h2 id="requesting-an-administrator-account">Requesting an Administrator Account</h2>
+<p>To request a new Admin account you will need to fill out a request in the Slack channel <a href="https://moj.enterprise.slack.com/archives/C091TMP805N">#staff-identity-external-authentication-service</a> using the workflow option <code>New Admin Account</code>.</p>
+<p>Once setup, a member of the team will securely send you your email and password to log in.</p>
+<p>On first login you will be&hellip;</p>
 
 <ul>
-<li><a href="documentation/external/">Overview</a></li>
-<li><a href="documentation/external/appregistration.html">Application Registrations (SSO)</a></li>
-<li><a href="documentation/external/adminaccess.html">Administrator Account Access</a></li>
+<li>Forced to change your default password</li>
+<li>Register for MFA using the Microsoft Authenticator (Push notifications)</li>
 </ul>
 
+<blockquote>
+<p>You <em>must</em> sign up for this MFA type in order to access the portals.</p>
+</blockquote>
+<h2 id="request-being-added-to-a-access-package">Request being added to a Access Package</h2>
+<p>When we set up your account, we will add you to a <code>Access Package</code>. This package will assign you certain Administrator Roles that you can elevate into should you need them. If you want more information on how you can elevate in to your Admin Role, see the page <a href="appregistration.html">Application Registrations (SSO)</a>.</p>
 <h2 id="resources">Resources</h2>
 
 <ul>
@@ -154,8 +150,8 @@
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/index.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27EUCS+IDAM+End+User+Guidance%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2F%29&amp;labels=bug&amp;title=Re%3A+%27EUCS+IDAM+End+User+Guidance%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/external/adminaccess.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fexternal%2Fadminaccess.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
               </ul>
           </aside>
@@ -202,6 +198,6 @@
     </div>
 
     
-    <script src="javascripts/application.js"></script>
+    <script src="../../javascripts/application.js"></script>
   </body>
 </html>
