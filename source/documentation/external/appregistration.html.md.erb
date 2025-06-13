@@ -1,10 +1,105 @@
 # Application Registrations (SSO)
 
-TBC
-
 ## Section Contents
 
 <%= partial 'documentation/partials/contents_external' %>
+
+## Signing into Entra Portal
+
+In order to sign in to the Entra Portal, you must use a Administrator account. You cannot use your existing Justice identity to access any Azure or Entra Portals. If you do not have one, follow the instructions in the [Administrator Access](/documentation/external/adminaccess.html). 
+
+This will guide you through requesting a Administrator account and being assigned to an Access Package to gain the appropriate Roles.
+
+### Logging in to the Entra Portal
+
+* Go to the [Entra Portal](https://entra.microsoft.com)
+* Sign in as your Administrator account
+* Complete any MFA requirements
+
+### Activating Administrator Roles
+
+Sometimes when administering applications, you will require an elevated role. In most circumstances, if you are an Owner of the Application then you won't need to activate this role and can edit the application settings.
+
+Some things within applications can require a higher priviliage, an example of this is amending the SAML configuration.
+
+If you need to activate the Application Developer role, you can follow these steps.
+
+* In the left hand menu go to `Identity` -> `Identity Governance` -> `Privileged Identity Management` ->  `Microsoft Entra Roles` -> `Eligible assignments`
+* Find the Role `Application Developer` and clieck `Activate`
+* Provide a Reason for the activation and click `Activate`
+
+This will give you the role for 2 hours to make the changes required. After this time you will need to re-activate the role.
+
+## Managing Application Registrations
+
+### Creating an Application
+
+At this early stage, you will not be able to create new Application Registrations yourself. You must request one to be created via the Slack channel [#staff-identity-external-authentication-service](https://moj.enterprise.slack.com/archives/C091TMP805N) using the workflow option `New Application (SSO)`.
+
+Once the application has been setup, the Owners you have requested will be assigned and then be able to edit the application in the Entra Portal.
+
+### Editing an Application
+
+* Follow the steps in `Logging in to the Entra Portal`.
+* Go to `Identity` -> `Applications`
+
+In here you will have two options, `Enterprise applications` and `App registrations`. 
+
+#### Enterprise Applications
+
+If your application uses SAML for its authentication, you will need to find it in this section to configure it.
+
+* Click `Enterprise applications`
+* Find your application from the list and click the name
+* Click `Single sign-on`
+
+From here you can configure your SAML settings. You may need to activate your `Application Developer` role in order to change values here.
+
+#### Application Registrations
+
+If you are using OpenId Connect or OAuth, you will be managing your application in this section.
+
+* Click `App registrations` -> `Owned applications`
+* Find your application from the list and click the name
+
+##### Overview
+
+In this section you can find your `Application (client) ID` and `Directory (tenant) ID` which you will require when configuring your application.
+
+##### Branding & properties
+
+Here you will find details of your application. `Name` and `Internal notes` will be completed for you from when you requested the application to be created. These should always be up to date to help identify the applications use.
+
+##### Certificates & secrets
+
+This section allows you to manage your credentials to connect your application. You can create Certificate, secrets or federated credentials as a way of connectining your application to Entra.
+
+For more information on managing Secrets, see the Best Practices section below.
+
+> This is currently a manual process to log in and rotate credentials. At a later date we will provide a way for auto rotation as part of your pipelines.
+
+##### API permissions
+
+In here you can add additional API permissions your application can have access to for MSGraph. The standard is `Delegated` `User.Read` which will allow users to authenticate into your application.
+
+If this is all you require from your application, then this section can be left as is. If you require more permissions then please contact the IDAM team or ask in the dedicated Slack channel for more information.
+
+##### Owners
+
+This section defines the Owners of the application that have access to configure it. This would usually be your development team. You should always have a minimum of 2 people as Owners at all time. We also encourage when in Production to add a shared mailbox to the Owner list. This will allow us to send you automated notifications for expiring credentials and allow the IDAM team to contact you if we have any issues.
+
+### Best Practices
+
+The following rules apply for all Applications. We have automated testing that runs every 24 hours to check for the following issues. If any are identified we will reach out to get these fixed.
+
+1. Applications should have 2 or more Owners
+2. `Internal notes` should be filled out including the Department and Team name
+3. In `Authentication` -> `Supported account types` `Accounts in this organizational directory only (Ministry of Justice External (Development) only - Single tenant)` should be selected 
+4. In Enterprise Application, `Assignment required?` must be set to `Yes`
+
+<%= partial 'documentation/partials/integration_best_practices' %>
+
+<%= partial 'documentation/partials/secrets_best_practices' %>
 
 ## Resources
 

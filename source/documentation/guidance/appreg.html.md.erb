@@ -57,37 +57,9 @@ To request the IDAM Team to setup an Application Registration, you can use the D
 
 ## Best Practices
 
-### Integration Best Practices
+<%= partial 'documentation/partials/integration_best_practices' %>
 
-When implementing SSO with an identity provider, your application should follow the best practices outlined by the Microsoft documentation. We encourage you to read through these documents before integrating. A list of resources are linked below.
-
-* [Identity and access management (IAM) fundamental concepts](https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts)
-* [Access token claim and using `sub` in place of email address](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference)
-* [Single Page Application (SPA) integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-spa)
-* [Web App Integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-web-app)
-* [Web API Integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-web-api)
-
-### Client Secrets
-
-#### Storing your new secret securely
-
-Once we have sent you your new secret, it is essential that you store your new secret in a secure location such as
-
-* In a secure vault such as `Azure Key Vault` or `AWS (Amazon Web Services) Secrets Manager`
-* In a `GitHub` or `Azure DevOps` Secret variable
-
-#### What not to do with your new secret
-
-Do not store or share your secret anywhere else such as
-
-* Any type of document such as spreadsheets or word processor documents
-* Document/Content Management Systems such as SharePoint
-* Send via email
-* Locally on your computer
-
-#### Problems, guidance, or incidents
-
-If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (IDAMTeam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.
+<%= partial 'documentation/partials/secrets_best_practices' %>
 
 ## Credentials
 
