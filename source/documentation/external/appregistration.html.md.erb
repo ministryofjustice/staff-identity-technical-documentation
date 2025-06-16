@@ -7,17 +7,26 @@
 * [Administrator Account Access](/documentation/external/adminaccess.html)
 
 
-## Signing into Entra Portal
+## Signing into Entra Portal (Microsoft Entra Admin Center)
 
 In order to sign in to the Entra Portal, you must use a Administrator account. You cannot use your existing Justice identity to access any Azure or Entra Portals. If you do not have one, follow the instructions in the [Administrator Access](/documentation/external/adminaccess.html). 
 
 This will guide you through requesting a Administrator account and being assigned to an Access Package to gain the appropriate Roles.
 
-### Logging in to the Entra Portal
+### Logging in to the Entra Portal (Microsoft Entra Admin Center)
 
 * Go to the [Entra Portal](https://entra.microsoft.com)
 * Sign in as your Administrator account
 * Complete any MFA requirements
+
+### Accessing the External Tenant
+
+By default when you first log in you will see the Internal Entra ID Tenant. In order to switch to the External Entra ID Tenant, follow these steps.
+
+* Go to the [Entra Portal](https://entra.microsoft.com)
+* Sign in as your Administrator account
+* In the top right, click your email address and under `View account` click the link `Switch directory`
+* On the next page, click `Switch` on the `Ministry of Justice External (Development)` option
 
 ### Activating Administrator Roles
 
@@ -28,7 +37,7 @@ Some things within applications can require a higher priviliage, an example of t
 If you need to activate the Application Developer role, you can follow these steps.
 
 * In the left hand menu go to `Identity` -> `Identity Governance` -> `Privileged Identity Management` ->  `Microsoft Entra Roles` -> `Eligible assignments`
-* Find the Role `Application Developer` and clieck `Activate`
+* Find the Role `Application Developer` and click `Activate`
 * Provide a Reason for the activation and click `Activate`
 
 This will give you the role for 2 hours to make the changes required. After this time you will need to re-activate the role.
@@ -43,7 +52,7 @@ Once the application has been setup, the Owners you have requested will be assig
 
 ### Editing an Application
 
-* Follow the steps in `Logging in to the Entra Portal`.
+* Follow the steps in `Logging in to the Entra Portal (Microsoft Entra Admin Center)`.
 * Go to `Identity` -> `Applications`
 
 In here you will have two options, `Enterprise applications` and `App registrations`. 
