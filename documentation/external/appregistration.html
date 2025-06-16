@@ -96,10 +96,13 @@
         <a href="#section-contents"><span>Section Contents</span></a>
       </li>
       <li>
-        <a href="#signing-into-entra-portal"><span>Signing into Entra Portal</span></a>
+        <a href="#signing-into-entra-portal-microsoft-entra-admin-center"><span>Signing into Entra Portal (Microsoft Entra Admin Center)</span></a>
         <ul>
           <li>
-            <a href="#logging-in-to-the-entra-portal"><span>Logging in to the Entra Portal</span></a>
+            <a href="#logging-in-to-the-entra-portal-microsoft-entra-admin-center"><span>Logging in to the Entra Portal (Microsoft Entra Admin Center)</span></a>
+          </li>
+          <li>
+            <a href="#accessing-the-external-tenant"><span>Accessing the External Tenant</span></a>
           </li>
           <li>
             <a href="#activating-administrator-roles"><span>Activating Administrator Roles</span></a>
@@ -167,15 +170,24 @@
 <li><a href="appregistration.html">Application Registrations (SSO)</a></li>
 <li><a href="adminaccess.html">Administrator Account Access</a></li>
 </ul>
-<h2 id="signing-into-entra-portal">Signing into Entra Portal</h2>
+<h2 id="signing-into-entra-portal-microsoft-entra-admin-center">Signing into Entra Portal (Microsoft Entra Admin Center)</h2>
 <p>In order to sign in to the Entra Portal, you must use a Administrator account. You cannot use your existing Justice identity to access any Azure or Entra Portals. If you do not have one, follow the instructions in the <a href="adminaccess.html">Administrator Access</a>.</p>
 <p>This will guide you through requesting a Administrator account and being assigned to an Access Package to gain the appropriate Roles.</p>
-<h3 id="logging-in-to-the-entra-portal">Logging in to the Entra Portal</h3>
+<h3 id="logging-in-to-the-entra-portal-microsoft-entra-admin-center">Logging in to the Entra Portal (Microsoft Entra Admin Center)</h3>
 
 <ul>
 <li>Go to the <a href="https://entra.microsoft.com">Entra Portal</a></li>
 <li>Sign in as your Administrator account</li>
 <li>Complete any MFA requirements</li>
+</ul>
+<h3 id="accessing-the-external-tenant">Accessing the External Tenant</h3>
+<p>By default when you first log in you will see the Internal Entra ID Tenant. In order to switch to the External Entra ID Tenant, follow these steps.</p>
+
+<ul>
+<li>Go to the <a href="https://entra.microsoft.com">Entra Portal</a></li>
+<li>Sign in as your Administrator account</li>
+<li>In the top right, click your email address and under <code>View account</code> click the link <code>Switch directory</code></li>
+<li>On the next page, click <code>Switch</code> on the <code>Ministry of Justice External (Development)</code> option</li>
 </ul>
 <h3 id="activating-administrator-roles">Activating Administrator Roles</h3>
 <p>Sometimes when administering applications, you will require an elevated role. In most circumstances, if you are an Owner of the Application then you won&rsquo;t need to activate this role and can edit the application settings.</p>
@@ -184,7 +196,7 @@
 
 <ul>
 <li>In the left hand menu go to <code>Identity</code> -&gt; <code>Identity Governance</code> -&gt; <code>Privileged Identity Management</code> -&gt;  <code>Microsoft Entra Roles</code> -&gt; <code>Eligible assignments</code></li>
-<li>Find the Role <code>Application Developer</code> and clieck <code>Activate</code></li>
+<li>Find the Role <code>Application Developer</code> and click <code>Activate</code></li>
 <li>Provide a Reason for the activation and click <code>Activate</code></li>
 </ul>
 <p>This will give you the role for 2 hours to make the changes required. After this time you will need to re-activate the role.</p>
@@ -195,7 +207,7 @@
 <h3 id="editing-an-application">Editing an Application</h3>
 
 <ul>
-<li>Follow the steps in <code>Logging in to the Entra Portal</code>.</li>
+<li>Follow the steps in <code>Logging in to the Entra Portal (Microsoft Entra Admin Center)</code>.</li>
 <li>Go to <code>Identity</code> -&gt; <code>Applications</code></li>
 </ul>
 <p>In here you will have two options, <code>Enterprise applications</code> and <code>App registrations</code>.</p>
