@@ -67,6 +67,7 @@ When implementing SSO with an identity provider, your application should follow 
 * [Web App Integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-web-app)
 * [Web API Integration](https://learn.microsoft.com/en-us/entra/identity-platform/index-web-api)
 
+
 ### Client Secrets
 
 #### Storing your new secret securely
@@ -74,7 +75,7 @@ When implementing SSO with an identity provider, your application should follow 
 Once we have sent you your new secret, it is essential that you store your new secret in a secure location such as
 
 * In a secure vault such as `Azure Key Vault` or `AWS (Amazon Web Services) Secrets Manager`
-* In a `GitHub` or `Azure DevOps` Secret variable
+* In a `GitHub` or `Azure DevOps` Secret variable, not as plain text
 
 #### What not to do with your new secret
 
@@ -88,6 +89,7 @@ Do not store or share your secret anywhere else such as
 #### Problems, guidance, or incidents
 
 If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (IDAMTeam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.
+
 
 ## Credentials
 
