@@ -1,0 +1,67 @@
+# User Authentication Policies
+
+## Section Contents
+
+* [Overview](/documentation/external/index.html)
+* [Application Registrations (SSO)](/documentation/external/appregistration.html)
+* [Administrator Account Access](/documentation/external/adminaccess.html)
+* [User Authentication Policies](/documentation/external/authenticationpolicies.html)
+
+## Multi Factor Authentication (MFA) Options
+
+The following Multi Factor Authentication options are avaialble for both Internal and External users.
+
+* (Default) Microsoft Authenticator (Push)
+* Other Software Authenticator (Google Authenticator, 1password, Lastpass, etc)
+* SMS/Phone
+
+## Self Service password reset
+
+### Internal Justice Users
+
+Internal users will continue to be able to reset their password following the internal processes [described in this KBA](https://mojprod.service-now.com/moj_sp?id=kb_article&table=kb_knowledge&sysparm_article=KB0026801).
+
+### External Guest Users
+
+External guests do not set a password for accessing our service. As a guest user, they use their own organisations authentication. Therefore there is no requirement for a password reset flow.
+
+## Authentication rules (Internal and External)
+
+### Re-authentication Frequency
+
+Re-authentication for users is set for every 12 hours.
+
+### Persistant Browser
+
+Browser persistance is disabled. This means when a user closes their browser, on launching again, the user will have to re-authenticate into the site going through any MFA challenges.
+
+### Continuos Access Evaluation
+
+If a user moves between locations and their IP Address changes, they will be asked to re-authenticate to gain access again to the service.
+
+## Risky Users
+
+### Medium Risk Users
+
+Should a user be marked as Medium risk by Entra, the user will be required to re-authenticate with their MFA every time they sign in to the service bypassing the standard once every 12 hours default.
+
+### High Risk Users
+
+If a user is marked as High Risk then access is blocked for this user. To unblock them, the user should contact the Service desk.
+
+## Token Lifetime Policy
+
+We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.
+
+e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.
+
+You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to re-authenticate.
+
+For guidance on using refresh tokens, see these following links
+
+* [Refresh tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
+* [Access tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
+
+## Resources
+
+* [EUCS IDAM Team Shared Inbox](mailto:idamteam@justice.gov.uk)
