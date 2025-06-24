@@ -7,21 +7,21 @@
 
     <title>End User Compute Services - Identity & Access Management End User Guidance</title>
 
-    <link href="../stylesheets/manifest.css" rel="stylesheet" />
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/">
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/external/authenticationpolicies.html">
 
       <meta name="robots" content="noindex" />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
       <meta name="twitter:title" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/external/authenticationpolicies.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
       <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/external/authenticationpolicies.html" />
 
     
   </head>
@@ -90,18 +90,52 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#eucs-idam-end-user-guidance"><span>EUCS IDAM End User Guidance</span></a>
+    <a href="#user-authentication-policies"><span>User Authentication Policies</span></a>
     <ul>
       <li>
-        <a href="#services"><span>Services</span></a>
+        <a href="#section-contents"><span>Section Contents</span></a>
+      </li>
+      <li>
+        <a href="#multi-factor-authentication-mfa-options"><span>Multi Factor Authentication (MFA) Options</span></a>
+      </li>
+      <li>
+        <a href="#self-service-password-reset"><span>Self Service password reset</span></a>
         <ul>
           <li>
-            <a href="#entra-id-internal-justice-tenant"><span>Entra ID - Internal Justice Tenant</span></a>
+            <a href="#internal-justice-users"><span>Internal Justice Users</span></a>
           </li>
           <li>
-            <a href="#entra-id-external-facing-tenant-for-professional-bodies"><span>Entra ID -  External Facing Tenant for Professional Bodies</span></a>
+            <a href="#external-guest-users"><span>External Guest Users</span></a>
           </li>
         </ul>
+      </li>
+      <li>
+        <a href="#authentication-rules-internal-and-external"><span>Authentication rules (Internal and External)</span></a>
+        <ul>
+          <li>
+            <a href="#re-authentication-frequency"><span>Re-authentication Frequency</span></a>
+          </li>
+          <li>
+            <a href="#persistant-browser"><span>Persistant Browser</span></a>
+          </li>
+          <li>
+            <a href="#continuos-access-evaluation"><span>Continuos Access Evaluation</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#risky-users"><span>Risky Users</span></a>
+        <ul>
+          <li>
+            <a href="#medium-risk-users"><span>Medium Risk Users</span></a>
+          </li>
+          <li>
+            <a href="#high-risk-users"><span>High Risk Users</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#token-lifetime-policy"><span>Token Lifetime Policy</span></a>
       </li>
       <li>
         <a href="#resources"><span>Resources</span></a>
@@ -117,23 +151,49 @@
 
         <div class="app-pane__content toc-open-disabled">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="eucs-idam-end-user-guidance">EUCS IDAM End User Guidance</h1>
-<h2 id="services">Services</h2>
-<h3 id="entra-id-internal-justice-tenant">Entra ID - Internal Justice Tenant</h3>
-<p>Guidance for our internal Justice Entra ID tenant. Used for the integration of the internal Ministry of Justice workforce.</p>
+            <h1 id="user-authentication-policies">User Authentication Policies</h1>
+<h2 id="section-contents">Section Contents</h2>
 
 <ul>
-<li><a href="guidance/appreg.html">Application Registrations (SSO)</a></li>
-<li><a href="guidance/sg.html">Security Groups</a></li>
+<li><a href="./">Overview</a></li>
+<li><a href="appregistration.html">Application Registrations (SSO)</a></li>
+<li><a href="adminaccess.html">Administrator Account Access</a></li>
+<li><a href="authenticationpolicies.html">User Authentication Policies</a></li>
 </ul>
-<h3 id="entra-id-external-facing-tenant-for-professional-bodies">Entra ID -  External Facing Tenant for Professional Bodies</h3>
-<p>Guidance for our external facing Entra ID tenant. This platform provides teams with a unified way to sign in non Ministry of Justice users into their internal applications.</p>
+<h2 id="multi-factor-authentication-mfa-options">Multi Factor Authentication (MFA) Options</h2>
+<p>The following Multi Factor Authentication options are avaialble for both Internal and External users.</p>
 
 <ul>
-<li><a href="external/">Overview</a></li>
-<li><a href="external/appregistration.html">Application Registrations (SSO)</a></li>
-<li><a href="external/adminaccess.html">Administrator Account Access</a></li>
-<li><a href="external/authenticationpolicies.html">User Authentication Policies</a></li>
+<li>(Default) Microsoft Authenticator (Push)</li>
+<li>Other Software Authenticator (Google Authenticator, 1password, Lastpass, etc)</li>
+<li>SMS/Phone</li>
+</ul>
+<h2 id="self-service-password-reset">Self Service password reset</h2>
+<h3 id="internal-justice-users">Internal Justice Users</h3>
+<p>Internal users will continue to be able to reset their password following the internal processes <a href="https://mojprod.service-now.com/moj_sp?id=kb_article&amp;table=kb_knowledge&amp;sysparm_article=KB0026801">described in this KBA</a>.</p>
+<h3 id="external-guest-users">External Guest Users</h3>
+<p>External guests do not set a password for accessing our service. As a guest user, they use their own organisations authentication. Therefore there is no requirement for a password reset flow.</p>
+<h2 id="authentication-rules-internal-and-external">Authentication rules (Internal and External)</h2>
+<h3 id="re-authentication-frequency">Re-authentication Frequency</h3>
+<p>Re-authentication for users is set for every 12 hours.</p>
+<h3 id="persistant-browser">Persistant Browser</h3>
+<p>Browser persistance is disabled. This means when a user closes their browser, on launching again, the user will have to re-authenticate into the site going through any MFA challenges.</p>
+<h3 id="continuos-access-evaluation">Continuos Access Evaluation</h3>
+<p>If a user moves between locations and their IP Address changes, they will be asked to re-authenticate to gain access again to the service.</p>
+<h2 id="risky-users">Risky Users</h2>
+<h3 id="medium-risk-users">Medium Risk Users</h3>
+<p>Should a user be marked as Medium risk by Entra, the user will be required to re-authenticate with their MFA every time they sign in to the service bypassing the standard once every 12 hours default.</p>
+<h3 id="high-risk-users">High Risk Users</h3>
+<p>If a user is marked as High Risk then access is blocked for this user. To unblock them, the user should contact the Service desk.</p>
+<h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
+<p>We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.</p>
+<p>e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.</p>
+<p>You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to re-authenticate.</p>
+<p>For guidance on using refresh tokens, see these following links</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens">Refresh tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens">Access tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn</a></li>
 </ul>
 <h2 id="resources">Resources</h2>
 
@@ -146,8 +206,8 @@
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/index.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2F%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/external/authenticationpolicies.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fexternal%2Fauthenticationpolicies.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
               </ul>
           </aside>
@@ -194,6 +254,6 @@
     </div>
 
     
-    <script src="../javascripts/application.js"></script>
+    <script src="../../javascripts/application.js"></script>
   </body>
 </html>
