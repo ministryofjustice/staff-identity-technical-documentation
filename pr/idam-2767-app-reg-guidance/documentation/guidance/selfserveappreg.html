@@ -9,20 +9,20 @@
 
     <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserve-appreg.html">
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserveappreg.html">
 
       <meta name="robots" content="noindex" />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
       <meta name="twitter:title" content="Self Serve Application Registration - End User Compute Services - Identity &amp; Access Management End User Guidance" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserve-appreg.html" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserveappreg.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
       <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
       <meta property="og:title" content="Self Serve Application Registration" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserve-appreg.html" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserveappreg.html" />
 
     
   </head>
@@ -126,7 +126,9 @@
 </span><span class="n">git</span><span class="w"> </span><span class="nx">clone</span><span class="w"> </span><span class="nx">git</span><span class="err">@</span><span class="nx">github.com:ministryofjustice/staff-identity-idam-entra-infra.git</span><span class="w">
 </span><span class="n">cd</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
 </span><span class="n">code</span><span class="w"> </span><span class="o">.</span><span class="w">                   </span><span class="c"># Opens VS Code in this location</span><span class="w">
-</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch```</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch ```</span><span class="w">
+
+</span><span class="o">---</span><span class="w"> 
 
 </span><span class="c">## Step 2: Update Repo and Create Feature Branch</span><span class="w">
 </span><span class="kr">If</span><span class="w"> </span><span class="n">youve</span><span class="w"> </span><span class="nx">already</span><span class="w"> </span><span class="nx">cloned</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo</span><span class="w"> </span><span class="nx">locally:</span><span class="w">
@@ -140,6 +142,8 @@
 </span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span><span class="w">
 </span><span class="n">Replace</span><span class="w"> </span><span class="nx">IDAM-xxxx</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">Jira</span><span class="w"> </span><span class="nx">ticket</span><span class="w"> </span><span class="nx">number</span><span class="w"> </span><span class="nx">linked</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">change.</span><span class="w"> </span><span class="se">```
 </span><span class="w">
+</span><span class="o">---</span><span class="w">
+
 </span><span class="c">## Step 3: Create the Terraform Folder Structure</span><span class="w">
 </span><span class="n">Navigate</span><span class="w"> </span><span class="nx">to:</span><span class="w">
 
@@ -164,6 +168,8 @@
         </span><span class="o">-</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="nx">appropriate</span><span class="w"> </span><span class="nx">tags.</span><span class="w">
         </span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">module</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">latest</span><span class="w"> </span><span class="nx">version.</span><span class="w">
 
+</span><span class="o">---</span><span class="w">
+
 </span><span class="c">## Step 4: Commit and Push Your Changes</span><span class="w">
 </span><span class="n">Once</span><span class="w"> </span><span class="nx">updates</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">complete</span><span class="p">,</span><span class="w"> </span><span class="nx">run:</span><span class="w">
 
@@ -172,6 +178,8 @@
 </span><span class="n">git</span><span class="w"> </span><span class="nx">commit</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="s2">"xxxx"</span><span class="w">      </span><span class="c"># Replace xxxx with a descriptive commit message</span><span class="w">
 </span><span class="n">git</span><span class="w"> </span><span class="nx">push</span><span class="se">```
 </span><span class="w">
+</span><span class="o">---</span><span class="w">
+
 </span><span class="c">## Step 5: Create a Pull Request</span><span class="w">
 </span><span class="o">-</span><span class="w"> </span><span class="n">Visit</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo:</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
 </span><span class="o">-</span><span class="w"> </span><span class="n">You</span><span class="w"> </span><span class="nx">should</span><span class="w"> </span><span class="nx">see</span><span class="w"> </span><span class="err">“</span><span class="nx">Compare</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="err">”</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="nx">click</span><span class="w"> </span><span class="nx">it.</span><span class="w">
@@ -180,10 +188,14 @@
     </span><span class="o">-</span><span class="w"> </span><span class="n">Jira</span><span class="w"> </span><span class="nx">ticket</span><span class="w"> </span><span class="nx">reference</span><span class="w">
 </span><span class="o">-</span><span class="w"> </span><span class="n">Click</span><span class="w"> </span><span class="err">“</span><span class="nx">Create</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="err">”</span><span class="w">
 
+</span><span class="o">---</span><span class="w">
+
 </span><span class="c">## Step 6: Review, Approve &amp; Merge</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="n">Wait</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Actions</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">complete.</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="n">Get</span><span class="w"> </span><span class="nx">approval</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">another</span><span class="w"> </span><span class="nx">member</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">IDAM</span><span class="w"> </span><span class="nx">team.</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="n">Merge</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">main.</span><span class="w">
+
+</span><span class="o">---</span><span class="w">
 
 </span><span class="c">## Step 7: Monitor Main Branch Actions</span><span class="w">
 </span><span class="n">After</span><span class="w"> </span><span class="nx">merging:</span><span class="w">
@@ -193,6 +205,8 @@
         </span><span class="o">-</span><span class="w"> </span><span class="n">Fix</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">issue.</span><span class="w">
         </span><span class="o">-</span><span class="w"> </span><span class="n">Raise</span><span class="w"> </span><span class="nx">another</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request.</span><span class="w">
         </span><span class="o">-</span><span class="w"> </span><span class="n">Merge</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">main</span><span class="w"> </span><span class="nx">once</span><span class="w"> </span><span class="nx">fixed.</span><span class="w">
+
+</span><span class="o">---</span><span class="w">
 
 </span><span class="c">## Step 8: Request Graph Permissions</span><span class="w">
 </span><span class="kr">If</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="nx">permissions</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">needed</span><span class="w"> </span><span class="p">(</span><span class="n">delegated</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">application</span><span class="p">):</span><span class="w">
@@ -204,8 +218,8 @@
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/selfserve-appreg.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27Self+Serve+Application+Registration%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fselfserve-appreg.html%29&amp;labels=bug&amp;title=Re%3A+%27Self+Serve+Application+Registration%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/selfserveappreg.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27Self+Serve+Application+Registration%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fselfserveappreg.html%29&amp;labels=bug&amp;title=Re%3A+%27Self+Serve+Application+Registration%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
               </ul>
           </aside>
