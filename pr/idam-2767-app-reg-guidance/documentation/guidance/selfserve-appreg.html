@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>Self Serve Application Registration - End User Compute Services - Identity & Access Management End User Guidance</title>
+
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserve-appreg.html">
+
+      <meta name="robots" content="noindex" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta name="twitter:title" content="Self Serve Application Registration - End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserve-appreg.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta property="og:title" content="Self Serve Application Registration" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserve-appreg.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="/" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__logotype">
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="govuk-header__logotype-crown"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 132 97"
+            height="30"
+            width="36"
+          >
+            <path
+              fill="currentColor" fill-rule="evenodd"
+              d="M25 30.2c3.5 1.5 7.7-.2 9.1-3.7 1.5-3.6-.2-7.8-3.9-9.2-3.6-1.4-7.6.3-9.1 3.9-1.4 3.5.3 7.5 3.9 9zM9 39.5c3.6 1.5 7.8-.2 9.2-3.7 1.5-3.6-.2-7.8-3.9-9.1-3.6-1.5-7.6.2-9.1 3.8-1.4 3.5.3 7.5 3.8 9zM4.4 57.2c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.5-1.5-7.6.3-9.1 3.8-1.4 3.5.3 7.6 3.9 9.1zm38.3-21.4c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.6-1.5-7.6.3-9.1 3.8-1.3 3.6.4 7.7 3.9 9.1zm64.4-5.6c-3.6 1.5-7.8-.2-9.1-3.7-1.5-3.6.2-7.8 3.8-9.2 3.6-1.4 7.7.3 9.2 3.9 1.3 3.5-.4 7.5-3.9 9zm15.9 9.3c-3.6 1.5-7.7-.2-9.1-3.7-1.5-3.6.2-7.8 3.7-9.1 3.6-1.5 7.7.2 9.2 3.8 1.5 3.5-.3 7.5-3.8 9zm4.7 17.7c-3.6 1.5-7.8-.2-9.2-3.8-1.5-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.3 3.5-.4 7.6-3.9 9.1zM89.3 35.8c-3.6 1.5-7.8-.2-9.2-3.8-1.4-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.4 3.6-.3 7.7-3.9 9.1zM69.7 17.7l8.9 4.7V9.3l-8.9 2.8c-.2-.3-.5-.6-.9-.9L72.4 0H59.6l3.5 11.2c-.3.3-.6.5-.9.9l-8.8-2.8v13.1l8.8-4.7c.3.3.6.7.9.9l-5 15.4v.1c-.2.8-.4 1.6-.4 2.4 0 4.1 3.1 7.5 7 8.1h.2c.3 0 .7.1 1 .1.4 0 .7 0 1-.1h.2c4-.6 7.1-4.1 7.1-8.1 0-.8-.1-1.7-.4-2.4V34l-5.1-15.4c.4-.2.7-.6 1-.9zM66 92.8c16.9 0 32.8 1.1 47.1 3.2 4-16.9 8.9-26.7 14-33.5l-9.6-3.4c1 4.9 1.1 7.2 0 10.2-1.5-1.4-3-4.3-4.2-8.7L108.6 76c2.8-2 5-3.2 7.5-3.3-4.4 9.4-10 11.9-13.6 11.2-4.3-.8-6.3-4.6-5.6-7.9 1-4.7 5.7-5.9 8-.5 4.3-8.7-3-11.4-7.6-8.8 7.1-7.2 7.9-13.5 2.1-21.1-8 6.1-8.1 12.3-4.5 20.8-4.7-5.4-12.1-2.5-9.5 6.2 3.4-5.2 7.9-2 7.2 3.1-.6 4.3-6.4 7.8-13.5 7.2-10.3-.9-10.9-8-11.2-13.8 2.5-.5 7.1 1.8 11 7.3L80.2 60c-4.1 4.4-8 5.3-12.3 5.4 1.4-4.4 8-11.6 8-11.6H55.5s6.4 7.2 7.9 11.6c-4.2-.1-8-1-12.3-5.4l1.4 16.4c3.9-5.5 8.5-7.7 10.9-7.3-.3 5.8-.9 12.8-11.1 13.8-7.2.6-12.9-2.9-13.5-7.2-.7-5 3.8-8.3 7.1-3.1 2.7-8.7-4.6-11.6-9.4-6.2 3.7-8.5 3.6-14.7-4.6-20.8-5.8 7.6-5 13.9 2.2 21.1-4.7-2.6-11.9.1-7.7 8.8 2.3-5.5 7.1-4.2 8.1.5.7 3.3-1.3 7.1-5.7 7.9-3.5.7-9-1.8-13.5-11.2 2.5.1 4.7 1.3 7.5 3.3l-4.7-15.4c-1.2 4.4-2.7 7.2-4.3 8.7-1.1-3-.9-5.3 0-10.2l-9.5 3.4c5 6.9 9.9 16.7 14 33.5 14.8-2.1 30.8-3.2 47.7-3.2z"
+            ></path>
+          </svg>
+          <span class="govuk-header__logotype-text">
+            GOV.UK
+          </span>
+        </span>
+        <span class="govuk-header__product-name">
+          End User Compute Services - Identity & Access Management End User Guidance
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#idam-terraform-app-registration-setup-guide"><span>IDAM Terraform App Registration Setup Guide</span></a>
+    <ul>
+      <li>
+        <a href="#prerequisites"><span>Prerequisites</span></a>
+      </li>
+      <li>
+        <a href="#step-1-clone-the-repository"><span>Step 1: Clone the Repository</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="idam-terraform-app-registration-setup-guide">IDAM Terraform App Registration Setup Guide</h1>
+<p>This guide walks engineers and developers through using Terraform in the <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra"><code>staff-identity-idam-entra-infra</code></a> repository to create app registrations in Azure Entra ID.</p>
+
+<hr>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>If you have <strong>already cloned the repo</strong>, skip ahead to step 4 commit and push your changes.</p>
+<p>If you have <strong>not yet cloned the repo</strong>, follow the steps below.</p>
+
+<hr>
+<h2 id="step-1-clone-the-repository">Step 1: Clone the Repository</h2>
+<p>Open Visual Studio Code and start a new terminal session. Then enter:</p>
+<div class="highlight"><pre class="highlight powershell" tabindex="0"><code><span class="n">mkdir</span><span class="w"> </span><span class="nv">$</span><span class="nn">env</span><span class="p">:</span><span class="nv">userprofile</span><span class="nx">\git</span><span class="w">
+</span><span class="n">cd</span><span class="w"> </span><span class="nv">$</span><span class="nn">env</span><span class="p">:</span><span class="nv">userprofile</span><span class="nx">\git\</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">clone</span><span class="w"> </span><span class="nx">git</span><span class="err">@</span><span class="nx">github.com:ministryofjustice/staff-identity-idam-entra-infra.git</span><span class="w">
+</span><span class="n">cd</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
+</span><span class="n">code</span><span class="w"> </span><span class="o">.</span><span class="w">                   </span><span class="c"># Opens VS Code in this location</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch```</span><span class="w">
+
+</span><span class="c">## Step 2: Update Repo and Create Feature Branch</span><span class="w">
+</span><span class="kr">If</span><span class="w"> </span><span class="n">youve</span><span class="w"> </span><span class="nx">already</span><span class="w"> </span><span class="nx">cloned</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo</span><span class="w"> </span><span class="nx">locally:</span><span class="w">
+
+</span><span class="n">Open</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">VS</span><span class="w"> </span><span class="nx">Code.</span><span class="w">
+
+</span><span class="n">Run</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">following</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">terminal:</span><span class="w">
+
+</span><span class="err">```</span><span class="n">bash</span><span class="w">
+</span><span class="nx">git</span><span class="w"> </span><span class="nx">pull</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span><span class="w">
+</span><span class="n">Replace</span><span class="w"> </span><span class="nx">IDAM-xxxx</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">Jira</span><span class="w"> </span><span class="nx">ticket</span><span class="w"> </span><span class="nx">number</span><span class="w"> </span><span class="nx">linked</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">change.</span><span class="w"> </span><span class="se">```
+</span><span class="w">
+</span><span class="c">## Step 3: Create the Terraform Folder Structure</span><span class="w">
+</span><span class="n">Navigate</span><span class="w"> </span><span class="nx">to:</span><span class="w">
+
+</span><span class="n">STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE</span><span class="w">
+</span><span class="nx">Then</span><span class="w"> </span><span class="nx">complete</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">following:</span><span class="w">
+
+</span><span class="o">-</span><span class="w"> </span><span class="n">Create</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">department/team</span><span class="w"> </span><span class="nx">name.</span><span class="w">
+
+</span><span class="o">-</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="nx">contents</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">existing</span><span class="w"> </span><span class="nx">customer</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">folder.</span><span class="w">
+
+</span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">these</span><span class="w"> </span><span class="nx">files:</span><span class="w">
+    </span><span class="o">-</span><span class="w"> </span><span class="n">state.config:</span><span class="w"> </span><span class="nx">Update</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">match</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="nx">name.</span><span class="w">
+
+    </span><span class="err">```</span><span class="n">hcl</span><span class="w">
+    </span><span class="nx">staff-identity-idam-entra-infra-department-team-environmentName.tfstate</span><span class="se">```
+</span><span class="w">
+    </span><span class="o">-</span><span class="w"> </span><span class="n">variables.tf:</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="nx">default</span><span class="w"> </span><span class="nx">values</span><span class="w"> </span><span class="nx">based</span><span class="w"> </span><span class="nx">on</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">Jira</span><span class="w"> </span><span class="nx">ticket.</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">graph_delegated_permissions</span><span class="err">—</span><span class="nx">leave</span><span class="w"> </span><span class="nx">as</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="nx">if</span><span class="w"> </span><span class="nx">none</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">needed.</span><span class="w">
+
+    </span><span class="o">-</span><span class="w"> </span><span class="n">main.tf:</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="nx">appropriate</span><span class="w"> </span><span class="nx">tags.</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">module</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">latest</span><span class="w"> </span><span class="nx">version.</span><span class="w">
+
+</span><span class="c">## Step 4: Commit and Push Your Changes</span><span class="w">
+</span><span class="n">Once</span><span class="w"> </span><span class="nx">updates</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">complete</span><span class="p">,</span><span class="w"> </span><span class="nx">run:</span><span class="w">
+
+</span><span class="err">```</span><span class="n">bash</span><span class="w">
+</span><span class="nx">git</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">.</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">commit</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="s2">"xxxx"</span><span class="w">      </span><span class="c"># Replace xxxx with a descriptive commit message</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">push</span><span class="se">```
+</span><span class="w">
+</span><span class="c">## Step 5: Create a Pull Request</span><span class="w">
+</span><span class="o">-</span><span class="w"> </span><span class="n">Visit</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo:</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
+</span><span class="o">-</span><span class="w"> </span><span class="n">You</span><span class="w"> </span><span class="nx">should</span><span class="w"> </span><span class="nx">see</span><span class="w"> </span><span class="err">“</span><span class="nx">Compare</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="err">”</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="nx">click</span><span class="w"> </span><span class="nx">it.</span><span class="w">
+</span><span class="o">-</span><span class="w"> </span><span class="n">Complete</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">PR</span><span class="w"> </span><span class="nx">form:</span><span class="w">
+    </span><span class="o">-</span><span class="w"> </span><span class="n">Purpose</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">change</span><span class="w">
+    </span><span class="o">-</span><span class="w"> </span><span class="n">Jira</span><span class="w"> </span><span class="nx">ticket</span><span class="w"> </span><span class="nx">reference</span><span class="w">
+</span><span class="o">-</span><span class="w"> </span><span class="n">Click</span><span class="w"> </span><span class="err">“</span><span class="nx">Create</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="err">”</span><span class="w">
+
+</span><span class="c">## Step 6: Review, Approve &amp; Merge</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="n">Wait</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Actions</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">complete.</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="n">Get</span><span class="w"> </span><span class="nx">approval</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">another</span><span class="w"> </span><span class="nx">member</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">IDAM</span><span class="w"> </span><span class="nx">team.</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="n">Merge</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">main.</span><span class="w">
+
+</span><span class="c">## Step 7: Monitor Main Branch Actions</span><span class="w">
+</span><span class="n">After</span><span class="w"> </span><span class="nx">merging:</span><span class="w">
+    </span><span class="o">*</span><span class="w"> </span><span class="n">Confirm</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Actions</span><span class="w"> </span><span class="nx">run</span><span class="w"> </span><span class="nx">successfully.</span><span class="w">
+    </span><span class="o">*</span><span class="w"> </span><span class="kr">If</span><span class="w"> </span><span class="n">errors</span><span class="w"> </span><span class="nx">arise:</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="n">Create</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">feature</span><span class="w"> </span><span class="nx">branch.</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="n">Fix</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">issue.</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="n">Raise</span><span class="w"> </span><span class="nx">another</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request.</span><span class="w">
+        </span><span class="o">-</span><span class="w"> </span><span class="n">Merge</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">main</span><span class="w"> </span><span class="nx">once</span><span class="w"> </span><span class="nx">fixed.</span><span class="w">
+
+</span><span class="c">## Step 8: Request Graph Permissions</span><span class="w">
+</span><span class="kr">If</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="nx">permissions</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">needed</span><span class="w"> </span><span class="p">(</span><span class="n">delegated</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">application</span><span class="p">):</span><span class="w">
+    </span><span class="o">*</span><span class="w"> </span><span class="n">Mention</span><span class="w"> </span><span class="nx">this</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request.</span><span class="w">
+    </span><span class="o">*</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="nx">IDAM</span><span class="w"> </span><span class="nx">team</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">handle</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="nx">consent</span><span class="w"> </span><span class="nx">process.</span><span class="w">
+</span></code></pre></div>
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/selfserve-appreg.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27Self+Serve+Application+Registration%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fselfserve-appreg.html%29&amp;labels=bug&amp;title=Re%3A+%27Self+Serve+Application+Registration%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="../../javascripts/application.js"></script>
+  </body>
+</html>
