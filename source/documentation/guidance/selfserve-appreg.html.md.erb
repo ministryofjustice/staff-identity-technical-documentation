@@ -1,0 +1,100 @@
+---
+title: Self Serve Application Registration
+---
+
+# IDAM Terraform App Registration Setup Guide
+
+This guide walks engineers and developers through using Terraform in the [`staff-identity-idam-entra-infra`](https://github.com/ministryofjustice/staff-identity-idam-entra-infra) repository to create app registrations in Azure Entra ID.
+
+---
+
+## Prerequisites
+
+If you have **already cloned the repo**, skip ahead to the [Create a Feature Branch](#step-4-commit-and-push-your-changes).
+
+If you have **not yet cloned the repo**, follow the steps below.
+
+---
+
+## Step 1: Clone the Repository
+
+Open Visual Studio Code and start a new terminal session. Then enter:
+
+```powershell
+mkdir $env:userprofile\git
+cd $env:userprofile\git\
+git clone git@github.com:ministryofjustice/staff-identity-idam-entra-infra.git
+cd staff-identity-idam-entra-infra
+code .                   # Opens VS Code in this location
+git checkout -b "branch-name"    # Create a new branch```
+
+## Step 2: Update Repo and Create Feature Branch
+If you've already cloned the repo locally:
+
+Open the repo in VS Code.
+
+Run the following in the terminal:
+
+```bash
+git pull
+git checkout -b "IDAM-xxxx-name-of-your-feature-branch"
+Replace IDAM-xxxx with the Jira ticket number linked to your change. ```
+
+## Step 3: Create the Terraform Folder Structure
+Navigate to:
+
+STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE
+Then complete the following:
+
+- Create a new folder using your department/team name.
+
+- Copy contents from an existing customer folder into your new folder.
+
+- Update these files:
+    - state.config: Update the key to match the new folder name.
+
+    ```hcl
+    staff-identity-idam-entra-infra-department-team-environmentName.tfstate```
+
+    - variables.tf:
+        - Set default values based on your Jira ticket.
+        - Update graph_delegated_permissions—leave as [] if none are needed.
+
+    - main.tf:
+        - Set appropriate tags.
+        - Update the module source to the latest version.
+
+## Step 4: Commit and Push Your Changes
+Once updates are complete, run:
+
+```bash
+git add .
+git commit -m "xxxx"      # Replace xxxx with a descriptive commit message
+git push```
+
+## Step 5: Create a Pull Request
+- Visit the repo: staff-identity-idam-entra-infra
+- You should see “Compare & pull request” — click it.
+- Complete the PR form:
+    - Purpose of the change
+    - Jira ticket reference
+- Click “Create pull request”
+
+## Step 6: Review, Approve & Merge
+* Wait for the GitHub Actions workflow to complete.
+* Get approval from another member of the IDAM team.
+* Merge the pull request into main.
+
+## Step 7: Monitor Main Branch Actions
+After merging:
+    * Confirm that GitHub Actions run successfully.
+    * If errors arise:
+        - Create a new feature branch.
+        - Fix the issue.
+        - Raise another pull request.
+        - Merge into main once fixed.
+
+## Step 8: Request Graph Permissions
+If Graph permissions are needed (delegated or application):
+    * Mention this in your pull request.
+    * The IDAM team will handle the admin consent process.
