@@ -43,15 +43,20 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 ---
 
 ## Step 3: Create the Terraform Folder Structure
-Navigate to: `STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE`
+Navigate to: `STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/REQUIRED_ENV`
 
 Then complete the following:
 
 1. Create a new folder using your department/team name.
+![image showing how to create the folder](../images/documentation-folder.png)
 
-2. Copy contents from the terraform-template  folder into your new folder.
+2. Copy contents from the terraform-template folder.
+![image showing how to copy the templated files](../images/documentation-copy.png)
 
-3. Update these files:
+3. Paste the contents from the terraform-template folder into your new folder.
+![image showing how to paste the templated files](../images/documentation-paste.png)
+
+4. Update these files:
     - state.config: Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
     ```hcl
     staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
