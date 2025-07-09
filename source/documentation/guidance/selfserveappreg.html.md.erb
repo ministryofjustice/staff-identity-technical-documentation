@@ -10,7 +10,7 @@ This guide walks engineers and developers through using Terraform in the [`staff
 
 ## Prerequisites
 
-If you have **already cloned the repo**, skip ahead to step 4 commit and push your changes.
+If you have **already cloned the repo**, [skip ahead to step 4](#Step-4:-Commit-and-Push-Your-Changes) and commit and push your changes.
 
 If you have **not yet cloned the repo**, follow the steps below.
 
@@ -32,11 +32,7 @@ git checkout -b "branch-name"    # Create a new branch
 --- 
 
 ## Step 2: Update Repo and Create Feature Branch
-If youve already cloned the repo locally:
-
-Open the repo in VS Code.
-
-Run the following in the terminal:
+If youve already cloned the repo locally, open the repo in VS Code (or IDE of your choice) and run the following in the terminal:
 
 ```bash
 git pull
@@ -54,13 +50,13 @@ Then complete the following:
 
 - Create a new folder using your department/team name.
 
-- Copy contents from an existing customer folder into your new folder.
+- Copy contents from the terraform-template  folder into your new folder.
 
 - Update these files:
-    - state.config: Update the key to match the new folder name.
+    - state.config: Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
 
     ```hcl
-    staff-identity-idam-entra-infra-department-team-environmentName.tfstate
+    staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
     ```
 
     - variables.tf:
@@ -69,7 +65,7 @@ Then complete the following:
 
     - main.tf:
         - Set appropriate tags.
-        - Update the module source to the latest version.
+        - Update the module source to the latest version. This can be found in the `Modules` folder, in the root of the directory.
 
 ---
 
@@ -86,11 +82,11 @@ git push
 
 ## Step 5: Create a Pull Request
 - Visit the repo: staff-identity-idam-entra-infra
-- You should see “Compare & pull request” — click it.
+- You should see `Compare & pull request` — click it.
 - Complete the PR form:
     - Purpose of the change
     - Jira ticket reference
-- Click “Create pull request”
+- Click `Create pull request`
 
 ---
 
@@ -102,7 +98,9 @@ git push
 ---
 
 ## Step 7: Monitor Main Branch Actions
+
 After merging:
+
     * Confirm that GitHub Actions run successfully.
     * If errors arise:
         - Create a new feature branch.
