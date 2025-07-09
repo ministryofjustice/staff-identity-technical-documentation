@@ -43,26 +43,22 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 ---
 
 ## Step 3: Create the Terraform Folder Structure
-Navigate to:
+Navigate to: `STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE`
 
-STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE
 Then complete the following:
 
-- Create a new folder using your department/team name.
+1. Create a new folder using your department/team name.
 
-- Copy contents from the terraform-template  folder into your new folder.
+2. Copy contents from the terraform-template  folder into your new folder.
 
-- Update these files:
+3. Update these files:
     - state.config: Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
-
     ```hcl
     staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
     ```
-
     - variables.tf:
         - Set default values based on your Jira ticket.
         - Update graph_delegated_permissions—leave as [] if none are needed.
-
     - main.tf:
         - Set appropriate tags.
         - Update the module source to the latest version. This can be found in the `Modules` folder, in the root of the directory.
@@ -81,19 +77,19 @@ git push
 ---
 
 ## Step 5: Create a Pull Request
-- Visit the repo: staff-identity-idam-entra-infra
-- You should see `Compare & pull request` — click it.
-- Complete the PR form:
+1. Visit the repo: staff-identity-idam-entra-infra
+2. You should see `Compare & pull request` — click it.
+3. Complete the PR form:
     - Purpose of the change
     - Jira ticket reference
-- Click `Create pull request`
+4. Click `Create pull request`
 
 ---
 
 ## Step 6: Review, Approve & Merge
-* Wait for the GitHub Actions workflow to complete.
-* Get approval from another member of the IDAM team.
-* Merge the pull request into main.
+1. Wait for the GitHub Actions workflow to complete.
+2. Get approval from another member of the IDAM team.
+3. Merge the pull request into main.
 
 ---
 
