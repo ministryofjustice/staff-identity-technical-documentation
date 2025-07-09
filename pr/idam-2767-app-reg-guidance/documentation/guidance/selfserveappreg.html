@@ -102,6 +102,24 @@
       <li>
         <a href="#step-2-update-repo-and-create-feature-branch"><span>Step 2: Update Repo and Create Feature Branch</span></a>
       </li>
+      <li>
+        <a href="#step-3-create-the-terraform-folder-structure"><span>Step 3: Create the Terraform Folder Structure</span></a>
+      </li>
+      <li>
+        <a href="#step-4-commit-and-push-your-changes"><span>Step 4: Commit and Push Your Changes</span></a>
+      </li>
+      <li>
+        <a href="#step-5-create-a-pull-request"><span>Step 5: Create a Pull Request</span></a>
+      </li>
+      <li>
+        <a href="#step-6-review-approve-amp-merge"><span>Step 6: Review, Approve & Merge</span></a>
+      </li>
+      <li>
+        <a href="#step-7-monitor-main-branch-actions"><span>Step 7: Monitor Main Branch Actions</span></a>
+      </li>
+      <li>
+        <a href="#step-8-request-graph-permissions"><span>Step 8: Request Graph Permissions</span></a>
+      </li>
     </ul>
   </li>
 </ul>
@@ -138,79 +156,87 @@
 <p>Run the following in the terminal:</p>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>git pull
 git checkout <span class="nt">-b</span> <span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span>
-Replace IDAM-xxxx with the Jira ticket number linked to your change. <span class="sb">```</span>
+Replace IDAM-xxxx with the Jira ticket number linked to your change. 
+</code></pre></div>
+<hr>
+<h2 id="step-3-create-the-terraform-folder-structure">Step 3: Create the Terraform Folder Structure</h2>
+<p>Navigate to:</p>
+<p>STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE
+Then complete the following:</p>
 
-<span class="nt">---</span>
+<ul>
+<li><p>Create a new folder using your department/team name.</p></li>
+<li><p>Copy contents from an existing customer folder into your new folder.</p></li>
+<li><p>Update these files:</p>
 
-<span class="c">## Step 3: Create the Terraform Folder Structure</span>
-Navigate to:
+<ul>
+<li>state.config: Update the key to match the new folder name.</li>
+</ul>
+<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">department</span><span class="err">-</span><span class="nx">team</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
+</code></pre></div>
+<ul>
+<li>variables.tf:
 
-STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE
-Then <span class="nb">complete </span>the following:
+<ul>
+<li>Set default values based on your Jira ticket.</li>
+<li>Update graph_delegated_permissions—leave as [] if none are needed.</li>
+</ul></li>
+<li>main.tf:
 
-- Create a new folder using your department/team name.
+<ul>
+<li>Set appropriate tags.</li>
+<li>Update the module source to the latest version.</li>
+</ul></li>
+</ul></li>
+</ul>
 
-- Copy contents from an existing customer folder into your new folder.
-
-- Update these files:
-    - state.config: Update the key to match the new folder name.
-
-    <span class="sb">```</span>hcl
-    staff-identity-idam-entra-infra-department-team-environmentName.tfstate<span class="sb">```</span>
-
-    - variables.tf:
-        - Set default values based on your Jira ticket.
-        - Update graph_delegated_permissions—leave as <span class="o">[]</span> <span class="k">if </span>none are needed.
-
-    - main.tf:
-        - Set appropriate tags.
-        - Update the module <span class="nb">source </span>to the latest version.
-
-<span class="nt">---</span>
-
-<span class="c">## Step 4: Commit and Push Your Changes</span>
-Once updates are <span class="nb">complete</span>, run:
-
-<span class="sb">```</span>bash
-git add <span class="nb">.</span>
+<hr>
+<h2 id="step-4-commit-and-push-your-changes">Step 4: Commit and Push Your Changes</h2>
+<p>Once updates are complete, run:</p>
+<div class="highlight"><pre class="highlight shell" tabindex="0"><code>git add <span class="nb">.</span>
 git commit <span class="nt">-m</span> <span class="s2">"xxxx"</span>      <span class="c"># Replace xxxx with a descriptive commit message</span>
-git push<span class="sb">```</span>
+git push
+</code></pre></div>
+<hr>
+<h2 id="step-5-create-a-pull-request">Step 5: Create a Pull Request</h2>
 
-<span class="nt">---</span>
+<ul>
+<li>Visit the repo: staff-identity-idam-entra-infra</li>
+<li>You should see “Compare &amp; pull request” — click it.</li>
+<li>Complete the PR form:
 
-<span class="c">## Step 5: Create a Pull Request</span>
-- Visit the repo: staff-identity-idam-entra-infra
-- You should see “Compare &amp; pull request” — click it.
-- Complete the PR form:
-    - Purpose of the change
-    - Jira ticket reference
-- Click “Create pull request”
+<ul>
+<li>Purpose of the change</li>
+<li>Jira ticket reference</li>
+</ul></li>
+<li>Click “Create pull request”</li>
+</ul>
 
-<span class="nt">---</span>
+<hr>
+<h2 id="step-6-review-approve-amp-merge">Step 6: Review, Approve &amp; Merge</h2>
 
-<span class="c">## Step 6: Review, Approve &amp; Merge</span>
-<span class="k">*</span> Wait <span class="k">for </span>the GitHub Actions workflow to complete.
-<span class="k">*</span> Get approval from another member of the IDAM team.
-<span class="k">*</span> Merge the pull request into main.
+<ul>
+<li>Wait for the GitHub Actions workflow to complete.</li>
+<li>Get approval from another member of the IDAM team.</li>
+<li>Merge the pull request into main.</li>
+</ul>
 
-<span class="nt">---</span>
-
-<span class="c">## Step 7: Monitor Main Branch Actions</span>
-After merging:
-    <span class="k">*</span> Confirm that GitHub Actions run successfully.
-    <span class="k">*</span> If errors arise:
+<hr>
+<h2 id="step-7-monitor-main-branch-actions">Step 7: Monitor Main Branch Actions</h2>
+<p>After merging:
+    * Confirm that GitHub Actions run successfully.
+    * If errors arise:
         - Create a new feature branch.
         - Fix the issue.
         - Raise another pull request.
-        - Merge into main once fixed.
+        - Merge into main once fixed.</p>
 
-<span class="nt">---</span>
+<hr>
+<h2 id="step-8-request-graph-permissions">Step 8: Request Graph Permissions</h2>
+<p>If Graph permissions are needed (delegated or application):
+    * Mention this in your pull request.
+    * The IDAM team will handle the admin consent process.</p>
 
-<span class="c">## Step 8: Request Graph Permissions</span>
-If Graph permissions are needed <span class="o">(</span>delegated or application<span class="o">)</span>:
-    <span class="k">*</span> Mention this <span class="k">in </span>your pull request.
-    <span class="k">*</span> The IDAM team will handle the admin consent process.
-</code></pre></div>
             
           </main>
 
