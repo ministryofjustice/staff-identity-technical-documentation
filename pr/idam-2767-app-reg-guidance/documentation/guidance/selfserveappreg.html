@@ -99,6 +99,9 @@
       <li>
         <a href="#step-1-clone-the-repository"><span>Step 1: Clone the Repository</span></a>
       </li>
+      <li>
+        <a href="#step-2-update-repo-and-create-feature-branch"><span>Step 2: Update Repo and Create Feature Branch</span></a>
+      </li>
     </ul>
   </li>
 </ul>
@@ -126,93 +129,88 @@
 </span><span class="n">git</span><span class="w"> </span><span class="nx">clone</span><span class="w"> </span><span class="nx">git</span><span class="err">@</span><span class="nx">github.com:ministryofjustice/staff-identity-idam-entra-infra.git</span><span class="w">
 </span><span class="n">cd</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
 </span><span class="n">code</span><span class="w"> </span><span class="o">.</span><span class="w">                   </span><span class="c"># Opens VS Code in this location</span><span class="w">
-</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch ```</span><span class="w">
-
-</span><span class="o">---</span><span class="w"> 
-
-</span><span class="c">## Step 2: Update Repo and Create Feature Branch</span><span class="w">
-</span><span class="kr">If</span><span class="w"> </span><span class="n">youve</span><span class="w"> </span><span class="nx">already</span><span class="w"> </span><span class="nx">cloned</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo</span><span class="w"> </span><span class="nx">locally:</span><span class="w">
-
-</span><span class="n">Open</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">VS</span><span class="w"> </span><span class="nx">Code.</span><span class="w">
-
-</span><span class="n">Run</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">following</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">terminal:</span><span class="w">
-
-</span><span class="err">```</span><span class="n">bash</span><span class="w">
-</span><span class="nx">git</span><span class="w"> </span><span class="nx">pull</span><span class="w">
-</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span><span class="w">
-</span><span class="n">Replace</span><span class="w"> </span><span class="nx">IDAM-xxxx</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">Jira</span><span class="w"> </span><span class="nx">ticket</span><span class="w"> </span><span class="nx">number</span><span class="w"> </span><span class="nx">linked</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">change.</span><span class="w"> </span><span class="se">```
-</span><span class="w">
-</span><span class="o">---</span><span class="w">
-
-</span><span class="c">## Step 3: Create the Terraform Folder Structure</span><span class="w">
-</span><span class="n">Navigate</span><span class="w"> </span><span class="nx">to:</span><span class="w">
-
-</span><span class="n">STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE</span><span class="w">
-</span><span class="nx">Then</span><span class="w"> </span><span class="nx">complete</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">following:</span><span class="w">
-
-</span><span class="o">-</span><span class="w"> </span><span class="n">Create</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">department/team</span><span class="w"> </span><span class="nx">name.</span><span class="w">
-
-</span><span class="o">-</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="nx">contents</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">existing</span><span class="w"> </span><span class="nx">customer</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">folder.</span><span class="w">
-
-</span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">these</span><span class="w"> </span><span class="nx">files:</span><span class="w">
-    </span><span class="o">-</span><span class="w"> </span><span class="n">state.config:</span><span class="w"> </span><span class="nx">Update</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">match</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="nx">name.</span><span class="w">
-
-    </span><span class="err">```</span><span class="n">hcl</span><span class="w">
-    </span><span class="nx">staff-identity-idam-entra-infra-department-team-environmentName.tfstate</span><span class="se">```
-</span><span class="w">
-    </span><span class="o">-</span><span class="w"> </span><span class="n">variables.tf:</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="nx">default</span><span class="w"> </span><span class="nx">values</span><span class="w"> </span><span class="nx">based</span><span class="w"> </span><span class="nx">on</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">Jira</span><span class="w"> </span><span class="nx">ticket.</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">graph_delegated_permissions</span><span class="err">—</span><span class="nx">leave</span><span class="w"> </span><span class="nx">as</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="nx">if</span><span class="w"> </span><span class="nx">none</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">needed.</span><span class="w">
-
-    </span><span class="o">-</span><span class="w"> </span><span class="n">main.tf:</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="nx">appropriate</span><span class="w"> </span><span class="nx">tags.</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">module</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">latest</span><span class="w"> </span><span class="nx">version.</span><span class="w">
-
-</span><span class="o">---</span><span class="w">
-
-</span><span class="c">## Step 4: Commit and Push Your Changes</span><span class="w">
-</span><span class="n">Once</span><span class="w"> </span><span class="nx">updates</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">complete</span><span class="p">,</span><span class="w"> </span><span class="nx">run:</span><span class="w">
-
-</span><span class="err">```</span><span class="n">bash</span><span class="w">
-</span><span class="nx">git</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">.</span><span class="w">
-</span><span class="n">git</span><span class="w"> </span><span class="nx">commit</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="s2">"xxxx"</span><span class="w">      </span><span class="c"># Replace xxxx with a descriptive commit message</span><span class="w">
-</span><span class="n">git</span><span class="w"> </span><span class="nx">push</span><span class="se">```
-</span><span class="w">
-</span><span class="o">---</span><span class="w">
-
-</span><span class="c">## Step 5: Create a Pull Request</span><span class="w">
-</span><span class="o">-</span><span class="w"> </span><span class="n">Visit</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">repo:</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
-</span><span class="o">-</span><span class="w"> </span><span class="n">You</span><span class="w"> </span><span class="nx">should</span><span class="w"> </span><span class="nx">see</span><span class="w"> </span><span class="err">“</span><span class="nx">Compare</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="err">”</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="nx">click</span><span class="w"> </span><span class="nx">it.</span><span class="w">
-</span><span class="o">-</span><span class="w"> </span><span class="n">Complete</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">PR</span><span class="w"> </span><span class="nx">form:</span><span class="w">
-    </span><span class="o">-</span><span class="w"> </span><span class="n">Purpose</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">change</span><span class="w">
-    </span><span class="o">-</span><span class="w"> </span><span class="n">Jira</span><span class="w"> </span><span class="nx">ticket</span><span class="w"> </span><span class="nx">reference</span><span class="w">
-</span><span class="o">-</span><span class="w"> </span><span class="n">Click</span><span class="w"> </span><span class="err">“</span><span class="nx">Create</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="err">”</span><span class="w">
-
-</span><span class="o">---</span><span class="w">
-
-</span><span class="c">## Step 6: Review, Approve &amp; Merge</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="n">Wait</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Actions</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">complete.</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="n">Get</span><span class="w"> </span><span class="nx">approval</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">another</span><span class="w"> </span><span class="nx">member</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">IDAM</span><span class="w"> </span><span class="nx">team.</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="n">Merge</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">main.</span><span class="w">
-
-</span><span class="o">---</span><span class="w">
-
-</span><span class="c">## Step 7: Monitor Main Branch Actions</span><span class="w">
-</span><span class="n">After</span><span class="w"> </span><span class="nx">merging:</span><span class="w">
-    </span><span class="o">*</span><span class="w"> </span><span class="n">Confirm</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Actions</span><span class="w"> </span><span class="nx">run</span><span class="w"> </span><span class="nx">successfully.</span><span class="w">
-    </span><span class="o">*</span><span class="w"> </span><span class="kr">If</span><span class="w"> </span><span class="n">errors</span><span class="w"> </span><span class="nx">arise:</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="n">Create</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">feature</span><span class="w"> </span><span class="nx">branch.</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="n">Fix</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">issue.</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="n">Raise</span><span class="w"> </span><span class="nx">another</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request.</span><span class="w">
-        </span><span class="o">-</span><span class="w"> </span><span class="n">Merge</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">main</span><span class="w"> </span><span class="nx">once</span><span class="w"> </span><span class="nx">fixed.</span><span class="w">
-
-</span><span class="o">---</span><span class="w">
-
-</span><span class="c">## Step 8: Request Graph Permissions</span><span class="w">
-</span><span class="kr">If</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="nx">permissions</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">needed</span><span class="w"> </span><span class="p">(</span><span class="n">delegated</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">application</span><span class="p">):</span><span class="w">
-    </span><span class="o">*</span><span class="w"> </span><span class="n">Mention</span><span class="w"> </span><span class="nx">this</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="nx">request.</span><span class="w">
-    </span><span class="o">*</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="nx">IDAM</span><span class="w"> </span><span class="nx">team</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">handle</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="nx">consent</span><span class="w"> </span><span class="nx">process.</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch </span><span class="w">
 </span></code></pre></div>
+<hr>
+<h2 id="step-2-update-repo-and-create-feature-branch">Step 2: Update Repo and Create Feature Branch</h2>
+<p>If youve already cloned the repo locally:</p>
+<p>Open the repo in VS Code.</p>
+<p>Run the following in the terminal:</p>
+<div class="highlight"><pre class="highlight shell" tabindex="0"><code>git pull
+git checkout <span class="nt">-b</span> <span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span>
+Replace IDAM-xxxx with the Jira ticket number linked to your change. <span class="sb">```</span>
+
+<span class="nt">---</span>
+
+<span class="c">## Step 3: Create the Terraform Folder Structure</span>
+Navigate to:
+
+STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/LIVE
+Then <span class="nb">complete </span>the following:
+
+- Create a new folder using your department/team name.
+
+- Copy contents from an existing customer folder into your new folder.
+
+- Update these files:
+    - state.config: Update the key to match the new folder name.
+
+    <span class="sb">```</span>hcl
+    staff-identity-idam-entra-infra-department-team-environmentName.tfstate<span class="sb">```</span>
+
+    - variables.tf:
+        - Set default values based on your Jira ticket.
+        - Update graph_delegated_permissions—leave as <span class="o">[]</span> <span class="k">if </span>none are needed.
+
+    - main.tf:
+        - Set appropriate tags.
+        - Update the module <span class="nb">source </span>to the latest version.
+
+<span class="nt">---</span>
+
+<span class="c">## Step 4: Commit and Push Your Changes</span>
+Once updates are <span class="nb">complete</span>, run:
+
+<span class="sb">```</span>bash
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"xxxx"</span>      <span class="c"># Replace xxxx with a descriptive commit message</span>
+git push<span class="sb">```</span>
+
+<span class="nt">---</span>
+
+<span class="c">## Step 5: Create a Pull Request</span>
+- Visit the repo: staff-identity-idam-entra-infra
+- You should see “Compare &amp; pull request” — click it.
+- Complete the PR form:
+    - Purpose of the change
+    - Jira ticket reference
+- Click “Create pull request”
+
+<span class="nt">---</span>
+
+<span class="c">## Step 6: Review, Approve &amp; Merge</span>
+<span class="k">*</span> Wait <span class="k">for </span>the GitHub Actions workflow to complete.
+<span class="k">*</span> Get approval from another member of the IDAM team.
+<span class="k">*</span> Merge the pull request into main.
+
+<span class="nt">---</span>
+
+<span class="c">## Step 7: Monitor Main Branch Actions</span>
+After merging:
+    <span class="k">*</span> Confirm that GitHub Actions run successfully.
+    <span class="k">*</span> If errors arise:
+        - Create a new feature branch.
+        - Fix the issue.
+        - Raise another pull request.
+        - Merge into main once fixed.
+
+<span class="nt">---</span>
+
+<span class="c">## Step 8: Request Graph Permissions</span>
+If Graph permissions are needed <span class="o">(</span>delegated or application<span class="o">)</span>:
+    <span class="k">*</span> Mention this <span class="k">in </span>your pull request.
+    <span class="k">*</span> The IDAM team will handle the admin consent process.
+</code></pre></div>
             
           </main>
 
