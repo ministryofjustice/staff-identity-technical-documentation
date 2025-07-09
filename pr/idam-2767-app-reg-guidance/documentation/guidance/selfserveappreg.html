@@ -136,7 +136,7 @@
 
 <hr>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>If you have <strong>already cloned the repo</strong>, skip ahead to step 4 commit and push your changes.</p>
+<p>If you have <strong>already cloned the repo</strong>, <a href="#step-4-commit-and-push-your-changes">skip ahead to step 4</a> and commit and push your changes.</p>
 <p>If you have <strong>not yet cloned the repo</strong>, follow the steps below.</p>
 
 <hr>
@@ -151,9 +151,7 @@
 </span></code></pre></div>
 <hr>
 <h2 id="step-2-update-repo-and-create-feature-branch">Step 2: Update Repo and Create Feature Branch</h2>
-<p>If youve already cloned the repo locally:</p>
-<p>Open the repo in VS Code.</p>
-<p>Run the following in the terminal:</p>
+<p>If youve already cloned the repo locally, open the repo in VS Code (or IDE of your choice) and run the following in the terminal:</p>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>git pull
 git checkout <span class="nt">-b</span> <span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span>
 Replace IDAM-xxxx with the Jira ticket number linked to your change. 
@@ -166,13 +164,13 @@ Then complete the following:</p>
 
 <ul>
 <li><p>Create a new folder using your department/team name.</p></li>
-<li><p>Copy contents from an existing customer folder into your new folder.</p></li>
+<li><p>Copy contents from the terraform-template  folder into your new folder.</p></li>
 <li><p>Update these files:</p>
 
 <ul>
-<li>state.config: Update the key to match the new folder name.</li>
+<li>state.config: Update the <code>key</code> to match the new folder name. Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.</li>
 </ul>
-<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">department</span><span class="err">-</span><span class="nx">team</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
+<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEAPRTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
 </code></pre></div>
 <ul>
 <li>variables.tf:
@@ -185,7 +183,7 @@ Then complete the following:</p>
 
 <ul>
 <li>Set appropriate tags.</li>
-<li>Update the module source to the latest version.</li>
+<li>Update the module source to the latest version. This can be found in the <code>Modules</code> folder, in the root of the directory.</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -202,14 +200,14 @@ git push
 
 <ul>
 <li>Visit the repo: staff-identity-idam-entra-infra</li>
-<li>You should see “Compare &amp; pull request” — click it.</li>
+<li>You should see <code>Compare &amp; pull request</code> — click it.</li>
 <li>Complete the PR form:
 
 <ul>
 <li>Purpose of the change</li>
 <li>Jira ticket reference</li>
 </ul></li>
-<li>Click “Create pull request”</li>
+<li>Click <code>Create pull request</code></li>
 </ul>
 
 <hr>
@@ -223,14 +221,14 @@ git push
 
 <hr>
 <h2 id="step-7-monitor-main-branch-actions">Step 7: Monitor Main Branch Actions</h2>
-<p>After merging:
-    * Confirm that GitHub Actions run successfully.
-    * If errors arise:
-        - Create a new feature branch.
-        - Fix the issue.
-        - Raise another pull request.
-        - Merge into main once fixed.</p>
-
+<p>After merging:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>* Confirm that GitHub Actions run successfully.
+* If errors arise:
+    - Create a new feature branch.
+    - Fix the issue.
+    - Raise another pull request.
+    - Merge into main once fixed.
+</code></pre></div>
 <hr>
 <h2 id="step-8-request-graph-permissions">Step 8: Request Graph Permissions</h2>
 <p>If Graph permissions are needed (delegated or application):
