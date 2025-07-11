@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>End User Compute Services - Identity & Access Management End User Guidance</title>
+
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/fundamentals/appregistration.html">
+
+      <meta name="robots" content="noindex" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta name="twitter:title" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/fundamentals/appregistration.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/fundamentals/appregistration.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="/" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__logotype">
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="govuk-header__logotype-crown"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 132 97"
+            height="30"
+            width="36"
+          >
+            <path
+              fill="currentColor" fill-rule="evenodd"
+              d="M25 30.2c3.5 1.5 7.7-.2 9.1-3.7 1.5-3.6-.2-7.8-3.9-9.2-3.6-1.4-7.6.3-9.1 3.9-1.4 3.5.3 7.5 3.9 9zM9 39.5c3.6 1.5 7.8-.2 9.2-3.7 1.5-3.6-.2-7.8-3.9-9.1-3.6-1.5-7.6.2-9.1 3.8-1.4 3.5.3 7.5 3.8 9zM4.4 57.2c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.5-1.5-7.6.3-9.1 3.8-1.4 3.5.3 7.6 3.9 9.1zm38.3-21.4c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.6-1.5-7.6.3-9.1 3.8-1.3 3.6.4 7.7 3.9 9.1zm64.4-5.6c-3.6 1.5-7.8-.2-9.1-3.7-1.5-3.6.2-7.8 3.8-9.2 3.6-1.4 7.7.3 9.2 3.9 1.3 3.5-.4 7.5-3.9 9zm15.9 9.3c-3.6 1.5-7.7-.2-9.1-3.7-1.5-3.6.2-7.8 3.7-9.1 3.6-1.5 7.7.2 9.2 3.8 1.5 3.5-.3 7.5-3.8 9zm4.7 17.7c-3.6 1.5-7.8-.2-9.2-3.8-1.5-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.3 3.5-.4 7.6-3.9 9.1zM89.3 35.8c-3.6 1.5-7.8-.2-9.2-3.8-1.4-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.4 3.6-.3 7.7-3.9 9.1zM69.7 17.7l8.9 4.7V9.3l-8.9 2.8c-.2-.3-.5-.6-.9-.9L72.4 0H59.6l3.5 11.2c-.3.3-.6.5-.9.9l-8.8-2.8v13.1l8.8-4.7c.3.3.6.7.9.9l-5 15.4v.1c-.2.8-.4 1.6-.4 2.4 0 4.1 3.1 7.5 7 8.1h.2c.3 0 .7.1 1 .1.4 0 .7 0 1-.1h.2c4-.6 7.1-4.1 7.1-8.1 0-.8-.1-1.7-.4-2.4V34l-5.1-15.4c.4-.2.7-.6 1-.9zM66 92.8c16.9 0 32.8 1.1 47.1 3.2 4-16.9 8.9-26.7 14-33.5l-9.6-3.4c1 4.9 1.1 7.2 0 10.2-1.5-1.4-3-4.3-4.2-8.7L108.6 76c2.8-2 5-3.2 7.5-3.3-4.4 9.4-10 11.9-13.6 11.2-4.3-.8-6.3-4.6-5.6-7.9 1-4.7 5.7-5.9 8-.5 4.3-8.7-3-11.4-7.6-8.8 7.1-7.2 7.9-13.5 2.1-21.1-8 6.1-8.1 12.3-4.5 20.8-4.7-5.4-12.1-2.5-9.5 6.2 3.4-5.2 7.9-2 7.2 3.1-.6 4.3-6.4 7.8-13.5 7.2-10.3-.9-10.9-8-11.2-13.8 2.5-.5 7.1 1.8 11 7.3L80.2 60c-4.1 4.4-8 5.3-12.3 5.4 1.4-4.4 8-11.6 8-11.6H55.5s6.4 7.2 7.9 11.6c-4.2-.1-8-1-12.3-5.4l1.4 16.4c3.9-5.5 8.5-7.7 10.9-7.3-.3 5.8-.9 12.8-11.1 13.8-7.2.6-12.9-2.9-13.5-7.2-.7-5 3.8-8.3 7.1-3.1 2.7-8.7-4.6-11.6-9.4-6.2 3.7-8.5 3.6-14.7-4.6-20.8-5.8 7.6-5 13.9 2.2 21.1-4.7-2.6-11.9.1-7.7 8.8 2.3-5.5 7.1-4.2 8.1.5.7 3.3-1.3 7.1-5.7 7.9-3.5.7-9-1.8-13.5-11.2 2.5.1 4.7 1.3 7.5 3.3l-4.7-15.4c-1.2 4.4-2.7 7.2-4.3 8.7-1.1-3-.9-5.3 0-10.2l-9.5 3.4c5 6.9 9.9 16.7 14 33.5 14.8-2.1 30.8-3.2 47.7-3.2z"
+            ></path>
+          </svg>
+          <span class="govuk-header__logotype-text">
+            GOV.UK
+          </span>
+        </span>
+        <span class="govuk-header__product-name">
+          End User Compute Services - Identity & Access Management End User Guidance
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#application-registrations-sso"><span>Application Registrations (SSO)</span></a>
+    <ul>
+      <li>
+        <a href="#section-contents"><span>Section Contents</span></a>
+      </li>
+      <li>
+        <a href="#signing-into-entra-portal-microsoft-entra-admin-center"><span>Signing into Entra Portal (Microsoft Entra Admin Center)</span></a>
+        <ul>
+          <li>
+            <a href="#logging-in-to-the-entra-portal-microsoft-entra-admin-center"><span>Logging in to the Entra Portal (Microsoft Entra Admin Center)</span></a>
+          </li>
+          <li>
+            <a href="#accessing-the-external-tenant"><span>Accessing the External Tenant</span></a>
+          </li>
+          <li>
+            <a href="#activating-administrator-roles"><span>Activating Administrator Roles</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#managing-application-registrations"><span>Managing Application Registrations</span></a>
+        <ul>
+          <li>
+            <a href="#creating-an-application"><span>Creating an Application</span></a>
+          </li>
+          <li>
+            <a href="#editing-an-application"><span>Editing an Application</span></a>
+            <ul>
+              <li>
+                <a href="#enterprise-applications"><span>Enterprise Applications</span></a>
+              </li>
+              <li>
+                <a href="#application-registrations"><span>Application Registrations</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#best-practices"><span>Best Practices</span></a>
+          </li>
+          <li>
+            <a href="#integration-best-practices"><span>Integration Best Practices</span></a>
+          </li>
+          <li>
+            <a href="#client-secrets"><span>Client Secrets</span></a>
+            <ul>
+              <li>
+                <a href="#storing-your-new-secret-securely"><span>Storing your new secret securely</span></a>
+              </li>
+              <li>
+                <a href="#what-not-to-do-with-your-new-secret"><span>What not to do with your new secret</span></a>
+              </li>
+              <li>
+                <a href="#problems-guidance-or-incidents"><span>Problems, guidance, or incidents</span></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#resources"><span>Resources</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="application-registrations-sso">Application Registrations (SSO)</h1>
+<h2 id="section-contents">Section Contents</h2>
+
+<ul>
+<li><a href="tenant-architecture.html">Tenant Architecture</a></li>
+<li><a href="appregistration.html">Application Registrations (SSO) &amp; Enterprise Applications</a></li>
+</ul>
+<h2 id="signing-into-entra-portal-microsoft-entra-admin-center">Signing into Entra Portal (Microsoft Entra Admin Center)</h2>
+<p>In order to sign in to the Entra Portal, you must use a Administrator account. You cannot use your existing Justice identity to access any Azure or Entra Portals. If you do not have one, follow the instructions in the <a href="../external/adminaccess.html">Administrator Access</a>.</p>
+<p>This will guide you through requesting a Administrator account and being assigned to an Access Package to gain the appropriate Roles.</p>
+<h3 id="logging-in-to-the-entra-portal-microsoft-entra-admin-center">Logging in to the Entra Portal (Microsoft Entra Admin Center)</h3>
+
+<ul>
+<li>Go to the <a href="https://entra.microsoft.com">Entra Portal</a></li>
+<li>Sign in as your Administrator account</li>
+<li>Complete any MFA requirements</li>
+</ul>
+<h3 id="accessing-the-external-tenant">Accessing the External Tenant</h3>
+<p>By default when you first log in you will see the Internal Entra ID Tenant. In order to switch to the External Entra ID Tenant, follow these steps.</p>
+
+<ul>
+<li>Go to the <a href="https://entra.microsoft.com">Entra Portal</a></li>
+<li>Sign in as your Administrator account</li>
+<li>In the top right, click your email address and under <code>View account</code> click the link <code>Switch directory</code></li>
+<li>On the next page, click <code>Switch</code> on the <code>Ministry of Justice External (Development)</code> option</li>
+</ul>
+<h3 id="activating-administrator-roles">Activating Administrator Roles</h3>
+<p>Sometimes when administering applications, you will require an elevated role. In most circumstances, if you are an Owner of the Application then you won&rsquo;t need to activate this role and can edit the application settings.</p>
+<p>Some things within applications can require a higher priviliage, an example of this is amending the SAML configuration.</p>
+<p>If you need to activate the Application Developer role, you can follow these steps.</p>
+
+<ul>
+<li>In the left hand menu go to <code>Identity</code> -&gt; <code>Identity Governance</code> -&gt; <code>Privileged Identity Management</code> -&gt;  <code>Microsoft Entra Roles</code> -&gt; <code>Eligible assignments</code></li>
+<li>Find the Role <code>Application Developer</code> and click <code>Activate</code></li>
+<li>Provide a Reason for the activation and click <code>Activate</code></li>
+</ul>
+<p>This will give you the role for 2 hours to make the changes required. After this time you will need to re-activate the role.</p>
+<h2 id="managing-application-registrations">Managing Application Registrations</h2>
+<h3 id="creating-an-application">Creating an Application</h3>
+<p>At this early stage, you will not be able to create new Application Registrations yourself. You must request one to be created via the Slack channel <a href="https://moj.enterprise.slack.com/archives/C091TMP805N">#staff-identity-external-authentication-service</a> using the workflow option <code>New Application (SSO)</code>.</p>
+<p>Once the application has been setup, the Owners you have requested will be assigned and then be able to edit the application in the Entra Portal.</p>
+<h3 id="editing-an-application">Editing an Application</h3>
+
+<ul>
+<li>Follow the steps in <code>Logging in to the Entra Portal (Microsoft Entra Admin Center)</code>.</li>
+<li>Go to <code>Identity</code> -&gt; <code>Applications</code></li>
+</ul>
+<p>In here you will have two options, <code>Enterprise applications</code> and <code>App registrations</code>.</p>
+<h4 id="enterprise-applications">Enterprise Applications</h4>
+<p>If your application uses SAML for its authentication, you will need to find it in this section to configure it.</p>
+
+<ul>
+<li>Click <code>Enterprise applications</code></li>
+<li>Find your application from the list and click the name</li>
+<li>Click <code>Single sign-on</code></li>
+</ul>
+<p>From here you can configure your SAML settings. You may need to activate your <code>Application Developer</code> role in order to change values here.</p>
+<h4 id="application-registrations">Application Registrations</h4>
+<p>If you are using OpenId Connect or OAuth, you will be managing your application in this section.</p>
+
+<ul>
+<li>Click <code>App registrations</code> -&gt; <code>Owned applications</code></li>
+<li>Find your application from the list and click the name</li>
+</ul>
+<h5 id="overview">Overview</h5>
+<p>In this section you can find your <code>Application (client) ID</code> and <code>Directory (tenant) ID</code> which you will require when configuring your application.</p>
+<h5 id="branding-amp-properties">Branding &amp; properties</h5>
+<p>Here you will find details of your application. <code>Name</code> and <code>Internal notes</code> will be completed for you from when you requested the application to be created. These should always be up to date to help identify the applications use.</p>
+<h5 id="certificates-amp-secrets">Certificates &amp; secrets</h5>
+<p>This section allows you to manage your credentials to connect your application. You can create Certificate, secrets or federated credentials as a way of connectining your application to Entra.</p>
+<p>For more information on managing Secrets, see the Best Practices section below.</p>
+
+<blockquote>
+<p>This is currently a manual process to log in and rotate credentials. At a later date we will provide a way for auto rotation as part of your pipelines.</p>
+</blockquote>
+<h5 id="api-permissions">API permissions</h5>
+<p>In here you can add additional API permissions your application can have access to for MSGraph. The standard is <code>Delegated</code> <code>User.Read</code> which will allow users to authenticate into your application.</p>
+<p>If this is all you require from your application, then this section can be left as is. If you require more permissions then please contact the IDAM team or ask in the dedicated Slack channel for more information.</p>
+<h5 id="owners">Owners</h5>
+<p>This section defines the Owners of the application that have access to configure it. This would usually be your development team. You should always have a minimum of 2 people as Owners at all time. We also encourage when in Production to add a shared mailbox to the Owner list. This will allow us to send you automated notifications for expiring credentials and allow the IDAM team to contact you if we have any issues.</p>
+<h3 id="best-practices">Best Practices</h3>
+<p>The following rules apply for all Applications. We have automated testing that runs every 24 hours to check for the following issues. If any are identified we will reach out to get these fixed.</p>
+
+<ol>
+<li>Applications should have 2 or more Owners</li>
+<li><code>Internal notes</code> should be filled out including the Department and Team name</li>
+<li>In <code>Authentication</code> -&gt; <code>Supported account types</code> <code>Accounts in this organizational directory only (Ministry of Justice External (Development) only - Single tenant)</code> should be selected </li>
+<li>In Enterprise Application, <code>Assignment required?</code> must be set to <code>Yes</code></li>
+</ol>
+<h3 id="integration-best-practices">Integration Best Practices</h3>
+<p>When implementing SSO with an identity provider, your application should follow the best practices outlined by the Microsoft documentation. We encourage you to read through these documents before integrating. A list of resources are linked below.</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts">Identity and access management (IAM) fundamental concepts</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference">Access token claim and using <code>sub</code> in place of email address</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-spa">Single Page Application (SPA) integration</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-web-app">Web App Integration</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-web-api">Web API Integration</a></li>
+</ul>
+<h3 id="client-secrets">Client Secrets</h3>
+<h4 id="storing-your-new-secret-securely">Storing your new secret securely</h4>
+<p>Once we have sent you your new secret, it is essential that you store your new secret in a secure location such as</p>
+
+<ul>
+<li>In a secure vault such as <code>Azure Key Vault</code> or <code>AWS (Amazon Web Services) Secrets Manager</code></li>
+<li>In a <code>GitHub</code> or <code>Azure DevOps</code> Secret variable, not as plain text</li>
+</ul>
+<h4 id="what-not-to-do-with-your-new-secret">What not to do with your new secret</h4>
+<p>Do not store or share your secret anywhere else such as</p>
+
+<ul>
+<li>Any type of document such as spreadsheets or word processor documents</li>
+<li>Document/Content Management Systems such as SharePoint</li>
+<li>Send via email</li>
+<li>Locally on your computer</li>
+</ul>
+<h4 id="problems-guidance-or-incidents">Problems, guidance, or incidents</h4>
+<p>If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (IDAMTeam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.</p>
+<h2 id="resources">Resources</h2>
+
+<ul>
+<li><a href="mailto:idamteam@justice.gov.uk">EUCS IDAM Team Shared Inbox</a></li>
+</ul>
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/fundamentals/appregistration.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Ffundamentals%2Fappregistration.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="../../javascripts/application.js"></script>
+  </body>
+</html>
