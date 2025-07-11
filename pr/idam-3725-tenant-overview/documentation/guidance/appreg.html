@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>Application Registrations (SSO) - End User Compute Services - Identity & Access Management End User Guidance</title>
+
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/appreg.html">
+
+      <meta name="robots" content="noindex" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta name="twitter:title" content="Application Registrations (SSO) - End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/appreg.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta property="og:title" content="Application Registrations (SSO)" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/appreg.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="/" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__logotype">
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="govuk-header__logotype-crown"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 132 97"
+            height="30"
+            width="36"
+          >
+            <path
+              fill="currentColor" fill-rule="evenodd"
+              d="M25 30.2c3.5 1.5 7.7-.2 9.1-3.7 1.5-3.6-.2-7.8-3.9-9.2-3.6-1.4-7.6.3-9.1 3.9-1.4 3.5.3 7.5 3.9 9zM9 39.5c3.6 1.5 7.8-.2 9.2-3.7 1.5-3.6-.2-7.8-3.9-9.1-3.6-1.5-7.6.2-9.1 3.8-1.4 3.5.3 7.5 3.8 9zM4.4 57.2c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.5-1.5-7.6.3-9.1 3.8-1.4 3.5.3 7.6 3.9 9.1zm38.3-21.4c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.6-1.5-7.6.3-9.1 3.8-1.3 3.6.4 7.7 3.9 9.1zm64.4-5.6c-3.6 1.5-7.8-.2-9.1-3.7-1.5-3.6.2-7.8 3.8-9.2 3.6-1.4 7.7.3 9.2 3.9 1.3 3.5-.4 7.5-3.9 9zm15.9 9.3c-3.6 1.5-7.7-.2-9.1-3.7-1.5-3.6.2-7.8 3.7-9.1 3.6-1.5 7.7.2 9.2 3.8 1.5 3.5-.3 7.5-3.8 9zm4.7 17.7c-3.6 1.5-7.8-.2-9.2-3.8-1.5-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.3 3.5-.4 7.6-3.9 9.1zM89.3 35.8c-3.6 1.5-7.8-.2-9.2-3.8-1.4-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.4 3.6-.3 7.7-3.9 9.1zM69.7 17.7l8.9 4.7V9.3l-8.9 2.8c-.2-.3-.5-.6-.9-.9L72.4 0H59.6l3.5 11.2c-.3.3-.6.5-.9.9l-8.8-2.8v13.1l8.8-4.7c.3.3.6.7.9.9l-5 15.4v.1c-.2.8-.4 1.6-.4 2.4 0 4.1 3.1 7.5 7 8.1h.2c.3 0 .7.1 1 .1.4 0 .7 0 1-.1h.2c4-.6 7.1-4.1 7.1-8.1 0-.8-.1-1.7-.4-2.4V34l-5.1-15.4c.4-.2.7-.6 1-.9zM66 92.8c16.9 0 32.8 1.1 47.1 3.2 4-16.9 8.9-26.7 14-33.5l-9.6-3.4c1 4.9 1.1 7.2 0 10.2-1.5-1.4-3-4.3-4.2-8.7L108.6 76c2.8-2 5-3.2 7.5-3.3-4.4 9.4-10 11.9-13.6 11.2-4.3-.8-6.3-4.6-5.6-7.9 1-4.7 5.7-5.9 8-.5 4.3-8.7-3-11.4-7.6-8.8 7.1-7.2 7.9-13.5 2.1-21.1-8 6.1-8.1 12.3-4.5 20.8-4.7-5.4-12.1-2.5-9.5 6.2 3.4-5.2 7.9-2 7.2 3.1-.6 4.3-6.4 7.8-13.5 7.2-10.3-.9-10.9-8-11.2-13.8 2.5-.5 7.1 1.8 11 7.3L80.2 60c-4.1 4.4-8 5.3-12.3 5.4 1.4-4.4 8-11.6 8-11.6H55.5s6.4 7.2 7.9 11.6c-4.2-.1-8-1-12.3-5.4l1.4 16.4c3.9-5.5 8.5-7.7 10.9-7.3-.3 5.8-.9 12.8-11.1 13.8-7.2.6-12.9-2.9-13.5-7.2-.7-5 3.8-8.3 7.1-3.1 2.7-8.7-4.6-11.6-9.4-6.2 3.7-8.5 3.6-14.7-4.6-20.8-5.8 7.6-5 13.9 2.2 21.1-4.7-2.6-11.9.1-7.7 8.8 2.3-5.5 7.1-4.2 8.1.5.7 3.3-1.3 7.1-5.7 7.9-3.5.7-9-1.8-13.5-11.2 2.5.1 4.7 1.3 7.5 3.3l-4.7-15.4c-1.2 4.4-2.7 7.2-4.3 8.7-1.1-3-.9-5.3 0-10.2l-9.5 3.4c5 6.9 9.9 16.7 14 33.5 14.8-2.1 30.8-3.2 47.7-3.2z"
+            ></path>
+          </svg>
+          <span class="govuk-header__logotype-text">
+            GOV.UK
+          </span>
+        </span>
+        <span class="govuk-header__product-name">
+          End User Compute Services - Identity & Access Management End User Guidance
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#application-registrations-sso"><span>Application Registrations (SSO)</span></a>
+    <ul>
+      <li>
+        <a href="#understanding-application-registrations-vs-enterprise-applications"><span>Understanding Application Registrations VS Enterprise Applications</span></a>
+        <ul>
+          <li>
+            <a href="#application-object"><span>Application Object</span></a>
+          </li>
+          <li>
+            <a href="#service-principal-object"><span>Service Principal Object</span></a>
+          </li>
+          <li>
+            <a href="#relationship"><span>Relationship</span></a>
+          </li>
+          <li>
+            <a href="#reference"><span>Reference</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#self-serve-app-reg"><span>Self Serve App Reg</span></a>
+      </li>
+      <li>
+        <a href="#new-application-registrations"><span>New Application Registrations</span></a>
+        <ul>
+          <li>
+            <a href="#minimum-dataset"><span>Minimum Dataset</span></a>
+          </li>
+          <li>
+            <a href="#demand-process"><span>Demand Process</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#best-practices"><span>Best Practices</span></a>
+        <ul>
+          <li>
+            <a href="#integration-best-practices"><span>Integration Best Practices</span></a>
+          </li>
+          <li>
+            <a href="#client-secrets"><span>Client Secrets</span></a>
+            <ul>
+              <li>
+                <a href="#storing-your-new-secret-securely"><span>Storing your new secret securely</span></a>
+              </li>
+              <li>
+                <a href="#what-not-to-do-with-your-new-secret"><span>What not to do with your new secret</span></a>
+              </li>
+              <li>
+                <a href="#problems-guidance-or-incidents"><span>Problems, guidance, or incidents</span></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#credentials"><span>Credentials</span></a>
+        <ul>
+          <li>
+            <a href="#renewing-credentials"><span>Renewing credentials</span></a>
+            <ul>
+              <li>
+                <a href="#self-service-renewal"><span>Self Service Renewal</span></a>
+              </li>
+              <li>
+                <a href="#servicenow-client-secret-renewal"><span>ServiceNow Client Secret Renewal</span></a>
+              </li>
+              <li>
+                <a href="#servicenow-certificate-renewal"><span>ServiceNow Certificate Renewal</span></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#integration-testing-with-entra-id"><span>Integration Testing with Entra ID</span></a>
+        <ul>
+          <li>
+            <a href="#problem-statement"><span>Problem Statement</span></a>
+          </li>
+          <li>
+            <a href="#what-can-you-test"><span>What can you test</span></a>
+            <ul>
+              <li>
+                <a href="#reasons-for-not-allowing-automated-testing-in-nle-and-live"><span>Reasons for not allowing automated testing in NLE and LIVE</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#solution-for-testing-in-nle-and-live"><span>Solution for testing in NLE and LIVE</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#role-based-access-control-rbac"><span>Role-based access control (RBAC)</span></a>
+        <ul>
+          <li>
+            <a href="#app-roles-and-access-packages"><span>App Roles and Access Packages</span></a>
+            <ul>
+              <li>
+                <a href="#overview"><span>Overview</span></a>
+              </li>
+              <li>
+                <a href="#how-app-roles-works"><span>How App Roles works</span></a>
+              </li>
+              <li>
+                <a href="#how-access-packages-works"><span>How Access Packages works</span></a>
+              </li>
+              <li>
+                <a href="#requesting-app-roles-and-access-packages"><span>Requesting App Roles and Access Packages</span></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#token-lifetime-policy"><span>Token Lifetime Policy</span></a>
+      </li>
+      <li>
+        <a href="#resources"><span>Resources</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="application-registrations-sso">Application Registrations (SSO)</h1>
+<p>Application Registrations are a great way to integrate third party applications into the Justice M365 tenant. These can be used for SSO or more advanced applications that require MSGraph access to data held in the tenant.</p>
+<p>The below outlines ways of creating and managing these applications through the IDAM team.</p>
+<h2 id="understanding-application-registrations-vs-enterprise-applications">Understanding Application Registrations VS Enterprise Applications</h2>
+<h3 id="application-object">Application Object</h3>
+<p>The Application Object is what you see under App Registrations in AAD. This object acts as the template where you can go ahead and configure various things like API Permissions, Client Secrets, Branding, App Roles, etc.</p>
+<p>All these customizations that you make to your app, get written to the app manifest file.</p>
+<p>The application object describes three aspects of an application:</p>
+
+<ol>
+<li>How the service can issue tokens in order to access the application</li>
+<li>Resources that the application might need to access</li>
+<li>The actions that the application can take.</li>
+</ol>
+<h3 id="service-principal-object">Service Principal Object</h3>
+<p>The Service Principal Object is what you see under the Enterprise Registration blade in AAD.</p>
+<p>Every Application Object (created through the Azure Portal or using the Microsoft Graph APIs, or AzureAD PS Module) would create a corresponding Service Principal Object in the Enterprise Registration blade of AAD.</p>
+<p>A service principal is a concrete instance created from the application object and inherits certain properties from that application object.</p>
+<p>A service principal is created in each tenant where the application is used and references the globally unique app object.</p>
+<p>The service principal object defines what the app can actually do in the specific tenant, who can access the app, and what resources the app can access.</p>
+<h3 id="relationship">Relationship</h3>
+<p>Similar to a class in object-oriented programming, the application object has some static properties that are applied to all the created service principals (or application instances).</p>
+<h3 id="reference">Reference</h3>
+<p>You can read more on the following objects here:<br>
+<a href="https://learn.microsoft.com/en-us/azure/active-directory/develop/app-object">Application and service principal objects in Microsoft Entra ID</a></p>
+<h2 id="self-serve-app-reg">Self Serve App Reg</h2>
+<p>For customers who have skills and knowledge in Terraform. We are now offering the ability to self serve the creation of your application registartions. Please follow the below link where you will find our guidance on this process.
+<a href="selfserveappreg.html">Self Serve Application Registation</a></p>
+<p>Following this guidance allows you to work collabratively with the EUCS IDAM team, in order to create your application registartions.</p>
+<p>Please note that once you have submitted your pull request, it will be suject to approval. This is to ensure that the code/request meets the EUCS IDAM standards.</p>
+<h2 id="new-application-registrations">New Application Registrations</h2>
+<h3 id="minimum-dataset">Minimum Dataset</h3>
+<p>When requesting a new Application Registration we require a minimum amount of information to set it up. Please use the two tables below for reference and include these in any requests, either in the Demand or a Pull Request.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field Name</th>
+<th>Required</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Department Name</td>
+<td><code>true</code></td>
+<td>Department name such as EUCS, OPG, LAA, etc.</td>
+<td><code>EUCS</code></td>
+</tr><tr>
+<td>Team Name</td>
+<td><code>true</code></td>
+<td>Team name acronym such as IDAM, MWP, AP, etc.</td>
+<td><code>IDAM</code></td>
+</tr><tr>
+<td>Owners</td>
+<td><code>true</code></td>
+<td>Owners that are assignable on the LIVE tenant. There should be at least two owners and/or a shared mailbox user that belong in the justice tenant.</td>
+<td><code>"john.nolan@justice.gov.uk", "idamteam@justice.gov.uk"</code></td>
+</tr><tr>
+<td>Technical Point of Contact</td>
+<td><code>true</code></td>
+<td>Who should we engage with for follow up conversations and sending credentials to.</td>
+<td><code>"john.nolan@justice.gov.uk", "tony.stark@justice.gov.uk"</code></td>
+</tr><tr>
+<td>Application Display Name</td>
+<td><code>true</code></td>
+<td>Friendly application name that users will see when authenticating through Entra ID.</td>
+<td><code>EUCS IDAM CMS Application</code></td>
+</tr><tr>
+<td>Application Description</td>
+<td><code>true</code></td>
+<td>Description of what the applications purpose is.</td>
+<td><code>SSO Application for internal CMS Custom Web Application</code></td>
+</tr><tr>
+<td>Allowed Users</td>
+<td><code>false</code></td>
+<td>Should access to this application be for all users in the Justice tenant or a group. If a group, provide details.</td>
+<td>Defaults to All Justice Users</td>
+</tr><tr>
+<td>Delegated Permissions</td>
+<td><code>false</code></td>
+<td>Graph Delegated Permissions required on the Application such as User.Read. By default, for standard SSO integrations, this can be left blank.</td>
+<td><code>"User.Read"</code></td>
+</tr><tr>
+<td>Application Permissions</td>
+<td><code>false</code></td>
+<td>Graph Application Permissions required on the Application such as User.Read.All. By default, for standard SSO integrations, this can be left blank.</td>
+<td><code>"User.Read.All, Groups.Read.All"</code></td>
+</tr><tr>
+<td>Redirect URLs</td>
+<td><code>true</code></td>
+<td>The URIs we will accept as destinations when returning authentication responses (tokens) after successfully authenticating or signing out users. The redirect URI you send in the request to the login server should match one listed here. Also referred to as reply URLs.</td>
+<td><code>"https://example.com/account", "https://example2.com/redirect"</code></td>
+</tr><tr>
+<td>Environments</td>
+<td><code>true</code></td>
+<td>Which tenants you want this application to be available on. For testing you may initially only require DEVL to be setup and subsequently release to other tenants.</td>
+<td><code>"DEVL", "NLE", "LIVE"</code></td>
+</tr><tr>
+<td>Credential Type</td>
+<td><code>true</code></td>
+<td>What type of credential you are securing your integration with. Is it SAML, Certificate or Secret.</td>
+<td><code>"Secret"</code></td>
+</tr>
+        </table>
+      </div><p>You can copy and paste the following table, fill in the details and send it along with the demand.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Value</th>
+</tr><tr>
+<td>Department Name</td>
+<td></td>
+</tr><tr>
+<td>Team Name</td>
+<td></td>
+</tr><tr>
+<td>Owners</td>
+<td></td>
+</tr><tr>
+<td>Technical Point of Contact</td>
+<td></td>
+</tr><tr>
+<td>Application Display Name</td>
+<td></td>
+</tr><tr>
+<td>Application Description</td>
+<td></td>
+</tr><tr>
+<td>Allowed Users</td>
+<td></td>
+</tr><tr>
+<td>Delegated Permissions</td>
+<td></td>
+</tr><tr>
+<td>Application Permissions</td>
+<td></td>
+</tr><tr>
+<td>Redirect URLs</td>
+<td></td>
+</tr><tr>
+<td>Environments</td>
+<td></td>
+</tr><tr>
+<td>Credential Type</td>
+<td></td>
+</tr>
+        </table>
+      </div><h3 id="demand-process">Demand Process</h3>
+<p>To request the IDAM Team to setup an Application Registration, you can use the Demand Process.</p>
+
+<ol>
+<li><a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></li>
+<li>Raise a new Demand including the Minimum Data Set details as above.</li>
+<li>If you do not know all the details above, include as much information as you can and the IDAM team can contact you to discuss further</li>
+<li>Once we recieve the Demand we will move this into our backlog and begin work or reach out for any more information.</li>
+</ol>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="integration-best-practices">Integration Best Practices</h3>
+<p>When implementing SSO with an identity provider, your application should follow the best practices outlined by the Microsoft documentation. We encourage you to read through these documents before integrating. A list of resources are linked below.</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts">Identity and access management (IAM) fundamental concepts</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference">Access token claim and using <code>sub</code> in place of email address</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-spa">Single Page Application (SPA) integration</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-web-app">Web App Integration</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/index-web-api">Web API Integration</a></li>
+</ul>
+<h3 id="client-secrets">Client Secrets</h3>
+<h4 id="storing-your-new-secret-securely">Storing your new secret securely</h4>
+<p>Once we have sent you your new secret, it is essential that you store your new secret in a secure location such as</p>
+
+<ul>
+<li>In a secure vault such as <code>Azure Key Vault</code> or <code>AWS (Amazon Web Services) Secrets Manager</code></li>
+<li>In a <code>GitHub</code> or <code>Azure DevOps</code> Secret variable, not as plain text</li>
+</ul>
+<h4 id="what-not-to-do-with-your-new-secret">What not to do with your new secret</h4>
+<p>Do not store or share your secret anywhere else such as</p>
+
+<ul>
+<li>Any type of document such as spreadsheets or word processor documents</li>
+<li>Document/Content Management Systems such as SharePoint</li>
+<li>Send via email</li>
+<li>Locally on your computer</li>
+</ul>
+<h4 id="problems-guidance-or-incidents">Problems, guidance, or incidents</h4>
+<p>If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (IDAMTeam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.</p>
+<h2 id="credentials">Credentials</h2>
+<h3 id="renewing-credentials">Renewing credentials</h3>
+<h4 id="self-service-renewal">Self Service Renewal</h4>
+<p>If you are assigned as an Owner of an App Registration, you are able to renew your credentials without requiring contact with the IDAM team.</p>
+<p>If you receive an email regarding an expired credential for an application, please note this is an official email from the IDAM team.</p>
+<h5 id="checking-for-ownership">Checking for Ownership</h5>
+<p>To check if you are able to, follow these steps</p>
+
+<ul>
+<li>Go to <a href="https://portal.azure.com/">https://portal.azure.com/</a></li>
+<li>Sign in with your identity</li>
+<li>In the search bar, type <code>Microsoft Entra ID</code> and select the feature</li>
+<li>Click on <code>App registrations</code></li>
+<li>In the list of <code>Owned applications</code>, you will be able to see your App Registration</li>
+<li>Click the App Registration to open the dashboard</li>
+<li>Under <code>Manage</code>, select <code>Certificates &amp; secrets</code></li>
+<li>The button <code>New client secret</code> should be available for you to click</li>
+</ul>
+<h5 id="updating-your-credential">Updating your Credential</h5>
+
+<ul>
+<li>Go to <a href="https://portal.azure.com/">https://portal.azure.com/</a></li>
+<li>Sign in with your identity</li>
+<li>In the search bar, type <code>Microsoft Entra ID</code> and select the feature</li>
+<li>Click on <code>App registrations</code></li>
+<li>In the list of <code>Owned applications</code>, you will be able to see your App Registration</li>
+<li>Click the App Registration to open the dashboard</li>
+<li>Under <code>Manage</code>, select <code>Certificates &amp; secrets</code></li>
+</ul>
+<h5 id="client-secret">Client Secret</h5>
+
+<ul>
+<li>Click on <code>Client secrets</code></li>
+<li>Click the button <code>New client secret</code></li>
+<li>In the pop up
+
+<ul>
+<li>Enter a description</li>
+<li>Choose an expiry period (up to 2 years)</li>
+</ul></li>
+<li>Copy the new secret <code>Value</code> and store in a secure place (this will only be visible this one time)</li>
+<li>When possible, ensure any old secrets are removed from your App Registration</li>
+</ul>
+<h5 id="client-certificate">Client Certificate</h5>
+
+<ul>
+<li>Click on <code>Certificates</code></li>
+<li>Click the button <code>Upload certificate</code></li>
+<li>In the pop up
+
+<ul>
+<li>Upload your new .cer, .pem or .crt certificate file</li>
+<li>Enter a description</li>
+</ul></li>
+<li>Click <code>Add</code></li>
+<li>When possible, ensure any invalid certificates are removed from your App Registration</li>
+</ul>
+<h4 id="servicenow-client-secret-renewal">ServiceNow Client Secret Renewal</h4>
+<p>To renew a Client Secret used by your integration, you can make a request to the IDAM team via the <a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=1c192ec11b930a10a1e2ddf0b24bcb77&amp;recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&amp;sysparm_id=1c192ec11b930a10a1e2ddf0b24bcb77">Entra Id - Renew App Registration Certificate / Secret</a>.</p>
+<p>You will need to provide the following details</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+</tr><tr>
+<td>Application Name</td>
+<td>Name of your application this secret is assigned to.</td>
+</tr><tr>
+<td>Application ID</td>
+<td>Also referred to as your Client ID, this is the ID used in your integration to identify itself.</td>
+</tr><tr>
+<td>Environment</td>
+<td>Is this for the Entra DEV, NLE or LIVE environment.</td>
+</tr><tr>
+<td>Please select what you would like to update</td>
+<td>Select Certificate.</td>
+</tr><tr>
+<td>Old Secret Expiry Date</td>
+<td>This will allow you to have two valid secrets while you update your integrations. We will remove the old secret on this date.</td>
+</tr>
+        </table>
+      </div><p>This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.</p>
+<p>Once we have generated a new Secret, we will send the requestor of the catalogue item an email with a secure link to access the new credentials. This link will expire after an hour.</p>
+<p>You should store this new value in a secure vault once received and remove any traces of it from your computer systems.</p>
+<p><a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=1c192ec11b930a10a1e2ddf0b24bcb77&amp;recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&amp;sysparm_id=1c192ec11b930a10a1e2ddf0b24bcb77">Entra Id - Renew App Registration Certificate / Secret</a></p>
+<h4 id="servicenow-certificate-renewal">ServiceNow Certificate Renewal</h4>
+<p>To renew a Client Certificate used by your integration, you can make a request to the IDAM team via the <a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=1c192ec11b930a10a1e2ddf0b24bcb77&amp;recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&amp;sysparm_id=1c192ec11b930a10a1e2ddf0b24bcb77">Entra Id - Renew App Registration Certificate / Secret</a>.</p>
+<p>Ensure you have exported your Public Key (.cer, .pem, .crt) ready to attach to the ServiceNow request.</p>
+<p>You will need to provide the following details</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+</tr><tr>
+<td>Application Name</td>
+<td>Name of your application this certificate should be assigned to.</td>
+</tr><tr>
+<td>Application ID</td>
+<td>Also referred to as your Client ID, this is the ID used in your integration to identify itself.</td>
+</tr><tr>
+<td>Environment</td>
+<td>Is this for the Entra DEV, NLE or LIVE environment.</td>
+</tr><tr>
+<td>Please select what you would like to update</td>
+<td>Select Certificate.</td>
+</tr><tr>
+<td>Attachements</td>
+<td>Add your certificate here (.cer, .pem, .crt).</td>
+</tr>
+        </table>
+      </div><p>This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.</p>
+<p><a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=1c192ec11b930a10a1e2ddf0b24bcb77&amp;recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&amp;sysparm_id=1c192ec11b930a10a1e2ddf0b24bcb77">Entra Id - Renew App Registration Certificate / Secret</a></p>
+<h2 id="integration-testing-with-entra-id">Integration Testing with Entra ID</h2>
+<h3 id="problem-statement">Problem Statement</h3>
+<p>As a Developer, I want to create end to end integration tests for my application that integrates SSO with Entra ID and have access to test users in a Dev and Staging environment to test against in my GitHub PR Pipelines.</p>
+<h3 id="what-can-you-test">What can you test</h3>
+<p>The IDAM team can provide you with a set of test users in our DEVL environment. These can be used in your automated testing.</p>
+<p>To request test users and access to automated testing you should raise a Demand with the Demand team for the IDAM team to create the users and configure the Application Registration ready for use.</p>
+<p><strong>We do not allow automated testing against our NLE and LIVE environment.</strong></p>
+<h4 id="reasons-for-not-allowing-automated-testing-in-nle-and-live">Reasons for not allowing automated testing in NLE and LIVE</h4>
+<p>Due to security and governance standards, we cannot allow testing in these environments for the following reasons.</p>
+
+<ul>
+<li>Conditional Access Policies will prevent users from logging in. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.</li>
+<li>NLE and LIVE users will require certain compliance rules preventing access in an automated way.</li>
+<li>Generic test users in NLE and LIVE pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.</li>
+</ul>
+<p>Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests in any environment apart from DEVL. To overcome the above scenarios, we would have to reduce our Security and Governance practices.</p>
+<h3 id="solution-for-testing-in-nle-and-live">Solution for testing in NLE and LIVE</h3>
+<p>We recommend you use a Mock OAuth Provider as part of your pipelines. This will enable you to have full control over Authorisation test scenarios during your testing and a faster feedback loop.</p>
+<p>Many existing integrations follow this pattern, an example can be found below by OPG in their Sirius codebase which integrates with Entra ID.</p>
+<p><a href="https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider">https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider</a></p>
+<h2 id="role-based-access-control-rbac">Role-based access control (RBAC)</h2>
+<h3 id="app-roles-and-access-packages">App Roles and Access Packages</h3>
+<h4 id="overview">Overview</h4>
+<p>As well as using Entra ID for your Authentication, you can also take advantage of App Roles and Access Packages to manage your integrating applications Authorisation.</p>
+<p>Managing users this way over Security Groups or custom Authorisation layers in your application have multiple advantages</p>
+
+<ul>
+<li>JML processes will automatically remove access from your application when a user is deleted within Entra ID</li>
+<li>Approvals are handled through the Microsoft My Access portal requiring user authentication before assignment</li>
+<li>Audit trail of access requests</li>
+<li>Automated Access Reviews to ensure users have the right access</li>
+<li>Further Governance, i.e., those that do not have the Entra Role “Identity Governance Administrator” or assigned either <a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate#entitlement-management-roles">Delegation and roles in entitlement management - Microsoft Entra ID Governance</a> will not be able to add members to group without adding members to the access package</li>
+<li>Integration with wider Azure and Entra permissions and groups for automated assignment (future)</li>
+</ul>
+<p>Access Packages sit under the Microsoft Entitlement Management offering. To learn more about Entitlement Management, Access Packages and App Roles, use the following links</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-overview">What is entitlement management? - Microsoft Entra ID Governance</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps">Add app roles to your application and receive them in the token.</a></li>
+</ul>
+<h4 id="how-app-roles-works">How App Roles works</h4>
+<p>Within the <code>App roles</code> option of your Application Registration, you can create custom App roles for each RBAC role type and link each Role to a Access Package. For example</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Role Name</th>
+<th>Access Package</th>
+</tr><tr>
+<td>Administrator</td>
+<td>eucs-idam-wordpress-administrators</td>
+</tr><tr>
+<td>Writer</td>
+<td>eucs-idam-wordpress-writers</td>
+</tr><tr>
+<td>Approver</td>
+<td>eucs-idam-wordpress-approvers</td>
+</tr>
+        </table>
+      </div><p>When a user authenticates with Entra ID and is passed back to your application, Entra ID will check the user is a part of the Access Package and pass a <code>roles</code> claim via the authentication token for your application to parse.</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps">Add app roles to your application and receive them in the token</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-implement-rbac-for-apps">Implement RBAC in your Application</a></li>
+</ul>
+<h4 id="how-access-packages-works">How Access Packages works</h4>
+
+<blockquote>
+<p>For a detailed overview of Access Packages and how they are used to manage user access to resources, see <a href="https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-process">Request process and email notifications in entitlement management</a>.</p>
+</blockquote>
+<p>The IDAM Team will provide you with unique urls you can give to your users so that they can request access to the resource.</p>
+<p>A user that needs access to a role for your application can submit an access request. When a request is approved, a process begins to assign the user access to the role for that application in the access package. The following diagram shows an overview of the process and the different states:</p>
+<p><a href="../../img/ap-request-process.png" rel="noopener noreferrer"><img src="../../img/ap-request-process.png" title="Approval process diagram" alt="Approval process diagram" /></a></p>
+<p>If you&rsquo;re an approver, you&rsquo;re sent email notifications when you need to approve an access request. You also receive notifications when an access request has been completed. You&rsquo;re also sent email notifications that indicate the status of your request if you&rsquo;re a requestor.</p>
+<p>Example email</p>
+<p><a href="../../img/ap-approver-request-email.png" rel="noopener noreferrer"><img src="../../img/ap-approver-request-email.png" title="Approve request to access package email" alt="Approve request to access package email" /></a></p>
+<p>If you have chosen to have Access Reviews for your Access Package, you will be sent regular emails to review each user within the Access Package. This can help maintain Just Enough Access for users in your system. For more information on how this process works, please see <a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a>.</p>
+<h4 id="requesting-app-roles-and-access-packages">Requesting App Roles and Access Packages</h4>
+<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
+<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
+<p>You should provide the following information with the demand request.</p>
+<h5 id="list-of-application-roles">List of Application Roles</h5>
+<p>Provide a list of required Application Roles in a list providing the information for each as outlined below.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Display Name</td>
+<td>Display name for the App role that appears, for e.g. in the assignment and consent experiences.</td>
+<td>e.g. <code>Admin</code>, <code>Write</code>, <code>Read</code>, <code>ReadWrite</code>, etc</td>
+</tr><tr>
+<td>Role Value</td>
+<td>Specifies the value which will be included in the &ldquo;roles&rdquo; claim of a token identifying a user or app which has been granted this app role.</td>
+<td>e.g. <code>Users.Admin</code>, <code>Users.Write</code>, <code>Users.ReadWrite</code>
+</td>
+</tr><tr>
+<td>Description</td>
+<td>App role help text that appears in the app assignment and consent experiences.</td>
+<td>e.g. <code>Allows users Administrator rights over the Blog</code>.</td>
+</tr>
+        </table>
+      </div><h5 id="access-package-details">Access Package Details</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>OrganisationName</td>
+<td>Your organisation name.</td>
+<td>
+<code>Justice Digital</code>, <code>Tech Services EUCS</code>, <code>CICA</code>
+</td>
+</tr><tr>
+<td>DepartmentName</td>
+<td>Your departments name.</td>
+<td>
+<code>LAA</code>, <code>OPG</code>, <code>IDAM</code>
+</td>
+</tr><tr>
+<td>ApplicationName</td>
+<td>Your application name.</td>
+<td>
+<code>ServiceNow</code>, <code>Slack</code>
+</td>
+</tr><tr>
+<td>Access Package Approvers</td>
+<td>A list of people who will be responsible for the approval of access to the packages. This should ideally be more than 2 people.</td>
+<td>List of <code>@justice.gov.uk</code> addresses.</td>
+</tr><tr>
+<td>Require Access Reviews?</td>
+<td>Does the requestor want to enable Access Reviews for their Access Package. If yes, complete the additional table below. For more information, see <a href="https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview">What are access reviews? - Microsoft Entra ID Governance</a>
+</td>
+<td>
+<code>ServiceNow</code>, <code>Slack</code>
+</td>
+</tr>
+        </table>
+      </div><h5 id="access-review-details-optional">Access Review Details (optional)</h5>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr><tr>
+<td>Access Package Reviewers</td>
+<td>A list of people who will be responsible for the review of users who have access to the packages. This should ideally be more than 2 people.</td>
+<td>List of <code>@justice.gov.uk</code> addresses.</td>
+</tr><tr>
+<td>Review frequency</td>
+<td>How often do you want to review users access? This should be in days with a minimum of 30 days up to 365 days.</td>
+<td><code>365 days</code></td>
+</tr>
+        </table>
+      </div><h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
+<p>We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.</p>
+<p>e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.</p>
+<p>You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to reauthenticate.</p>
+<p>For guidance on using refresh tokens, see these following links</p>
+
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens">Refresh tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn</a></li>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens">Access tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn</a></li>
+</ul>
+<h2 id="resources">Resources</h2>
+
+<ul>
+<li><a href="mailto:idamteam@justice.gov.uk">EUCS IDAM Team Shared Inbox</a></li>
+</ul>
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/appreg.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27Application+Registrations+%28SSO%29%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fappreg.html%29&amp;labels=bug&amp;title=Re%3A+%27Application+Registrations+%28SSO%29%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="../../javascripts/application.js"></script>
+  </body>
+</html>
