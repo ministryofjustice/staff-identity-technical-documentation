@@ -94,6 +94,23 @@
     <a href="#application-registrations-sso"><span>Application Registrations (SSO)</span></a>
     <ul>
       <li>
+        <a href="#understanding-application-registrations-vs-enterprise-applications"><span>Understanding Application Registrations VS Enterprise Applications</span></a>
+        <ul>
+          <li>
+            <a href="#application-object"><span>Application Object</span></a>
+          </li>
+          <li>
+            <a href="#service-principal-object"><span>Service Principal Object</span></a>
+          </li>
+          <li>
+            <a href="#relationship"><span>Relationship</span></a>
+          </li>
+          <li>
+            <a href="#reference"><span>Reference</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
         <a href="#self-serve-app-reg"><span>Self Serve App Reg</span></a>
       </li>
       <li>
@@ -209,6 +226,28 @@
             <h1 id="application-registrations-sso">Application Registrations (SSO)</h1>
 <p>Application Registrations are a great way to integrate third party applications into the Justice M365 tenant. These can be used for SSO or more advanced applications that require MSGraph access to data held in the tenant.</p>
 <p>The below outlines ways of creating and managing these applications through the IDAM team.</p>
+<h2 id="understanding-application-registrations-vs-enterprise-applications">Understanding Application Registrations VS Enterprise Applications</h2>
+<h3 id="application-object">Application Object</h3>
+<p>The Application Object is what you see under App Registrations in AAD. This object acts as the template where you can go ahead and configure various things like API Permissions, Client Secrets, Branding, App Roles, etc.</p>
+<p>All these customizations that you make to your app, get written to the app manifest file.</p>
+<p>The application object describes three aspects of an application:</p>
+
+<ol>
+<li>How the service can issue tokens in order to access the application</li>
+<li>Resources that the application might need to access</li>
+<li>The actions that the application can take.</li>
+</ol>
+<h3 id="service-principal-object">Service Principal Object</h3>
+<p>The Service Principal Object is what you see under the Enterprise Registration blade in AAD.</p>
+<p>Every Application Object (created through the Azure Portal or using the Microsoft Graph APIs, or AzureAD PS Module) would create a corresponding Service Principal Object in the Enterprise Registration blade of AAD.</p>
+<p>A service principal is a concrete instance created from the application object and inherits certain properties from that application object.</p>
+<p>A service principal is created in each tenant where the application is used and references the globally unique app object.</p>
+<p>The service principal object defines what the app can actually do in the specific tenant, who can access the app, and what resources the app can access.</p>
+<h3 id="relationship">Relationship</h3>
+<p>Similar to a class in object-oriented programming, the application object has some static properties that are applied to all the created service principals (or application instances).</p>
+<h3 id="reference">Reference</h3>
+<p>You can read more on the following objects here:<br>
+<a href="https://learn.microsoft.com/en-us/azure/active-directory/develop/app-object">Application and service principal objects in Microsoft Entra ID</a></p>
 <h2 id="self-serve-app-reg">Self Serve App Reg</h2>
 <p>For customers who have skills and knowledge in Terraform. We are now offering the ability to self serve the creation of your application registartions. Please follow the below link where you will find our guidance on this process.
 <a href="selfserveappreg.html">Self Serve Application Registation</a></p>
