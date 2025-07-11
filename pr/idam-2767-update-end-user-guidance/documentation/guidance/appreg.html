@@ -230,10 +230,13 @@
 <h3 id="application-object">Application Object</h3>
 <p>The Application Object is what you see under App Registrations in AAD. This object acts as the template where you can go ahead and configure various things like API Permissions, Client Secrets, Branding, App Roles, etc.</p>
 <p>All these customizations that you make to your app, get written to the app manifest file.</p>
-<p>The application object describes three aspects of an application:
-1. How the service can issue tokens in order to access the application
-2. Resources that the application might need to access
-3. The actions that the application can take.</p>
+<p>The application object describes three aspects of an application:</p>
+
+<ol>
+<li>How the service can issue tokens in order to access the application</li>
+<li>Resources that the application might need to access</li>
+<li>The actions that the application can take.</li>
+</ol>
 <h3 id="service-principal-object">Service Principal Object</h3>
 <p>The Service Principal Object is what you see under the Enterprise Registration blade in AAD.</p>
 <p>Every Application Object (created through the Azure Portal or using the Microsoft Graph APIs, or AzureAD PS Module) would create a corresponding Service Principal Object in the Enterprise Registration blade of AAD.</p>
