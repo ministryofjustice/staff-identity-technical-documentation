@@ -168,27 +168,30 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <a href="../images/documentation-copy.png" rel="noopener noreferrer"><img src="../images/documentation-copy.png" alt="image showing how to copy the templated files" /></a></p></li>
 <li><p>Paste the contents from the terraform-template folder into your new folder.
 <a href="../images/documentation-paste.png" rel="noopener noreferrer"><img src="../images/documentation-paste.png" alt="image showing how to paste the templated files" /></a></p></li>
-<li><p>Update these files:</p>
-
-<ul>
-<li>state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. 
-
-<ul>
-<li>Please only keep the block of code needed for the environment that you are deploying to.</li>
-</ul></li>
-</ul>
+<li><p>Update these files:
+1.state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. 
+    - Please only keep the block of code needed for the environment that you are deploying to.</p>
 <p><a href="../images/documentation-state1.png" rel="noopener noreferrer"><img src="../images/documentation-state1.png" alt="image showing how to configure the state.config file" /></a></p>
 <p>Update the <code>key</code> to match the new folder name. Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.</p>
 <div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEAPRTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
-</code></pre></div><p><a href="../images/documentation-state2.png" rel="noopener noreferrer"><img src="../images/documentation-state2.png" alt="image showing how to configure the state.config file key" /></a></p></li>
+</code></pre></div><p><a href="../images/documentation-state2.png" rel="noopener noreferrer"><img src="../images/documentation-state2.png" alt="image showing how to configure the state.config file key" /></a></p>
+
+<ol>
+<li>variables.tf:
+
+<ul>
+<li>Set default values based on your Jira ticket.</li>
+<li>Update graph_delegated_permissions—leave as [] if none are needed.</li>
+</ul></li>
+<li>main.tf:
+
+<ul>
+<li>Set appropriate tags.</li>
+<li>Update the module source to the latest version. This can be found in the <code>Modules</code> folder, in the root of the directory.</li>
+</ul></li>
+</ol></li>
 </ol>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>- variables.tf:
-    - Set default values based on your Jira ticket.
-    - Update graph_delegated_permissions—leave as [] if none are needed.
-- main.tf:
-    - Set appropriate tags.
-    - Update the module source to the latest version. This can be found in the `Modules` folder, in the root of the directory.
-</code></pre></div>
+
 <hr>
 <h2 id="step-4-commit-and-push-your-changes">Step 4: Commit and Push Your Changes</h2>
 <p>Once updates are complete, run:</p>
