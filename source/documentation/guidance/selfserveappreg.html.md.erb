@@ -47,8 +47,7 @@ Navigate to: `STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/REQUIRED_ENV`
 
 Then complete the following:
 
-1. Create a new folder using your department/team name.
-![image showing how to create the folder](../images/documentation-folder.png)
+1. Create a new folder in the root of the environment directory that you are deploying to, in the format `department-teamname`.
 
 2. Copy contents from the terraform-template folder.
 ![image showing how to copy the templated files](../images/documentation-copy.png)
@@ -57,16 +56,25 @@ Then complete the following:
 ![image showing how to paste the templated files](../images/documentation-paste.png)
 
 4. Update these files:
-    - state.config: Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
+    - state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. 
+    - Please only keep the block of code needed for the environment that you are deploying to.
+![image showing how to configure the state.config file](../images/documentation-state1.png)
+    
+5. Update the `key` to match the new folder name. 
+    -Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
+
     ```hcl
     staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
     ```
-    - variables.tf:
-        - Set default values based on your Jira ticket.
-        - Update graph_delegated_permissions—leave as [] if none are needed.
-    - main.tf:
-        - Set appropriate tags.
-        - Update the module source to the latest version. This can be found in the `Modules` folder, in the root of the directory.
+![image showing how to configure the state.config file key](../images/documentation-state2.png)
+
+6. variables.tf:
+    - Set default values based on your Jira ticket.
+    - Update graph_delegated_permissions—leave as [] if none are needed.
+
+7. main.tf:
+    - Set appropriate tags.
+    - Update the module source to the latest version. This can be found in the `Modules` folder, in the root of the directory.
 
 ---
 
