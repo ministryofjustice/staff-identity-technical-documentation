@@ -171,9 +171,12 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <li><p>Update these files:</p>
 
 <ul>
-<li>state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. </li>
+<li>state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. 
+
+<ul>
+<li>Please only keep the block of code needed for the environment that you are deploying to.</li>
+</ul></li>
 </ul>
-<p>Please only keep the block of code needed for the environment that you are deploying to.</p>
 <p><a href="../images/documentation-state1.png" rel="noopener noreferrer"><img src="../images/documentation-state1.png" alt="image showing how to configure the state.config file" /></a></p>
 <p>Update the <code>key</code> to match the new folder name. Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.</p>
 <div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEAPRTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
