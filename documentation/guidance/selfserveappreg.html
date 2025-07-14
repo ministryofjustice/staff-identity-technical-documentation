@@ -162,8 +162,7 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <p>Then complete the following:</p>
 
 <ol>
-<li><p>Create a new folder using your department/team name.
-<a href="../images/documentation-folder.png" rel="noopener noreferrer"><img src="../images/documentation-folder.png" alt="image showing how to create the folder" /></a></p></li>
+<li><p>Create a new folder in the root of the environment directory that you are deploying to, in the format <code>department-teamname</code>.</p></li>
 <li><p>Copy contents from the terraform-template folder.
 <a href="../images/documentation-copy.png" rel="noopener noreferrer"><img src="../images/documentation-copy.png" alt="image showing how to copy the templated files" /></a></p></li>
 <li><p>Paste the contents from the terraform-template folder into your new folder.
@@ -171,22 +170,25 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <li><p>Update these files:</p>
 
 <ul>
-<li>state.config: Update the <code>key</code> to match the new folder name. Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.
-<code>hcl
-staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
-</code></li>
-<li>variables.tf:
+<li>state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. </li>
+<li>Please only keep the block of code needed for the environment that you are deploying to.
+<a href="../images/documentation-state1.png" rel="noopener noreferrer"><img src="../images/documentation-state1.png" alt="image showing how to configure the state.config file" /></a></li>
+</ul></li>
+<li><p>Update the <code>key</code> to match the new folder name. 
+-Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.</p>
+<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEAPRTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
+</code></pre></div><p><a href="../images/documentation-state2.png" rel="noopener noreferrer"><img src="../images/documentation-state2.png" alt="image showing how to configure the state.config file key" /></a></p></li>
+<li><p>variables.tf:</p>
 
 <ul>
 <li>Set default values based on your Jira ticket.</li>
 <li>Update graph_delegated_permissions—leave as [] if none are needed.</li>
 </ul></li>
-<li>main.tf:
+<li><p>main.tf:</p>
 
 <ul>
 <li>Set appropriate tags.</li>
 <li>Update the module source to the latest version. This can be found in the <code>Modules</code> folder, in the root of the directory.</li>
-</ul></li>
 </ul></li>
 </ol>
 
