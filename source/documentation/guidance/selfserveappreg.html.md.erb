@@ -64,11 +64,12 @@ Then complete the following:
     ![image showing how to configure the state.config file](../images/documentation-state1.png)
     
     Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
+    
     ```hcl
     staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
     ```
     ![image showing how to configure the state.config file key](../images/documentation-state2.png)
-    
+
     - variables.tf:
         - Set default values based on your Jira ticket.
         - Update graph_delegated_permissions—leave as [] if none are needed.
