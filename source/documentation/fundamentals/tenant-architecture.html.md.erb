@@ -1,6 +1,24 @@
 # Tenant Architecture
 
+## Tenant Overview
+
 ![Tenant Overview](../../img/fundamentals-tenant-overview.png "Tenant Overview")
+
+We have three environments that can be used with MoJ.
+
+* DEVL
+* NLE
+* PROD
+
+DEVL and PROD contain two Entra ID tenants. An Internal Workforce tenant and a External Workforce tenant.
+
+NLE has only an Internal Workforce tenant.
+
+### Internal vs External Workforce Tenants
+
+Internal Workforce Tenants are the source of Justice identities and provide application registrations (SSO) for internal services.
+
+External Workforce Tenants are using for application registrations (SSO) that are public facing. Identities in this tenant are either Guest users who can sign in to applications as a member of the public or Justice identities that are provisioned from the Internal Workforce tenant.
 
 ## Where to build your Application
 
@@ -9,7 +27,6 @@
 ## Section Contents
 
 * [Tenant Architecture](/documentation/fundamentals/tenant-architecture.html)
-* [Application Registrations (SSO) & Enterprise Applications](/documentation/fundamentals/appregistration.html)
 
 ## Resources
 
