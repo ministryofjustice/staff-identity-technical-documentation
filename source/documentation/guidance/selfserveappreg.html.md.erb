@@ -58,16 +58,16 @@ Then complete the following:
 
 4. Update these files:
     - state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. 
-    
-    Please only keep the block of code needed for the environment that you are deploying to.
+        - Please only keep the block of code needed for the environment that you are deploying to.
 
     ![image showing how to configure the state.config file](../images/documentation-state1.png)
     
     Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
-    
+
     ```hcl
     staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
     ```
+    
     ![image showing how to configure the state.config file key](../images/documentation-state2.png)
 
     - variables.tf:
