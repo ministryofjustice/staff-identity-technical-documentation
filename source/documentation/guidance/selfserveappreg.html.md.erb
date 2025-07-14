@@ -59,17 +59,18 @@ Then complete the following:
 4. Update these files:
 
 1.state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. 
-    - Please only keep the block of code needed for the environment that you are deploying to.
 
-    ![image showing how to configure the state.config file](../images/documentation-state1.png)
+- Please only keep the block of code needed for the environment that you are deploying to.
+
+![image showing how to configure the state.config file](../images/documentation-state1.png)
     
-    - Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
+- Update the `key` to match the new folder name. Specifically the `DEPARTMENT_NAME-TEAM_NAME` placeholder.
 
-    ```hcl
-    staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
-    ```
+```hcl
+staff-identity-idam-entra-infra-DEAPRTMENT_NAME-TEAM_NAME-environmentName.tfstate
+```
 
-    ![image showing how to configure the state.config file key](../images/documentation-state2.png)
+![image showing how to configure the state.config file key](../images/documentation-state2.png)
 
 2. variables.tf:
     - Set default values based on your Jira ticket.
@@ -78,7 +79,7 @@ Then complete the following:
 3. main.tf:
     - Set appropriate tags.
     - Update the module source to the latest version. This can be found in the `Modules` folder, in the root of the directory.
-    
+
 ---
 
 ## Step 4: Commit and Push Your Changes
