@@ -28,21 +28,13 @@ All AR's and EA's within the PROD tenants must be configured by Terraform. Admin
 
 ![Application setup per tenant](../../img/fundamentals-app-tenant.png "Application setup per tenant")
 
-### Internal or External
+Depending on the types of users who will be signing in to your application, you will need to build your application in either the Internal or External tenant. You will also need to take into account what privileges you will require as this will affect which environment you work in.
 
-Depending on the types of users who will be signing in to your application, you will need to build your application in either the Internal or External tenant.
+### Internal or External
 
 If you are building an application that only internal Justice users will be authenticating with, then you will build in the Internal Workforce Tenant.
 
 If you are building an application where Guest users will be able to access your applications (such as profressional bodies like Solicitors), then you will build your application in the External Workforce Tenant.
-
-Below are a few examples
-
-|Application Description|Internal Workforce Tenant| External Workforce Tenant|
-|---|---|---|
-|An internal CMS that allows Justice identities to sign in so they can work on cases.|Yes|No|
-|A custom built internal people finder application that allows Justice identities to sign in so they can search all users in the organisation.|Yes|No|
-|A custom built, public facing site that allows Solicitors to log in and process documentation.|No|Yes|
 
 ### Standard SSO Applications
 
@@ -68,6 +60,15 @@ Unlike the Standard SSO Application, we would expect to see this first being bui
 This is to ensure there is no risk to data loss and the IDAM team can work with you to ensure best practices are being followed.
 
 Before publishing to PROD you will require a Change Request. We will use the information from the Pull Requests created up to this point to ensure all information is auditable and Change Management is satisfied.
+
+### Examples of where to build your application(s)
+
+|Application Description|Tenant Type|Production Environment|Development Environment|Application Type|
+|---|---|---|---|--|
+|An internal CMS that allows Justice identities to sign in so they can work on cases.|Internal|Yes|No|Standard SSO Application|
+|A custom built internal people finder application that allows Justice identities to sign in so they can search all users in the organisation and edit their phone number which updates their user object in Entra.|Internal|Yes|Yes - POC|Privilieged SSO Application|
+|A custom built, public facing site that allows Solicitors to log in and process documentation.|External|Yes|No|Standard SSO Application|
+|A custom built, public facing site that allows Charities to log in, upload documents and the application saves them to a SharePoint site.|External|Yes|Yes - POC|Privilieged SSO Application|
 
 ### Automated Testing
 
