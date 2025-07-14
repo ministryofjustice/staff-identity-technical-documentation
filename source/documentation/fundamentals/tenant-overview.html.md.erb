@@ -30,7 +30,7 @@ All AR's and EA's within the PROD tenants must be configured by Terraform. Admin
 
 ### Internal or External
 
-Depending on the types of users who will be signing in to your application, you will need to build you application in either the Internal or External tenant.
+Depending on the types of users who will be signing in to your application, you will need to build your application in either the Internal or External tenant.
 
 If you are building an application that only internal Justice users will be authenticating with, then you will build in the Internal Workforce Tenant.
 
@@ -46,7 +46,7 @@ Below are a few examples
 
 ### Standard SSO Applications
 
-In most cases, you will build your application directly into our production tenants. Most application integrations that handle Single Sign On require low permissions (Delegated `User.Read`) with no additional configuration. In this case we would class this as a `Standard SSO Application` and can be quickly integrated and approved via Terraform.
+In most cases, you will build your application directly into our production tenants. Most application integrations that handle Single Sign On require low permissions (Delegated `User.Read`) with no additional special configuration. In this case we would class this as a `Standard SSO Application`. These can be quickly integrated and approved via Terraform.
 
 For example, if you want to setup a DEV, NLE and PROD integration so that you can test your application, you can create 3 different application integrations within the appropriate Production tenant.
 
@@ -63,9 +63,11 @@ We would class these applications as `Privilieged SSO Applications`. You can sti
 
 In any Pull Request, ensure you fill out the details of your application, the permissions being requested and justification for each and how they will be used.
 
-Unlike the Standard SSO Application, we would expect to see this first being built in our DEVL environment. This is especially important for any applications that have `ReadWrite` permissions. This is to ensure there is no risk to data loss and the IDAM team can work with you to ensure best practices are being followed.
+Unlike the Standard SSO Application, we would expect to see this first being built in our DEVL environment. This is especially important for any applications that have `ReadWrite` permissions.
 
-Before publishing to PROD you will require a Change Request. We will use the information from the Pull Requests created up to this point to ensure all information is auditable.
+This is to ensure there is no risk to data loss and the IDAM team can work with you to ensure best practices are being followed.
+
+Before publishing to PROD you will require a Change Request. We will use the information from the Pull Requests created up to this point to ensure all information is auditable and Change Management is satisfied.
 
 ### Automated Testing
 
