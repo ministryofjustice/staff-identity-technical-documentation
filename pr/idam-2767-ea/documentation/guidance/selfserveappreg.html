@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>Self Serve Application Registration - End User Compute Services - Identity & Access Management End User Guidance</title>
+
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserveappreg.html">
+
+      <meta name="robots" content="noindex" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta name="twitter:title" content="Self Serve Application Registration - End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserveappreg.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/images/govuk-large.png" />
+      <meta property="og:site_name" content="End User Compute Services - Identity &amp; Access Management End User Guidance" />
+      <meta property="og:title" content="Self Serve Application Registration" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/selfserveappreg.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="/" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__logotype">
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="govuk-header__logotype-crown"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 132 97"
+            height="30"
+            width="36"
+          >
+            <path
+              fill="currentColor" fill-rule="evenodd"
+              d="M25 30.2c3.5 1.5 7.7-.2 9.1-3.7 1.5-3.6-.2-7.8-3.9-9.2-3.6-1.4-7.6.3-9.1 3.9-1.4 3.5.3 7.5 3.9 9zM9 39.5c3.6 1.5 7.8-.2 9.2-3.7 1.5-3.6-.2-7.8-3.9-9.1-3.6-1.5-7.6.2-9.1 3.8-1.4 3.5.3 7.5 3.8 9zM4.4 57.2c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.5-1.5-7.6.3-9.1 3.8-1.4 3.5.3 7.6 3.9 9.1zm38.3-21.4c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.6-1.5-7.6.3-9.1 3.8-1.3 3.6.4 7.7 3.9 9.1zm64.4-5.6c-3.6 1.5-7.8-.2-9.1-3.7-1.5-3.6.2-7.8 3.8-9.2 3.6-1.4 7.7.3 9.2 3.9 1.3 3.5-.4 7.5-3.9 9zm15.9 9.3c-3.6 1.5-7.7-.2-9.1-3.7-1.5-3.6.2-7.8 3.7-9.1 3.6-1.5 7.7.2 9.2 3.8 1.5 3.5-.3 7.5-3.8 9zm4.7 17.7c-3.6 1.5-7.8-.2-9.2-3.8-1.5-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.3 3.5-.4 7.6-3.9 9.1zM89.3 35.8c-3.6 1.5-7.8-.2-9.2-3.8-1.4-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.4 3.6-.3 7.7-3.9 9.1zM69.7 17.7l8.9 4.7V9.3l-8.9 2.8c-.2-.3-.5-.6-.9-.9L72.4 0H59.6l3.5 11.2c-.3.3-.6.5-.9.9l-8.8-2.8v13.1l8.8-4.7c.3.3.6.7.9.9l-5 15.4v.1c-.2.8-.4 1.6-.4 2.4 0 4.1 3.1 7.5 7 8.1h.2c.3 0 .7.1 1 .1.4 0 .7 0 1-.1h.2c4-.6 7.1-4.1 7.1-8.1 0-.8-.1-1.7-.4-2.4V34l-5.1-15.4c.4-.2.7-.6 1-.9zM66 92.8c16.9 0 32.8 1.1 47.1 3.2 4-16.9 8.9-26.7 14-33.5l-9.6-3.4c1 4.9 1.1 7.2 0 10.2-1.5-1.4-3-4.3-4.2-8.7L108.6 76c2.8-2 5-3.2 7.5-3.3-4.4 9.4-10 11.9-13.6 11.2-4.3-.8-6.3-4.6-5.6-7.9 1-4.7 5.7-5.9 8-.5 4.3-8.7-3-11.4-7.6-8.8 7.1-7.2 7.9-13.5 2.1-21.1-8 6.1-8.1 12.3-4.5 20.8-4.7-5.4-12.1-2.5-9.5 6.2 3.4-5.2 7.9-2 7.2 3.1-.6 4.3-6.4 7.8-13.5 7.2-10.3-.9-10.9-8-11.2-13.8 2.5-.5 7.1 1.8 11 7.3L80.2 60c-4.1 4.4-8 5.3-12.3 5.4 1.4-4.4 8-11.6 8-11.6H55.5s6.4 7.2 7.9 11.6c-4.2-.1-8-1-12.3-5.4l1.4 16.4c3.9-5.5 8.5-7.7 10.9-7.3-.3 5.8-.9 12.8-11.1 13.8-7.2.6-12.9-2.9-13.5-7.2-.7-5 3.8-8.3 7.1-3.1 2.7-8.7-4.6-11.6-9.4-6.2 3.7-8.5 3.6-14.7-4.6-20.8-5.8 7.6-5 13.9 2.2 21.1-4.7-2.6-11.9.1-7.7 8.8 2.3-5.5 7.1-4.2 8.1.5.7 3.3-1.3 7.1-5.7 7.9-3.5.7-9-1.8-13.5-11.2 2.5.1 4.7 1.3 7.5 3.3l-4.7-15.4c-1.2 4.4-2.7 7.2-4.3 8.7-1.1-3-.9-5.3 0-10.2l-9.5 3.4c5 6.9 9.9 16.7 14 33.5 14.8-2.1 30.8-3.2 47.7-3.2z"
+            ></path>
+          </svg>
+          <span class="govuk-header__logotype-text">
+            GOV.UK
+          </span>
+        </span>
+        <span class="govuk-header__product-name">
+          End User Compute Services - Identity & Access Management End User Guidance
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#idam-terraform-app-registration-setup-guide"><span>IDAM Terraform App Registration Setup Guide</span></a>
+    <ul>
+      <li>
+        <a href="#please-note-that-for-enterprise-applications-you-will-need-to-raise-a-request-via-the-demand-process-here-new-demand-request"><span>Please note that for Enterprise Applications you will need to raise a request, via the demand process here New Demand Request </span></a>
+      </li>
+      <li>
+        <a href="#prerequisites"><span>Prerequisites</span></a>
+      </li>
+      <li>
+        <a href="#step-1-clone-the-repository"><span>Step 1: Clone the Repository</span></a>
+      </li>
+      <li>
+        <a href="#step-2-update-repo-and-create-feature-branch"><span>Step 2: Update Repo and Create Feature Branch</span></a>
+      </li>
+      <li>
+        <a href="#step-3-create-the-terraform-folder-structure"><span>Step 3: Create the Terraform Folder Structure</span></a>
+      </li>
+      <li>
+        <a href="#step-4-commit-and-push-your-changes"><span>Step 4: Commit and Push Your Changes</span></a>
+      </li>
+      <li>
+        <a href="#step-5-create-a-pull-request"><span>Step 5: Create a Pull Request</span></a>
+      </li>
+      <li>
+        <a href="#step-6-review-approve-amp-merge"><span>Step 6: Review, Approve & Merge</span></a>
+      </li>
+      <li>
+        <a href="#step-7-monitor-main-branch-actions"><span>Step 7: Monitor Main Branch Actions</span></a>
+      </li>
+      <li>
+        <a href="#step-8-request-graph-permissions"><span>Step 8: Request Graph Permissions</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="idam-terraform-app-registration-setup-guide">IDAM Terraform App Registration Setup Guide</h1>
+<p>This guide walks engineers and developers through using Terraform in the <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra"><code>staff-identity-idam-entra-infra</code></a> repository to create app registrations in Azure Entra ID.</p>
+<h2 id="please-note-that-for-enterprise-applications-you-will-need-to-raise-a-request-via-the-demand-process-here-new-demand-request">Please note that for Enterprise Applications you will need to raise a request, via the demand process here <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx?xsdata=MDV8MDJ8fGM0MTZkNTZjYTljODQ3YTU0OTAyMDhkZDc2N2YwYmEwfGM2ODc0NzI4NzFlNjQxZmVhOWUxMmU4YzM2Nzc2YWQ4fDB8MHw2Mzg3OTcwMTAxODQ0NTY0NTB8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazkwYUdWeUlpd2lWMVFpT2pFeGZRPT18MXxMMk5vWVhSekx6RTVPbTFsWlhScGJtZGZUbFJWTUZsWFRUQk9SRkYwV2xSamVWcFRNREJOYW14c1RGZEZOVnBVYTNSTmVtTjNUVmRaZWs5VVRtcFpiVVUwUUhSb2NtVmhaQzUyTWk5dFpYTnpZV2RsY3k4eE56UTBNVEEwTWpFNE1EUTR8ZTVhNzQ3NGM0NGFhNDg2MGU2NmUwOGRkNzY3ZjBiOWR8ZjE5YTQ3MTIxNzQ1NDVlODg3MDllMWM5N2Q1MTVkMGU%3D&amp;sdata=aG9VZHFzRjJ0TEdIckxEdWUxeExIYm1sMERlbVBaY2Y1Yjhyb2I1alNuST0%3D&amp;ovuser=c6874728-71e6-41fe-a9e1-2e8c36776ad8%2CMelinda.Biro%40justice.gov.uk&amp;OR=Teams-HL&amp;CT=1744104242011&amp;clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI0OS8yNTAzMDIwMTAxMCIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D">New Demand Request</a> </h2>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>If you have <strong>already cloned the repo</strong>, <a href="#step-4-commit-and-push-your-changes">skip ahead to step 4</a> and commit and push your changes.</p>
+<p>If you have <strong>not yet cloned the repo</strong>, follow the steps below.</p>
+
+<hr>
+<h2 id="step-1-clone-the-repository">Step 1: Clone the Repository</h2>
+<p>Open Visual Studio Code and start a new terminal session. Then enter:</p>
+<div class="highlight"><pre class="highlight powershell" tabindex="0"><code><span class="n">mkdir</span><span class="w"> </span><span class="nv">$</span><span class="nn">env</span><span class="p">:</span><span class="nv">userprofile</span><span class="nx">\git</span><span class="w">
+</span><span class="n">cd</span><span class="w"> </span><span class="nv">$</span><span class="nn">env</span><span class="p">:</span><span class="nv">userprofile</span><span class="nx">\git\</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">clone</span><span class="w"> </span><span class="nx">git</span><span class="err">@</span><span class="nx">github.com:ministryofjustice/staff-identity-idam-entra-infra.git</span><span class="w">
+</span><span class="n">cd</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
+</span><span class="n">code</span><span class="w"> </span><span class="o">.</span><span class="w">                   </span><span class="c"># Opens VS Code in this location</span><span class="w">
+</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch </span><span class="w">
+</span></code></pre></div>
+<hr>
+<h2 id="step-2-update-repo-and-create-feature-branch">Step 2: Update Repo and Create Feature Branch</h2>
+<p>If youve already cloned the repo locally, open the repo in VS Code (or IDE of your choice) and run the following in the terminal:</p>
+<div class="highlight"><pre class="highlight shell" tabindex="0"><code>git pull
+git checkout <span class="nt">-b</span> <span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span>
+Replace IDAM-xxxx with the Jira ticket number linked to your change. 
+</code></pre></div>
+<hr>
+<h2 id="step-3-create-the-terraform-folder-structure">Step 3: Create the Terraform Folder Structure</h2>
+<p>Navigate to: <code>STAFF-IDENTITY-IDAM-ENTRA-INFRA/TERRAFORM/ENVS/REQUIRED_ENV</code></p>
+<p>Then complete the following:</p>
+
+<ol>
+<li><p>Create a new folder in the root of the environment directory that you are deploying to, in the format <code>department-teamname</code>.</p></li>
+<li><p>Copy contents from the terraform-template folder.
+<a href="../images/documentation-copy.png" rel="noopener noreferrer"><img src="../images/documentation-copy.png" alt="image showing how to copy the templated files" /></a></p></li>
+<li><p>Paste the contents from the terraform-template folder into your new folder.
+<a href="../images/documentation-paste.png" rel="noopener noreferrer"><img src="../images/documentation-paste.png" alt="image showing how to paste the templated files" /></a></p></li>
+<li><p>Update these files:</p>
+
+<ul>
+<li>state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. </li>
+<li>Please only keep the block of code needed for the environment that you are deploying to.
+<a href="../images/documentation-state1.png" rel="noopener noreferrer"><img src="../images/documentation-state1.png" alt="image showing how to configure the state.config file" /></a></li>
+</ul></li>
+<li><p>Update the <code>key</code> to match the new folder name. 
+-Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.</p>
+<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEAPRTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
+</code></pre></div><p><a href="../images/documentation-state2.png" rel="noopener noreferrer"><img src="../images/documentation-state2.png" alt="image showing how to configure the state.config file key" /></a></p></li>
+<li><p>variables.tf:</p>
+
+<ul>
+<li>Set default values based on your Jira ticket.</li>
+<li>Update graph_delegated_permissions—leave as [] if none are needed.</li>
+</ul></li>
+<li><p>main.tf:</p>
+
+<ul>
+<li>Set appropriate tags.</li>
+<li>Update the module source to the latest version. This can be found in the <code>Modules</code> folder, in the root of the directory.</li>
+</ul></li>
+</ol>
+
+<hr>
+<h2 id="step-4-commit-and-push-your-changes">Step 4: Commit and Push Your Changes</h2>
+<p>Once updates are complete, run:</p>
+<div class="highlight"><pre class="highlight shell" tabindex="0"><code>git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"xxxx"</span>      <span class="c"># Replace xxxx with a descriptive commit message</span>
+git push
+</code></pre></div>
+<hr>
+<h2 id="step-5-create-a-pull-request">Step 5: Create a Pull Request</h2>
+
+<ol>
+<li>Visit the repo: staff-identity-idam-entra-infra</li>
+<li>You should see <code>Compare &amp; pull request</code> — click it.</li>
+<li>Complete the PR form:
+
+<ul>
+<li>Purpose of the change</li>
+<li>Jira ticket reference</li>
+</ul></li>
+<li>Click <code>Create pull request</code></li>
+</ol>
+
+<hr>
+<h2 id="step-6-review-approve-amp-merge">Step 6: Review, Approve &amp; Merge</h2>
+
+<ol>
+<li>Wait for the GitHub Actions workflow to complete.</li>
+<li>Request ministryofjustice/eucs-idam-maintainers to review your PR, as per the below screenshot.
+<a href="../images/documentation-request.png" rel="noopener noreferrer"><img src="../images/documentation-request.png" alt="image showing how to request a pull review" /></a></li>
+<li>Merge the pull request into main.</li>
+</ol>
+
+<hr>
+<h2 id="step-7-monitor-main-branch-actions">Step 7: Monitor Main Branch Actions</h2>
+<p>After merging:</p>
+
+<ol>
+<li>Confirm that GitHub Actions run successfully.</li>
+<li>If errors arise:
+
+<ul>
+<li>Create a new feature branch.</li>
+<li>Fix the issue.</li>
+<li>Raise another pull request.</li>
+<li>Merge into <code>main</code> once fixed.</li>
+</ul></li>
+</ol>
+
+<hr>
+<h2 id="step-8-request-graph-permissions">Step 8: Request Graph Permissions</h2>
+<p>If Graph permissions are needed (delegated or application):</p>
+
+<ul>
+<li>Mention this in your pull request.</li>
+<li>The IDAM team will handle the admin consent process.</li>
+</ul>
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/selfserveappreg.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27Self+Serve+Application+Registration%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fselfserveappreg.html%29&amp;labels=bug&amp;title=Re%3A+%27Self+Serve+Application+Registration%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="../../javascripts/application.js"></script>
+  </body>
+</html>
