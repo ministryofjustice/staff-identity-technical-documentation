@@ -94,9 +94,6 @@
     <a href="#idam-terraform-app-registration-setup-guide"><span>IDAM Terraform App Registration Setup Guide</span></a>
     <ul>
       <li>
-        <a href="#please-note-that-for-enterprise-applications-you-will-need-to-raise-a-request-via-the-demand-process-here-new-demand-request"><span>Please note that for Enterprise Applications you will need to raise a request, via the demand process here New Demand Request </span></a>
-      </li>
-      <li>
         <a href="#prerequisites"><span>Prerequisites</span></a>
       </li>
       <li>
@@ -136,7 +133,9 @@
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="idam-terraform-app-registration-setup-guide">IDAM Terraform App Registration Setup Guide</h1>
 <p>This guide walks engineers and developers through using Terraform in the <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra"><code>staff-identity-idam-entra-infra</code></a> repository to create app registrations in Azure Entra ID.</p>
-<h2 id="please-note-that-for-enterprise-applications-you-will-need-to-raise-a-request-via-the-demand-process-here-new-demand-request">Please note that for Enterprise Applications you will need to raise a request, via the demand process here <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx?xsdata=MDV8MDJ8fGM0MTZkNTZjYTljODQ3YTU0OTAyMDhkZDc2N2YwYmEwfGM2ODc0NzI4NzFlNjQxZmVhOWUxMmU4YzM2Nzc2YWQ4fDB8MHw2Mzg3OTcwMTAxODQ0NTY0NTB8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazkwYUdWeUlpd2lWMVFpT2pFeGZRPT18MXxMMk5vWVhSekx6RTVPbTFsWlhScGJtZGZUbFJWTUZsWFRUQk9SRkYwV2xSamVWcFRNREJOYW14c1RGZEZOVnBVYTNSTmVtTjNUVmRaZWs5VVRtcFpiVVUwUUhSb2NtVmhaQzUyTWk5dFpYTnpZV2RsY3k4eE56UTBNVEEwTWpFNE1EUTR8ZTVhNzQ3NGM0NGFhNDg2MGU2NmUwOGRkNzY3ZjBiOWR8ZjE5YTQ3MTIxNzQ1NDVlODg3MDllMWM5N2Q1MTVkMGU%3D&amp;sdata=aG9VZHFzRjJ0TEdIckxEdWUxeExIYm1sMERlbVBaY2Y1Yjhyb2I1alNuST0%3D&amp;ovuser=c6874728-71e6-41fe-a9e1-2e8c36776ad8%2CMelinda.Biro%40justice.gov.uk&amp;OR=Teams-HL&amp;CT=1744104242011&amp;clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI0OS8yNTAzMDIwMTAxMCIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D">New Demand Request</a> </h2>
+<p>Please note that for Enterprise Applications you will need to raise a request, via the demand process here <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx?xsdata=MDV8MDJ8fGM0MTZkNTZjYTljODQ3YTU0OTAyMDhkZDc2N2YwYmEwfGM2ODc0NzI4NzFlNjQxZmVhOWUxMmU4YzM2Nzc2YWQ4fDB8MHw2Mzg3OTcwMTAxODQ0NTY0NTB8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazkwYUdWeUlpd2lWMVFpT2pFeGZRPT18MXxMMk5vWVhSekx6RTVPbTFsWlhScGJtZGZUbFJWTUZsWFRUQk9SRkYwV2xSamVWcFRNREJOYW14c1RGZEZOVnBVYTNSTmVtTjNUVmRaZWs5VVRtcFpiVVUwUUhSb2NtVmhaQzUyTWk5dFpYTnpZV2RsY3k4eE56UTBNVEEwTWpFNE1EUTR8ZTVhNzQ3NGM0NGFhNDg2MGU2NmUwOGRkNzY3ZjBiOWR8ZjE5YTQ3MTIxNzQ1NDVlODg3MDllMWM5N2Q1MTVkMGU%3D&amp;sdata=aG9VZHFzRjJ0TEdIckxEdWUxeExIYm1sMERlbVBaY2Y1Yjhyb2I1alNuST0%3D&amp;ovuser=c6874728-71e6-41fe-a9e1-2e8c36776ad8%2CMelinda.Biro%40justice.gov.uk&amp;OR=Teams-HL&amp;CT=1744104242011&amp;clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI0OS8yNTAzMDIwMTAxMCIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D">New Demand Request</a></p>
+
+<hr>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>If you have <strong>already cloned the repo</strong>, <a href="#step-4-commit-and-push-your-changes">skip ahead to step 4</a> and commit and push your changes.</p>
 <p>If you have <strong>not yet cloned the repo</strong>, follow the steps below.</p>
