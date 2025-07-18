@@ -166,25 +166,6 @@
         </ul>
       </li>
       <li>
-        <a href="#integration-testing-with-entra-id"><span>Integration Testing with Entra ID</span></a>
-        <ul>
-          <li>
-            <a href="#problem-statement"><span>Problem Statement</span></a>
-          </li>
-          <li>
-            <a href="#what-can-you-test"><span>What can you test</span></a>
-            <ul>
-              <li>
-                <a href="#reasons-for-not-allowing-automated-testing-in-nle-and-live"><span>Reasons for not allowing automated testing in NLE and LIVE</span></a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#solution-for-testing-in-nle-and-live"><span>Solution for testing in NLE and LIVE</span></a>
-          </li>
-        </ul>
-      </li>
-      <li>
         <a href="#role-based-access-control-rbac"><span>Role-based access control (RBAC)</span></a>
         <ul>
           <li>
@@ -205,9 +186,6 @@
             </ul>
           </li>
         </ul>
-      </li>
-      <li>
-        <a href="#token-lifetime-policy"><span>Token Lifetime Policy</span></a>
       </li>
       <li>
         <a href="#resources"><span>Resources</span></a>
@@ -277,7 +255,7 @@
 <td>Owners</td>
 <td><code>true</code></td>
 <td>Owners that are assignable on the LIVE tenant. There should be at least two owners and/or a shared mailbox user that belong in the justice tenant.</td>
-<td><code>"john.nolan@justice.gov.uk", "idamteam@justice.gov.uk"</code></td>
+<td><code>"john.nolan@justice.gov.uk", "idam@justice.gov.uk"</code></td>
 </tr><tr>
 <td>Technical Point of Contact</td>
 <td><code>true</code></td>
@@ -407,7 +385,7 @@
 <li>Locally on your computer</li>
 </ul>
 <h4 id="problems-guidance-or-incidents">Problems, guidance, or incidents</h4>
-<p>If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (IDAMTeam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.</p>
+<p>If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (idam@justice.gov.uk) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.</p>
 <h2 id="credentials">Credentials</h2>
 <h3 id="renewing-credentials">Renewing credentials</h3>
 <h4 id="self-service-renewal">Self Service Renewal</h4>
@@ -522,26 +500,6 @@
         </table>
       </div><p>This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.</p>
 <p><a href="https://mojprod.service-now.com/moj_sp?id=sc_cat_item&amp;table=sc_cat_item&amp;sys_id=1c192ec11b930a10a1e2ddf0b24bcb77&amp;recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&amp;sysparm_id=1c192ec11b930a10a1e2ddf0b24bcb77">Entra Id - Renew App Registration Certificate / Secret</a></p>
-<h2 id="integration-testing-with-entra-id">Integration Testing with Entra ID</h2>
-<h3 id="problem-statement">Problem Statement</h3>
-<p>As a Developer, I want to create end to end integration tests for my application that integrates SSO with Entra ID and have access to test users in a Dev and Staging environment to test against in my GitHub PR Pipelines.</p>
-<h3 id="what-can-you-test">What can you test</h3>
-<p>The IDAM team can provide you with a set of test users in our DEVL environment. These can be used in your automated testing.</p>
-<p>To request test users and access to automated testing you should raise a Demand with the Demand team for the IDAM team to create the users and configure the Application Registration ready for use.</p>
-<p><strong>We do not allow automated testing against our NLE and LIVE environment.</strong></p>
-<h4 id="reasons-for-not-allowing-automated-testing-in-nle-and-live">Reasons for not allowing automated testing in NLE and LIVE</h4>
-<p>Due to security and governance standards, we cannot allow testing in these environments for the following reasons.</p>
-
-<ul>
-<li>Conditional Access Policies will prevent users from logging in. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.</li>
-<li>NLE and LIVE users will require certain compliance rules preventing access in an automated way.</li>
-<li>Generic test users in NLE and LIVE pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.</li>
-</ul>
-<p>Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests in any environment apart from DEVL. To overcome the above scenarios, we would have to reduce our Security and Governance practices.</p>
-<h3 id="solution-for-testing-in-nle-and-live">Solution for testing in NLE and LIVE</h3>
-<p>We recommend you use a Mock OAuth Provider as part of your pipelines. This will enable you to have full control over Authorisation test scenarios during your testing and a faster feedback loop.</p>
-<p>Many existing integrations follow this pattern, an example can be found below by OPG in their Sirius codebase which integrates with Entra ID.</p>
-<p><a href="https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider">https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider</a></p>
 <h2 id="role-based-access-control-rbac">Role-based access control (RBAC)</h2>
 <h3 id="app-roles-and-access-packages">App Roles and Access Packages</h3>
 <h4 id="overview">Overview</h4>
@@ -681,20 +639,10 @@
 <td><code>365 days</code></td>
 </tr>
         </table>
-      </div><h2 id="token-lifetime-policy">Token Lifetime Policy</h2>
-<p>We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.</p>
-<p>e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.</p>
-<p>You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to reauthenticate.</p>
-<p>For guidance on using refresh tokens, see these following links</p>
+      </div><h2 id="resources">Resources</h2>
 
 <ul>
-<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens">Refresh tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn</a></li>
-<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens">Access tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn</a></li>
-</ul>
-<h2 id="resources">Resources</h2>
-
-<ul>
-<li><a href="mailto:idamteam@justice.gov.uk">EUCS IDAM Team Shared Inbox</a></li>
+<li><a href="mailto:idam@justice.gov.uk">EUCS IDAM Team Shared Inbox</a></li>
 </ul>
 
             
