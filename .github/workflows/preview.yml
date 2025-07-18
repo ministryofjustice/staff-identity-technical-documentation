@@ -52,4 +52,4 @@ jobs:
           header: Preview environment
           message: |
             ## Preview environment
-            https://user-guide.staff-identity.service.justice.gov.uk/pr/${{ steps.generate_slug.outputs.slug }}/
+            https://user-guide.staff-identity.service.justice.gov.uk/pr/${{ steps.generate_slug.outputs.slug }}/index.html
