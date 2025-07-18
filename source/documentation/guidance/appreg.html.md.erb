@@ -230,38 +230,6 @@ This will then be assigned to the IDAM team to schedule and communicate when we 
 
 [Entra Id - Renew App Registration Certificate / Secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=1c192ec11b930a10a1e2ddf0b24bcb77&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=1c192ec11b930a10a1e2ddf0b24bcb77)
 
-## Integration Testing with Entra ID
-
-### Problem Statement
-
-As a Developer, I want to create end to end integration tests for my application that integrates SSO with Entra ID and have access to test users in a Dev and Staging environment to test against in my GitHub PR Pipelines.
-
-### What can you test
-
-The IDAM team can provide you with a set of test users in our DEVL environment. These can be used in your automated testing.
-
-To request test users and access to automated testing you should raise a Demand with the Demand team for the IDAM team to create the users and configure the Application Registration ready for use.
-
-**We do not allow automated testing against our NLE and LIVE environment.**
-
-#### Reasons for not allowing automated testing in NLE and LIVE
-
-Due to security and governance standards, we cannot allow testing in these environments for the following reasons.
-
-* Conditional Access Policies will prevent users from logging in. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.
-* NLE and LIVE users will require certain compliance rules preventing access in an automated way.
-* Generic test users in NLE and LIVE pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.
-
-Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests in any environment apart from DEVL. To overcome the above scenarios, we would have to reduce our Security and Governance practices.
-
-### Solution for testing in NLE and LIVE
-
-We recommend you use a Mock OAuth Provider as part of your pipelines. This will enable you to have full control over Authorisation test scenarios during your testing and a faster feedback loop.
-
-Many existing integrations follow this pattern, an example can be found below by OPG in their Sirius codebase which integrates with Entra ID.
-
-[https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider](https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider)
-
 ## Role-based access control (RBAC)
 
 ### App Roles and Access Packages
@@ -352,19 +320,6 @@ Provide a list of required Application Roles in a list providing the information
 |--|--|--|
 | Access Package Reviewers | A list of people who will be responsible for the review of users who have access to the packages. This should ideally be more than 2 people. | List of `@justice.gov.uk` addresses. |
 | Review frequency | How often do you want to review users access? This should be in days with a minimum of 30 days up to 365 days. | `365 days` |
-
-## Token Lifetime Policy
-
-We cannot offer custom policies to change the default Token Lifetime Policy (1 hour) within our tenant. Doing so would reduce our security posture to adversary-in-the-middle (AiTM) phishing attacks and token theft.
-
-e.g. If we changed this policy to 8 hours and a token was compromised, we would not be able to revoke the users session until this period has expired.
-
-You should therefore implement refresh token functionality into your application. This will allow you to refresh the token before expiry and prevent the user to have to reauthenticate.
-
-For guidance on using refresh tokens, see these following links
-
-* [Refresh tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
-* [Access tokens in the Microsoft identity platform - Microsoft identity platform | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
 
 ## Resources
 
