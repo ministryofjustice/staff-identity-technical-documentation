@@ -87,6 +87,23 @@ git add .
 git commit -m "xxxx"      # Replace xxxx with a descriptive commit message
 git push --set-upstream origin your-branch-name
 ```
+If you recieve the following error: 
+```
+remote: Permission to ministryofjustice/staff-identity-idam-entra-infra.git denied to YOUR_USER_NAME.
+fatal: unable to access 'https://github.com/ministryofjustice/staff-identity-idam-entra-infra.git/%27:  The requested URL returned error: 403 - Customers github team need access to our github repo - write perms
+```
+You will then need to follow the following steps:
+
+1. Go to the slack channel here: [staff-identity-authentication-services](https://moj.enterprise.slack.com/archives/C04AFS7TV7S)
+
+2. Click the `Add team to staff-identity-idam-entra-infra` workflow at the bottom of the screen, as seen below. 
+![image showing how to trigger Slack workflow](../images/documentation-slack-workflow.png)
+
+3. Fill in the form that will appear on screen and click submit in the right hand corner, as per below.
+![image showing how to trigger Slack workflow](../images/documentation-slack-workflow-form.png)
+
+4. Wait around 1 minute for the workflow to run. You should then see a message in Slack regarding your request, as per below.
+![image showing how to trigger Slack workflow](../images/documentation-slack-workflow-message.png)
 
 ---
 
@@ -96,15 +113,19 @@ git push --set-upstream origin your-branch-name
 3. Complete the PR form:
     - Purpose of the change
     - Jira ticket reference
+
+Please ensure you add a business justification for each application and delegated permission. This should highlight what you are using the permission for, to allow us to understand your use case and approve the permissions.
 4. Click `Create pull request`
+5. Once you have created the pull 
 
 ---
 
 ## Step 6: Review, Approve & Merge
 1. Wait for the GitHub Actions workflow to complete.
-2. Request ministryofjustice/eucs-idam-maintainers to review your PR, as per the below screenshot.
-![image showing how to request a pull review](../images/documentation-request.png)
-3. Merge the pull request into main.
+2. The IDAM team will automatically get notified to review your pull request.
+3. You will need to await for the IDAM team to approve your pull request, which may be delayed if we need to raise a change request for the permissions you have requested. 
+4. You should be notified once we have merged your pull request
+5. Please check the deployed config and ensure it aligns with your expectations. If not, please reach out to the IDAM team on Slack here: [staff-identity-authentication-services](https://moj.enterprise.slack.com/archives/C04AFS7TV7S)
 
 ---
 
