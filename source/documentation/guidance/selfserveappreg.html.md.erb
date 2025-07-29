@@ -28,7 +28,6 @@ cd $env:userprofile\git\
 git clone git@github.com:ministryofjustice/staff-identity-idam-entra-infra.git
 cd staff-identity-idam-entra-infra
 code .                   # Opens VS Code in this location
-git checkout -b "branch-name"    # Create a new branch 
 ```
 
 --- 
@@ -86,8 +85,25 @@ Once updates are complete, run:
 ```bash
 git add .
 git commit -m "xxxx"      # Replace xxxx with a descriptive commit message
-git push
+git push --set-upstream origin your-branch-name
 ```
+If you recieve the following error: 
+```
+remote: Permission to ministryofjustice/staff-identity-idam-entra-infra.git denied to YOUR_USER_NAME.
+fatal: unable to access 'https://github.com/ministryofjustice/staff-identity-idam-entra-infra.git/%27:  The requested URL returned error: 403 - Customers github team need access to our github repo - write perms
+```
+You will then need to follow the following steps:
+
+1. Go to the slack channel here: [staff-identity-authentication-services](https://moj.enterprise.slack.com/archives/C04AFS7TV7S)
+
+2. Click the `Add team to staff-identity-idam-entra-infra` workflow at the bottom of the screen, as seen below. 
+![image showing how to trigger Slack workflow](../images/documentation-slack-workflow.png)
+
+3. Fill in the form that will appear on screen and click submit in the right hand corner, as per below.
+![image showing how to trigger Slack workflow](../images/documentation-slack-workflow-form.png)
+
+4. Wait around 1 minute for the workflow to run. You should then see a message in Slack regarding your request, as per below.
+![image showing how to fill in Slack workflow form](../images/documentation-slack-workflow-message.png)
 
 ---
 
@@ -97,15 +113,21 @@ git push
 3. Complete the PR form:
     - Purpose of the change
     - Jira ticket reference
+
+Please ensure you add a business justification for each application and delegated permission. This should highlight what you are using the permission for, to allow us to understand your use case and approve the permissions.
 4. Click `Create pull request`
+5. Once you have created the pull 
 
 ---
 
 ## Step 6: Review, Approve & Merge
-1. Wait for the GitHub Actions workflow to complete.
-2. Request ministryofjustice/eucs-idam-maintainers to review your PR, as per the below screenshot.
-![image showing how to request a pull review](../images/documentation-request.png)
-3. Merge the pull request into main.
+1. Wait for the GitHub Actions workflow to complete. An example of this can be seen below, on a customers [Workflow] Pull Request run. 
+![image showing a successful Github Pull Request workflow run](../images/documentation-Github-Workflow.png)
+
+2. The IDAM team will automatically get notified to review your pull request.
+3. You will need to await for the IDAM team to approve your pull request, which may be delayed if we need to raise a change request for the permissions you have requested. 
+4. You should be notified once we have merged your pull request
+5. Please check the deployed config in the Azure portal and ensure it aligns with your expectations. If not, please reach out to the IDAM team on Slack here: [staff-identity-authentication-services](https://moj.enterprise.slack.com/archives/C04AFS7TV7S)
 
 ---
 
@@ -113,12 +135,19 @@ git push
 
 After merging:
 
-1. Confirm that GitHub Actions run successfully.
-2. If errors arise:
-   - Create a new feature branch.
-   - Fix the issue.
-   - Raise another pull request.
-   - Merge into `main` once fixed.
+1. The IDAM team will confirm that GitHub Actions run successfully.
+2. If errors arise we will reach out to you regarding the error
+3. In these situation we will work collabratively with you in order to resolve the issue.
+
+This will require us to do the follow: 
+
+1. Create a new feature branch locally 
+2. Create a new pull request from the feature branch to the main branch
+3. Check that the actions run was successful
+4. Obtain the required approvals before merging the pull request
+5. Monitor the main branch actions run, to ensure the error has been resolved
+
+Should there be futher issues, we would need to go through steps 1 - 5 again, until the error has been resolved. 
 
 ---
 
