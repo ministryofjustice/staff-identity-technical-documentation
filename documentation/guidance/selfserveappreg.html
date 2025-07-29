@@ -148,7 +148,6 @@
 </span><span class="n">git</span><span class="w"> </span><span class="nx">clone</span><span class="w"> </span><span class="nx">git</span><span class="err">@</span><span class="nx">github.com:ministryofjustice/staff-identity-idam-entra-infra.git</span><span class="w">
 </span><span class="n">cd</span><span class="w"> </span><span class="nx">staff-identity-idam-entra-infra</span><span class="w">
 </span><span class="n">code</span><span class="w"> </span><span class="o">.</span><span class="w">                   </span><span class="c"># Opens VS Code in this location</span><span class="w">
-</span><span class="n">git</span><span class="w"> </span><span class="nx">checkout</span><span class="w"> </span><span class="nt">-b</span><span class="w"> </span><span class="s2">"branch-name"</span><span class="w">    </span><span class="c"># Create a new branch </span><span class="w">
 </span></code></pre></div>
 <hr>
 <h2 id="step-2-update-repo-and-create-feature-branch">Step 2: Update Repo and Create Feature Branch</h2>
@@ -198,8 +197,24 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <p>Once updates are complete, run:</p>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>git add <span class="nb">.</span>
 git commit <span class="nt">-m</span> <span class="s2">"xxxx"</span>      <span class="c"># Replace xxxx with a descriptive commit message</span>
-git push
-</code></pre></div>
+git push <span class="nt">--set-upstream</span> origin your-branch-name
+</code></pre></div><p>If you recieve the following error: 
+<code>
+remote: Permission to ministryofjustice/staff-identity-idam-entra-infra.git denied to YOUR_USER_NAME.
+fatal: unable to access &#39;https://github.com/ministryofjustice/staff-identity-idam-entra-infra.git/%27:  The requested URL returned error: 403 - Customers github team need access to our github repo - write perms
+</code>
+You will then need to follow the following steps:</p>
+
+<ol>
+<li><p>Go to the slack channel here: <a href="https://moj.enterprise.slack.com/archives/C04AFS7TV7S">staff-identity-authentication-services</a></p></li>
+<li><p>Click the <code>Add team to staff-identity-idam-entra-infra</code> workflow at the bottom of the screen, as seen below. 
+<a href="../images/documentation-slack-workflow.png" rel="noopener noreferrer"><img src="../images/documentation-slack-workflow.png" alt="image showing how to trigger Slack workflow" /></a></p></li>
+<li><p>Fill in the form that will appear on screen and click submit in the right hand corner, as per below.
+<a href="../images/documentation-slack-workflow-form.png" rel="noopener noreferrer"><img src="../images/documentation-slack-workflow-form.png" alt="image showing how to trigger Slack workflow" /></a></p></li>
+<li><p>Wait around 1 minute for the workflow to run. You should then see a message in Slack regarding your request, as per below.
+<a href="../images/documentation-slack-workflow-message.png" rel="noopener noreferrer"><img src="../images/documentation-slack-workflow-message.png" alt="image showing how to fill in Slack workflow form" /></a></p></li>
+</ol>
+
 <hr>
 <h2 id="step-5-create-a-pull-request">Step 5: Create a Pull Request</h2>
 
@@ -212,17 +227,21 @@ git push
 <li>Purpose of the change</li>
 <li>Jira ticket reference</li>
 </ul></li>
-<li>Click <code>Create pull request</code></li>
 </ol>
+<p>Please ensure you add a business justification for each application and delegated permission. This should highlight what you are using the permission for, to allow us to understand your use case and approve the permissions.
+4. Click <code>Create pull request</code>
+5. Once you have created the pull</p>
 
 <hr>
 <h2 id="step-6-review-approve-amp-merge">Step 6: Review, Approve &amp; Merge</h2>
 
 <ol>
-<li>Wait for the GitHub Actions workflow to complete.</li>
-<li>Request ministryofjustice/eucs-idam-maintainers to review your PR, as per the below screenshot.
-<a href="../images/documentation-request.png" rel="noopener noreferrer"><img src="../images/documentation-request.png" alt="image showing how to request a pull review" /></a></li>
-<li>Merge the pull request into main.</li>
+<li><p>Wait for the GitHub Actions workflow to complete. An example of this can be seen below, on a customers [Workflow] Pull Request run. 
+<a href="../images/documentation-Github-Workflow.png" rel="noopener noreferrer"><img src="../images/documentation-Github-Workflow.png" alt="image showing a successful Github Pull Request workflow run" /></a></p></li>
+<li><p>The IDAM team will automatically get notified to review your pull request.</p></li>
+<li><p>You will need to await for the IDAM team to approve your pull request, which may be delayed if we need to raise a change request for the permissions you have requested.</p></li>
+<li><p>You should be notified once we have merged your pull request</p></li>
+<li><p>Please check the deployed config in the Azure portal and ensure it aligns with your expectations. If not, please reach out to the IDAM team on Slack here: <a href="https://moj.enterprise.slack.com/archives/C04AFS7TV7S">staff-identity-authentication-services</a></p></li>
 </ol>
 
 <hr>
@@ -230,16 +249,20 @@ git push
 <p>After merging:</p>
 
 <ol>
-<li>Confirm that GitHub Actions run successfully.</li>
-<li>If errors arise:
-
-<ul>
-<li>Create a new feature branch.</li>
-<li>Fix the issue.</li>
-<li>Raise another pull request.</li>
-<li>Merge into <code>main</code> once fixed.</li>
-</ul></li>
+<li>The IDAM team will confirm that GitHub Actions run successfully.</li>
+<li>If errors arise we will reach out to you regarding the error</li>
+<li>In these situation we will work collabratively with you in order to resolve the issue.</li>
 </ol>
+<p>This will require us to do the follow:</p>
+
+<ol>
+<li>Create a new feature branch locally </li>
+<li>Create a new pull request from the feature branch to the main branch</li>
+<li>Check that the actions run was successful</li>
+<li>Obtain the required approvals before merging the pull request</li>
+<li>Monitor the main branch actions run, to ensure the error has been resolved</li>
+</ol>
+<p>Should there be futher issues, we would need to go through steps 1 - 5 again, until the error has been resolved.</p>
 
 <hr>
 <h2 id="step-8-request-graph-permissions">Step 8: Request Graph Permissions</h2>
