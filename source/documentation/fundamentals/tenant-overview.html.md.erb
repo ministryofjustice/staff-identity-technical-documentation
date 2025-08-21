@@ -1,0 +1,85 @@
+# Tenant Overview
+
+## Overview
+
+![Tenant Overview](../../img/fundamentals-tenant-overview.png "Tenant Overview")
+
+We have three environments DEVL, NLE and PROD.
+
+DEVL and PROD contain two Entra ID tenants. An Internal Workforce tenant and a External Workforce tenant.
+
+NLE has only an Internal Workforce tenant.
+
+### Internal vs External Workforce Tenants
+
+Internal Workforce Tenants are the source of Justice identities and provide application integrations for internal services.
+
+External Workforce Tenants are used for application integrations that are public facing. Identities in this tenant are either Guest users who can sign in to applications as a member of the public or Justice identities that are provisioned from the Internal Workforce tenant via cross tenant sync.
+
+### Configuration
+
+Each External Workforce Tenant is configured and monitored by a Configuration as Code tool called M365DSC. Internal Workforce Tenants will follow this same pattern soon.
+
+In all tenants, Application Registrations (AR) and Enterprise Applications (EA) are managed via Terraform. In Development, if an integration is more complex, we can provision a temporary Dev admin account for users to access the Entra Portal and configure their application instead of Terraform.
+
+All AR's and EA's within the PROD tenants must be configured by Terraform. Admin accounts will not be available in these environments. This can be done by the integrating service teams or the IDAM team on their behalf.
+
+## Where to build your Application
+
+![Application setup per tenant](../../img/fundamentals-app-tenant.png "Application setup per tenant")
+
+Depending on the types of users who will be signing in to your application, you will need to build your application in either the Internal or External tenant. You will also need to take into account what privileges you will require as this will affect which environment you work in.
+
+### Internal or External
+
+If you are building an application that only internal Justice users will be authenticating with, then you will build in the Internal Workforce Tenant.
+
+If you are building an application where Guest users will be able to access your applications (such as profressional bodies like Solicitors), then you will build your application in the External Workforce Tenant.
+
+### Standard SSO Applications
+
+In most cases, you will build your application directly into our production tenants. Most application integrations that handle Single Sign On require low permissions (Delegated `User.Read`) with no additional special configuration. In this case we would class this as a `Standard SSO Application`. These can be quickly integrated and approved via Terraform.
+
+For example, if you want to setup a DEV, NLE and PROD integration so that you can test your application, you can create 3 different application integrations within the appropriate Production tenant.
+
+For more information on setting up a new [Application Registration see this link](/documentation/guidance/appreg.html).
+
+### Privilieged SSO Applications
+
+Some integrations may require higher levels of permissions in order to work. This includes
+
+* Any `Application` level permissions rather than `Delegated`
+* `Application` and `Delegated` permissions like `Mail.Read` or `Sharepoint.ReadAll`
+
+We would class these applications as `Privilieged SSO Applications`. You can still use Terraform to set these applications up, but we will require some extra steps before we can approve these applications for use.
+
+In any Pull Request, ensure you fill out the details of your application, the permissions being requested and justification for each and how they will be used.
+
+Unlike the Standard SSO Application, we would expect to see this first being built in our DEVL environment. This is especially important for any applications that have `ReadWrite` permissions.
+
+This is to ensure there is no risk to data loss and the IDAM team can work with you to ensure best practices are being followed.
+
+Before publishing to PROD you will require a Change Request. We will use the information from the Pull Requests created up to this point to ensure all information is auditable and Change Management is satisfied.
+
+### Examples of where to build your application(s)
+
+|Application Description|Tenant Type|Production Environment|Development Environment|Application Type|
+|---|---|---|---|--|
+|An internal CMS that allows Justice identities to sign in so they can work on cases.|Internal|Yes|No|Standard SSO Application|
+|A custom built internal people finder application that allows Justice identities to sign in so they can search all users in the organisation and edit their phone number which updates their user object in Entra.|Internal|Yes|Yes - POC|Privilieged SSO Application|
+|A custom built, public facing site that allows Solicitors to log in and process documentation.|External|Yes|No|Standard SSO Application|
+|A custom built, public facing site that allows Charities to log in, upload documents and the application saves them to a SharePoint site.|External|Yes|Yes - POC|Privilieged SSO Application|
+
+### Automated Testing
+
+For details on [Automated testing, please see this link](/documentation/fundamentals/integration-testing.html).
+
+## Section Contents
+
+* [Tenant Overview](/documentation/fundamentals/tenant-overview.html)
+* [Integration Testing](/documentation/fundamentals/integration-testing.html)
+* [Token Lifetime Policy](/documentation/fundamentals/token-lifetime.html)
+
+## Resources
+
+* [EUCS IDAM Team Shared Inbox](mailto:idam@justice.gov.uk)
