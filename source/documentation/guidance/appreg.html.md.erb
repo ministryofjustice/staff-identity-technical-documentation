@@ -26,7 +26,7 @@ When requesting a new Application Registration we require a minimum amount of in
 | Delegated Permissions | `false` | Graph Delegated Permissions required on the Application such as User.Read. By default, for standard SSO integrations, this can be left blank. | `"User.Read"` |
 | Application Permissions | `false` | Graph Application Permissions required on the Application such as User.Read.All. By default, for standard SSO integrations, this can be left blank. | `"User.Read.All, Groups.Read.All"` |
 | Redirect URLs | `true` | The URIs we will accept as destinations when returning authentication responses (tokens) after successfully authenticating or signing out users. The redirect URI you send in the request to the login server should match one listed here. Also referred to as reply URLs. | `"https://example.com/account", "https://example2.com/redirect"` |
-| Environments | `true` | Which tenants you want this application to be available on. For testing you may initially only require DEVL to be setup and subsequently release to other tenants. | `"DEVL", "NLE", "LIVE"` |
+| Entra Tenant(s) | `true` | Which Entra tenant/environment you want this application to be available on. For testing you may initially only require DEVL to be setup and subsequently release to other tenants. | `"DEVL", "NLE", "LIVE"` |
 | Credential Type | `true` | What type of credential you are securing your integration with. Is it SAML, Certificate or Secret. | `"Secret"` |
 
 You can copy and paste the following table, fill in the details and send it along with the demand.
@@ -43,7 +43,7 @@ You can copy and paste the following table, fill in the details and send it alon
 | Delegated Permissions |   |
 | Application Permissions |   |
 | Redirect URLs |   |
-| Environments |   |
+| Entra Tenant(s) |   |
 | Credential Type |   |
 
 ### Demand Process
@@ -154,7 +154,7 @@ You will need to provide the following details
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Application Name       | Name of your application this secret is assigned to.                                                                          |
 | Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
-| Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
+| Entra Tenant           | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
 | Please select what you would like to update | Select Certificate. |
 | Old Secret Expiry Date | This will allow you to have two valid secrets while you update your integrations. We will remove the old secret on this date. |
 
@@ -178,9 +178,9 @@ You will need to provide the following details
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Application Name       | Name of your application this certificate should be assigned to.                                                                         |
 | Application ID         | Also referred to as your Client ID, this is the ID used in your integration to identify itself.                               |
-| Environment            | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
+| Entra Tenant           | Is this for the Entra DEV, NLE or LIVE environment.                                                                           |
 | Please select what you would like to update | Select Certificate. |
-| Attachements            | Add your certificate here (.cer, .pem, .crt).                                                                           |
+| Attachments            | Add your certificate here (.cer, .pem, .crt).                                                                           |
 
 This will then be assigned to the IDAM team to schedule and communicate when we will complete the request for you.
 
