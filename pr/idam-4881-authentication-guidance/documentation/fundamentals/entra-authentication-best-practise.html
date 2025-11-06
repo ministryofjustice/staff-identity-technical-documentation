@@ -147,19 +147,19 @@ Azure SDKs</p>
 </ul></li>
 </ul>
 <h2 id="example-authentication-best-practise-use-cases">Example Authentication Best Practise Use Cases</h2>
-<p>Use case 1: You run PowerShell or other Scripts via a service account</p>
-<p>Options:</p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1: Migrate your script to an azure run book which uses a Managed identity for authentication.
+<p>Use case 1: You run PowerShell or other Scripts via a service account <br>
+Options:<br></p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1: Migrate your script to an azure run book which uses a Managed identity for authentication.&lt;br&gt;
 
-2: Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.
-</code></pre></div><p>Use case 2: You have a application that accesses Entra via GitHub Actions</p>
-<p>Options:</p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1: Federation between your app reg and GitHub actions via OIDC
+2: Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.&lt;br&gt;
+</code></pre></div><p>Use case 2: You have a application that accesses Entra via GitHub Actions<br></p>
+<p>Options:<br></p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1: Federation between your app reg and GitHub actions via OIDC&lt;br&gt;
 
-2: Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).
-</code></pre></div><p>Use case 3: You use a service account with a 3rd party tool like Sharegate</p>
-<p>Options:</p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication
+2: Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).&lt;br&gt;
+</code></pre></div><p>Use case 3: You use a service account with a 3rd party tool like Sharegate<br></p>
+<p>Options:<br></p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication&lt;br&gt;
 </code></pre></div>
             
           </main>
