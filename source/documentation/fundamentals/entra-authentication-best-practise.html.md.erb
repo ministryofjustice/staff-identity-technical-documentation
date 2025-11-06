@@ -1,0 +1,45 @@
+# Enta Authentication Best Practise
+
+## Latest Updates
+
+### Microsoft Mandatory MFA Enforcement – Phase 2
+
+Microsofts mandatory multifactor authentication (MFA) enforcement is entering Phase 2. If your organization hasnt requested an extension through the Entra portal, MFA will be automatically required for:
+
+Azure portal
+Microsoft Entra admin center
+Azure CLI
+Azure PowerShell
+Azure mobile app
+Infrastructure as Code (IaC) tools
+REST API (Control Plane)
+Azure SDKs
+
+This is especially important for those that currently use service accounts without Multi Factor Authentication
+
+## Microsoft Authentication Reccomendations
+
+Microsofts recommended approach is to transition away from service accounts with passwords. Better options include:
+
+* Managed Identities - [Microsofts Managed Identity Documentation](https://docs.azure.cn/en-us/entra/identity/managed-identities-azure-resources/overview)
+    * Ideal for resources already running in Azure (VMs, Functions, Logic Apps).
+    * Eliminates credential management.
+* Workload Identities - [Microsofts Workload Identity Documentation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview)
+    * Purpose-built for non-human interaction (Applications, Services, Scripts, or Containers)
+
+    
+## Example Authentication Best Practise Use Cases
+
+Use case 1: You run PowerShell or other Scripts via a service account
+Options: 
+	1: Migrate your script to an azure run book which uses a Managed identity for authentication.
+	2: Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.
+
+Use case 2: You have a application that accesses Entra via GitHub Actions
+Options: 
+	1: Federation between your app reg and GitHub actions via OIDC
+	2: Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).
+
+Use case 3: You use a service account with a 3rd party tool like Sharegate
+Options:
+	We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication
