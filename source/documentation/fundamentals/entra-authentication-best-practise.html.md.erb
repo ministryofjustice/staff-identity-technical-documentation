@@ -30,21 +30,21 @@ Microsofts recommended approach is to transition away from service accounts with
 
 ## Example Authentication Best Practise Use Cases
 
-Use case 1: You run PowerShell or other Scripts via a service account 
+### Use case 1: You run PowerShell or other Scripts via a service account 
 Options:
 
 1. Migrate your script to an azure run book which uses a Managed identity for authentication.
 
 2. Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.
 
-Use case 2: You have a application that accesses Entra via GitHub Actions.
+### Use case 2: You have a application that accesses Entra via GitHub Actions.
 Options:
 
 1. Federation between your app reg and GitHub actions via OIDC
 
 2. Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).
 
-Use case 3: You use a service account with a 3rd party tool like Sharegate.
+### Use case 3: You use a service account with a 3rd party tool like Sharegate.
 Options:
 
 We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication
