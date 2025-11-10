@@ -105,6 +105,17 @@
       </li>
       <li>
         <a href="#example-authentication-best-practise-use-cases"><span>Example Authentication Best Practise Use Cases</span></a>
+        <ul>
+          <li>
+            <a href="#use-case-1-you-run-powershell-or-other-scripts-via-a-service-account"><span>Use case 1: You run PowerShell or other Scripts via a service account</span></a>
+          </li>
+          <li>
+            <a href="#use-case-2-you-have-a-application-that-accesses-entra-via-github-actions"><span>Use case 2: You have a application that accesses Entra via GitHub Actions.</span></a>
+          </li>
+          <li>
+            <a href="#use-case-3-you-use-a-service-account-with-a-3rd-party-tool-like-sharegate"><span>Use case 3: You use a service account with a 3rd party tool like Sharegate.</span></a>
+          </li>
+        </ul>
       </li>
     </ul>
   </li>
@@ -150,22 +161,22 @@
 </ul></li>
 </ul>
 <h2 id="example-authentication-best-practise-use-cases">Example Authentication Best Practise Use Cases</h2>
-<p>Use case 1: You run PowerShell or other Scripts via a service account 
-Options:</p>
+<h3 id="use-case-1-you-run-powershell-or-other-scripts-via-a-service-account">Use case 1: You run PowerShell or other Scripts via a service account</h3>
+<p>Options:</p>
 
 <ol>
 <li><p>Migrate your script to an azure run book which uses a Managed identity for authentication.</p></li>
 <li><p>Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.</p></li>
 </ol>
-<p>Use case 2: You have a application that accesses Entra via GitHub Actions.
-Options:</p>
+<h3 id="use-case-2-you-have-a-application-that-accesses-entra-via-github-actions">Use case 2: You have a application that accesses Entra via GitHub Actions.</h3>
+<p>Options:</p>
 
 <ol>
 <li><p>Federation between your app reg and GitHub actions via OIDC</p></li>
 <li><p>Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).</p></li>
 </ol>
-<p>Use case 3: You use a service account with a 3rd party tool like Sharegate.
-Options:</p>
+<h3 id="use-case-3-you-use-a-service-account-with-a-3rd-party-tool-like-sharegate">Use case 3: You use a service account with a 3rd party tool like Sharegate.</h3>
+<p>Options:</p>
 <p>We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication</p>
 
             
