@@ -121,14 +121,17 @@
 <h2 id="latest-updates">Latest Updates</h2>
 <h3 id="microsoft-mandatory-mfa-enforcement-phase-2">Microsoft Mandatory MFA Enforcement – Phase 2</h3>
 <p>Microsofts mandatory multifactor authentication (MFA) enforcement is entering Phase 2. If your organization hasnt requested an extension through the Entra portal, MFA will be automatically required for:</p>
-<p>Azure portal
-Microsoft Entra admin center
-Azure CLI
-Azure PowerShell
-Azure mobile app
-Infrastructure as Code (IaC) tools
-REST API (Control Plane)
-Azure SDKs</p>
+
+<ul>
+<li>Azure portal</li>
+<li>Microsoft Entra admin center</li>
+<li>Azure CLI</li>
+<li>Azure PowerShell</li>
+<li>Azure mobile app</li>
+<li>Infrastructure as Code (IaC) tools</li>
+<li>REST API (Control Plane)</li>
+<li>Azure SDKs</li>
+</ul>
 <p>This is especially important for those that currently use service accounts without Multi Factor Authentication</p>
 <h2 id="microsoft-authentication-reccomendations">Microsoft Authentication Reccomendations</h2>
 <p>Microsofts recommended approach is to transition away from service accounts with passwords. Better options include:</p>
@@ -147,20 +150,20 @@ Azure SDKs</p>
 </ul></li>
 </ul>
 <h2 id="example-authentication-best-practise-use-cases">Example Authentication Best Practise Use Cases</h2>
-<p>Use case 1: You run PowerShell or other Scripts via a service account <br>
-Options:<br></p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1: Migrate your script to an azure run book which uses a Managed identity for authentication.&lt;br&gt;
+<p>Use case 1: You run PowerShell or other Scripts via a service account 
+Options:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1. Migrate your script to an azure run book which uses a Managed identity for authentication.
 
-2: Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.&lt;br&gt;
-</code></pre></div><p>Use case 2: You have a application that accesses Entra via GitHub Actions<br></p>
-<p>Options:<br></p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1: Federation between your app reg and GitHub actions via OIDC&lt;br&gt;
+2. Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.
+</code></pre></div><p>Use case 2: You have a application that accesses Entra via GitHub Actions.
+Options:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1. Federation between your app reg and GitHub actions via OIDC
 
-2: Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).&lt;br&gt;
-</code></pre></div><p>Use case 3: You use a service account with a 3rd party tool like Sharegate<br></p>
-<p>Options:<br></p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication&lt;br&gt;
-</code></pre></div>
+2. Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).
+</code></pre></div><p>Use case 3: You use a service account with a 3rd party tool like Sharegate.
+Options:</p>
+<p>We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication</p>
+
             
           </main>
 
