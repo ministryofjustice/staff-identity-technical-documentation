@@ -108,9 +108,6 @@
       </li>
     </ul>
   </li>
-  <li>
-    <a href="#test"><span>Test</span></a>
-  </li>
 </ul>
 
 
@@ -155,18 +152,21 @@
 <h2 id="example-authentication-best-practise-use-cases">Example Authentication Best Practise Use Cases</h2>
 <p>Use case 1: You run PowerShell or other Scripts via a service account 
 Options:</p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1. Migrate your script to an azure run book which uses a Managed identity for authentication.
 
-2. Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.
-</code></pre></div><p>Use case 2: You have a application that accesses Entra via GitHub Actions.
+<ol>
+<li><p>Migrate your script to an azure run book which uses a Managed identity for authentication.</p></li>
+<li><p>Configure a CICD pipeline in GitHub actions with federation between your app reg and GitHub actions via OIDC.</p></li>
+</ol>
+<p>Use case 2: You have a application that accesses Entra via GitHub Actions.
 Options:</p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>1. Federation between your app reg and GitHub actions via OIDC
 
-2. Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).
-</code></pre></div><p>Use case 3: You use a service account with a 3rd party tool like Sharegate.
+<ol>
+<li><p>Federation between your app reg and GitHub actions via OIDC</p></li>
+<li><p>Secret or Certificate for authentication (Whilst technically possible, this is no longer recommended).</p></li>
+</ol>
+<p>Use case 3: You use a service account with a 3rd party tool like Sharegate.
 Options:</p>
 <p>We can see no viable way to continue to use these tools without human interaction to authenticate without Multi Factor Authentication</p>
-<h1 id="test">Test</h1>
 
             
           </main>
