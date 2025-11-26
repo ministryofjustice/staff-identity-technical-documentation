@@ -151,7 +151,7 @@
 </span></code></pre></div>
 <hr>
 <h2 id="step-2-update-repo-and-create-feature-branch">Step 2: Update Repo and Create Feature Branch</h2>
-<p>If youve already cloned the repo locally, open the repo in VS Code (or IDE of your choice) and run the following in the terminal:</p>
+<p>If you&rsquo;ve already cloned the repo locally, open the repo in VS Code (or IDE of your choice) and run the following in the terminal:</p>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>git pull
 git checkout <span class="nt">-b</span> <span class="s2">"IDAM-xxxx-name-of-your-feature-branch"</span>
 Replace IDAM-xxxx with the Jira ticket number linked to your change. 
@@ -170,13 +170,13 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <li><p>Update these files:</p>
 
 <ul>
-<li>state.config: Please see the below screenshot. As per the instrustions at the top of the state.config file. </li>
+<li>state.config: Please see the below screenshot. As per the instructions at the top of the state.config file. </li>
 <li>Please only keep the block of code needed for the environment that you are deploying to.
 <a href="../images/documentation-state1.png" rel="noopener noreferrer"><img src="../images/documentation-state1.png" alt="image showing how to configure the state.config file" /></a></li>
 </ul></li>
 <li><p>Update the <code>key</code> to match the new folder name. 
 -Specifically the <code>DEPARTMENT_NAME-TEAM_NAME</code> placeholder.</p>
-<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEAPRTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
+<div class="highlight"><pre class="highlight hcl" tabindex="0"><code><span class="nx">staff</span><span class="err">-</span><span class="nx">identity</span><span class="err">-</span><span class="nx">idam</span><span class="err">-</span><span class="nx">entra</span><span class="err">-</span><span class="nx">infra</span><span class="err">-</span><span class="nx">DEPARTMENT_NAME</span><span class="err">-</span><span class="nx">TEAM_NAME</span><span class="err">-</span><span class="nx">environmentName</span><span class="err">.</span><span class="nx">tfstate</span>
 </code></pre></div><p><a href="../images/documentation-state2.png" rel="noopener noreferrer"><img src="../images/documentation-state2.png" alt="image showing how to configure the state.config file key" /></a></p></li>
 <li><p>variables.tf:</p>
 
@@ -198,7 +198,7 @@ Replace IDAM-xxxx with the Jira ticket number linked to your change.
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>git add <span class="nb">.</span>
 git commit <span class="nt">-m</span> <span class="s2">"xxxx"</span>      <span class="c"># Replace xxxx with a descriptive commit message</span>
 git push <span class="nt">--set-upstream</span> origin your-branch-name
-</code></pre></div><p>If you recieve the following error: 
+</code></pre></div><p>If you receive the following error: 
 <code>
 remote: Permission to ministryofjustice/staff-identity-idam-entra-infra.git denied to YOUR_USER_NAME.
 fatal: unable to access &#39;https://github.com/ministryofjustice/staff-identity-idam-entra-infra.git/%27:  The requested URL returned error: 403 - Customers github team need access to our github repo - write perms
@@ -238,6 +238,8 @@ You will then need to follow the following steps:</p>
 <ol>
 <li><p>Wait for the GitHub Actions workflow to complete. An example of this can be seen below, on a customers [Workflow] Pull Request run. 
 <a href="../images/documentation-Github-Workflow.png" rel="noopener noreferrer"><img src="../images/documentation-Github-Workflow.png" alt="image showing a successful Github Pull Request workflow run" /></a></p></li>
+<li><p>Review the job and terraform plan for the region you are deploying to. This will show if any errors need fixing, e.g. incorrect format, code errors etc.
+If there are any errors, fix these then push again, then run the terraform plan again and check all the output is successful.</p></li>
 <li><p>The IDAM team will automatically get notified to review your pull request.</p></li>
 <li><p>You will need to await for the IDAM team to approve your pull request, which may be delayed if we need to raise a change request for the permissions you have requested.</p></li>
 <li><p>You should be notified once we have merged your pull request</p></li>
@@ -251,7 +253,7 @@ You will then need to follow the following steps:</p>
 <ol>
 <li>The IDAM team will confirm that GitHub Actions run successfully.</li>
 <li>If errors arise we will reach out to you regarding the error</li>
-<li>In these situation we will work collabratively with you in order to resolve the issue.</li>
+<li>In these situation we will work collaboratively with you in order to resolve the issue.</li>
 </ol>
 <p>This will require us to do the follow:</p>
 
@@ -262,7 +264,7 @@ You will then need to follow the following steps:</p>
 <li>Obtain the required approvals before merging the pull request</li>
 <li>Monitor the main branch actions run, to ensure the error has been resolved</li>
 </ol>
-<p>Should there be futher issues, we would need to go through steps 1 - 5 again, until the error has been resolved.</p>
+<p>Should there be further issues, we would need to go through steps 1 - 5 again, until the error has been resolved.</p>
 
 <hr>
 <h2 id="step-8-request-graph-permissions">Step 8: Request Graph Permissions</h2>
