@@ -127,7 +127,7 @@
 <p>OBO flows are required when an application needs to exchange a token it received for a new token intended for a totally different downstream service, specifically to maintain the user&rsquo;s identity across that boundary.</p>
 <h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
 <p>Flow: <code>(Single Hop) User -&gt; (Web App -&gt; Internal API)</code></p>
-<p>If the Web App acts as the client, it can simply request an Access Token specifically scoped for the Internal API during the initial login. The Internal API receives this token, validates the aud (Audience), and reads the oid (User ID) directly. No OBO exchange is required because the client requested the correct token upfront.</p>
+<p>If the Web App acts as the client, it can simply request an Access Token specifically scoped for the Internal API during the initial login. The Internal API receives this token, validates the <code>aud</code> (Audience), and reads the <code>oid</code> (User ID) directly. No OBO exchange is required because the client requested the correct token upfront.</p>
 <h3 id="scenario-b-obo-required-double-hop">Scenario B: OBO Required (Double Hop)</h3>
 <p>Flow: <code>User -&gt; Web App -&gt; Internal API --(call)--&gt; External/Downstream API</code></p>
 <p>If the Internal API needs to call a downstream service (like a Shared Document API) as the user, it cannot just pass the token it received from the Web App (that token is audienced to the Internal API, not the Document API).</p>
@@ -135,9 +135,9 @@
 <h3 id="zero-trust-alternative">Zero Trust Alternative</h3>
 <p>Flow: <code>User -&gt; Web App (Low Privilege) -&gt; Internal API (High Privilege)</code></p>
 <p>If you want to harden application security, you can use OBO to enforce Least Privilege.</p>
-<p>You create two separate App Registrations. The public-facing Web App only receives a &ldquo;Low Privilege&rdquo; token (e.g., User.Read.All).</p>
+<p>You create two separate App Registrations. The public-facing Web App only receives a &ldquo;Low Privilege&rdquo; token (e.g., <code>User.Read.All</code>).</p>
 <p>If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.</p>
-<p>When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., User.ReadWrite.All) to complete the task.</p>
+<p>When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., <code>User.ReadWrite.All</code>) to complete the task.</p>
 <p>This ensures that high-privilege tokens never exist in the browser or the frontend web layer.</p>
 <h2 id="resources">Resources</h2>
 
