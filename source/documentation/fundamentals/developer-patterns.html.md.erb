@@ -1,0 +1,42 @@
+## Common Software Development Patterns
+
+As we build integrations together into Entra ID, we should share common integration patterns and best practices that are used so that new teams onboarding can take advantage of the work done before them.
+
+This document covers and links to existing patterns discussed and used in various MoJ teams.
+
+## On behalf of (OBO) flows
+
+OBO flows are required when an application needs to exchange a token it received for a new token intended for a totally different downstream service, specifically to maintain the user's identity across that boundary.
+
+### Scenario A: No OBO Needed
+
+Flow: `(Single Hop) User -> (Web App -> Internal API)`
+
+If the Web App acts as the client, it can simply request an Access Token specifically scoped for the Internal API during the initial login. The Internal API receives this token, validates the aud (Audience), and reads the oid (User ID) directly. No OBO exchange is required because the client requested the correct token upfront.
+
+### Scenario B: OBO Required (Double Hop)
+
+Flow: `User -> Web App -> Internal API --(call)--> External/Downstream API`
+
+If the Internal API needs to call a downstream service (like a Shared Document API) as the user, it cannot just pass the token it received from the Web App (that token is audienced to the Internal API, not the Document API).
+
+In this case, the Internal API must use the OBO flow. It takes the user's token, sends it to Entra ID, and exchanges it for a new token where the audience is strictly the "Shared Document API." This ensures the downstream service knows exactly who the user is and can enforce permissions securely.
+
+### Zero Trust Alternative
+
+Flow: `User -> Web App (Low Privilege) -> Internal API (High Privilege)`
+
+If you want to harden application security, you can use OBO to enforce Least Privilege.
+
+You create two separate App Registrations. The public-facing Web App only receives a "Low Privilege" token (e.g., User.Read.All).
+
+If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.
+
+When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., User.ReadWrite.All) to complete the task.
+
+This ensures that high-privilege tokens never exist in the browser or the frontend web layer.
+
+
+## Resources
+
+* [EUCS IDAM Team Shared Inbox](mailto:idam@justice.gov.uk)
