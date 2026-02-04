@@ -99,7 +99,7 @@
             <a href="#use-case"><span>Use Case</span></a>
             <ul>
               <li>
-                <a href="#diagram"><span>Diagram</span></a>
+                <a href="#non-tech-analogy"><span>Non-Tech Analogy</span></a>
               </li>
             </ul>
           </li>
@@ -107,7 +107,7 @@
             <a href="#scenario-a-no-obo-needed"><span>Scenario A: No OBO Needed</span></a>
             <ul>
               <li>
-                <a href="#scenario-a-no-obo-needed-diagram"><span>Diagram</span></a>
+                <a href="#diagram"><span>Diagram</span></a>
               </li>
             </ul>
           </li>
@@ -130,6 +130,9 @@
           <li>
             <a href="#service-to-service-s2s-pattern-use-case"><span>Use Case</span></a>
             <ul>
+              <li>
+                <a href="#service-to-service-s2s-pattern-use-case-non-tech-analogy"><span>Non-Tech Analogy</span></a>
+              </li>
               <li>
                 <a href="#service-to-service-s2s-pattern-use-case-diagram"><span>Diagram</span></a>
               </li>
@@ -158,37 +161,16 @@
         <div class="app-pane__content toc-open-disabled">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="identity-software-integration-patterns">Identity Software Integration Patterns</h1>
-<p>This document covers and links to existing patterns discussed and used in various MoJ teams.</p>
+<p>This document outlines the standard identity patterns used within the MoJ to ensure services can talk to each other securely while protecting user data.</p>
 <h2 id="on-behalf-of-obo-pattern">On behalf of (OBO) Pattern</h2>
 <h3 id="use-case">Use Case</h3>
-<p>OBO flows are required when an application needs to exchange a token for a new token intended for a totally different downstream service, while maintaing the context of the logged in user.</p>
-<p>For the examples below, we will use an example downstream API application called &ldquo;Secure Document Storage (SDS)&rdquo;.</p>
-<h4 id="diagram">Diagram</h4>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
-    participant User as User (Browser)
-    participant Client as Web App (Middle-Tier)
-    participant Entra as Entra ID
-    participant SDS as SDS API (Downstream)
-
-    Note over User, Entra: Step 1: User Login
-    User-&gt;&gt;Entra: Log in &amp; request access to Web App
-    Entra--&gt;&gt;User: Issue Access Token A (Audience: Web App)
-    User-&gt;&gt;Client: Call API with Token A
-
-    Note over Client, Entra: Step 2: Token Exchange (OBO)
-    Client-&gt;&gt;Entra: Request token for SDS&lt;br/&gt;(Send Token A + Client Secret)
-    Note right of Entra: Validates User + App trust
-    Entra--&gt;&gt;Client: Issue Access Token B (Audience: SDS)
-
-    Note over Client, SDS: Step 3: Access Downstream Resource
-    Client-&gt;&gt;SDS: Call SDS API with Token B
-    Note left of SDS: Validates Token B&lt;br/&gt;(Contains User Identity)
-    SDS--&gt;&gt;Client: Return User's Files
-    Client--&gt;&gt;User: Display Files in Browser
-</code></pre></div><h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
+<p>OBO flows are required when an application needs to act as a middleman. It exchanges the user&rsquo;s initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.</p>
+<h4 id="non-tech-analogy">Non-Tech Analogy</h4>
+<p>Imagine giving a lawyer &ldquo;Power of Attorney&rdquo; to sign a house deed for you. The lawyer doesn&rsquo;t sign as themselves; they sign on your behalf using the specific authority you granted them.</p>
+<h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
 <p>Flow: <code>(Single Hop) User -&gt; (Web App -&gt; Internal API)</code></p>
-<p>If the Web App acts as the client, it can simply request an Access Token specifically scoped for the Internal API during the initial login. The Internal API receives this token, validates the <code>aud</code> (Audience), and reads the <code>oid</code> (User ID) directly. No OBO exchange is required because the client requested the correct token upfront.</p>
-<h4 id="scenario-a-no-obo-needed-diagram">Diagram</h4>
+<p>If the Web App is the only service talking to the API, it can simply request an Access Token specifically for that API during the initial login. No exchange is required because the client requested the correct &ldquo;key&rdquo; upfront.</p>
+<h4 id="diagram">Diagram</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant User as User (Browser)
     participant Entra as Entra ID
@@ -211,8 +193,7 @@
     WebApp--&gt;&gt;User: Renders Content
 </code></pre></div><h3 id="scenario-b-obo-required-double-hop">Scenario B: OBO Required (Double Hop)</h3>
 <p>Flow: <code>User -&gt; Web App -&gt; Internal API --(call)--&gt; External/Downstream API</code></p>
-<p>If the Internal API needs to call a downstream service (like a Shared Document API) as the user, it cannot just pass the token it received from the Web App (that token is audienced to the Internal API, not the Document API).</p>
-<p>In this case, the Internal API must use the OBO flow. It takes the user&rsquo;s token, sends it to Entra ID, and exchanges it for a new token where the audience is strictly the &ldquo;Shared Document API.&rdquo; This ensures the downstream service knows exactly who the user is and can enforce permissions securely.</p>
+<p>If an Internal API needs to call a second service (like a Shared Document API) as the user, it cannot reuse the token it was given. Tokens are &ldquo;addressed&rdquo; to a specific recipient (the Audience). The Internal API must trade the user&rsquo;s token for a new one addressed to the downstream service.</p>
 <h4 id="scenario-b-obo-required-double-hop-diagram">Diagram</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant User as User (Browser)
@@ -226,9 +207,6 @@
     WebApp-&gt;&gt;API1: Call with Token A (Aud: Internal API)
 
     Note over API1, Entra: The "Double Hop" Exchange
-    API1-&gt;&gt;API1: Token A received.&lt;br/&gt;Audience is correct.
-    API1-&gt;&gt;API1: Need to call API2...&lt;br/&gt;but Token A won't work there.
-
     API1-&gt;&gt;Entra: OBO Request:&lt;br/&gt;"Exchange Token A for a token for API2"
     Note right of Entra: Validates Trust &amp; User Permissions
     Entra--&gt;&gt;API1: Issue Token B (Aud: Shared Document API)
@@ -248,7 +226,9 @@
 <p>This ensures that high-privilege tokens never exist in the browser or the frontend web layer.</p>
 <h2 id="service-to-service-s2s-pattern">Service to Service (S2S) Pattern</h2>
 <h3 id="service-to-service-s2s-pattern-use-case">Use Case</h3>
-<p>Use this when a service performs &ldquo;System&rdquo; tasks (e.g., logging, automated uploads, batch processing) where no human user is present.</p>
+<p>Use this for background tasks where no human user is present. This is for &ldquo;Machine-to-Machine&rdquo; communication, such as nightly backups, automated logging, or internal file synchronization.</p>
+<h4 id="service-to-service-s2s-pattern-use-case-non-tech-analogy">Non-Tech Analogy</h4>
+<p>This is like a security guard having a master key to the building. They don&rsquo;t need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.</p>
 <h4 id="service-to-service-s2s-pattern-use-case-diagram">Diagram</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant Client as Consumer Service
@@ -269,13 +249,12 @@
 
     SDS--&gt;&gt;Client: Return Success / Store File
 </code></pre></div><h3 id="technical-requirements">Technical Requirements</h3>
-<p><strong>Grant Type:</strong> client_credentials</p>
-<p><strong>Entra Identity:</strong> Managed Identity (preferred for Azure resources) or App Registration (with Client Secret).</p>
-<p><strong>Permissions:</strong> Application Roles. These are assigned globally to the service identity.</p>
-<p><strong>Implementation Flow:</strong></p>
-<p>The Client requests a token from Entra ID using its own identity.</p>
-<p>Entra ID issues a token with the roles claim.</p>
-<p>The Resource (Secure Document Service API) validates the roles claim (e.g., Files.Write).</p>
+
+<ul>
+<li><strong>Grant Type:</strong> client_credentials</li>
+<li><strong>Entra Identity:</strong> Managed Identity (strongly preferred for Azure resources to avoid secret management) or App Registration with a Client Secret.</li>
+<li><strong>Permissions:</strong> Application Roles. These are assigned globally to the service identity rather than a specific user.</li>
+</ul>
 <h2 id="which-should-you-use">Which should you use?</h2>
 <div class="table-container">
         <table>
