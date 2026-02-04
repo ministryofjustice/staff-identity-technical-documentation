@@ -120,6 +120,17 @@
             </ul>
           </li>
           <li>
+            <a href="#terraform"><span>Terraform</span></a>
+            <ul>
+              <li>
+                <a href="#downstream-service-application-registration"><span>Downstream Service Application Registration</span></a>
+              </li>
+              <li>
+                <a href="#calling-web-app-application-registration"><span>Calling web app Application Registration</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
             <a href="#zero-trust-alternative"><span>Zero Trust Alternative</span></a>
           </li>
         </ul>
@@ -135,6 +146,17 @@
               </li>
               <li>
                 <a href="#service-to-service-s2s-pattern-use-case-diagram"><span>Diagram</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#service-to-service-s2s-pattern-terraform"><span>Terraform</span></a>
+            <ul>
+              <li>
+                <a href="#resource"><span>Resource</span></a>
+              </li>
+              <li>
+                <a href="#consumer"><span>Consumer</span></a>
               </li>
             </ul>
           </li>
@@ -217,6 +239,38 @@
     API2--&gt;&gt;API1: Return Shared Documents
     API1--&gt;&gt;WebApp: Process &amp; Return Data
     WebApp--&gt;&gt;User: Success
+</code></pre></div><h3 id="terraform">Terraform</h3>
+<h4 id="downstream-service-application-registration">Downstream Service Application Registration</h4>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
+  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
+  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://sds.internal.laa"</span><span class="p">]</span>
+
+  <span class="nx">api</span> <span class="p">{</span>
+    <span class="c1"># This defines the "Delegated Permission" for OBO</span>
+    <span class="nx">oauth2_permission_scope</span> <span class="p">{</span>
+      <span class="nx">admin_consent_description</span>  <span class="p">=</span> <span class="s2">"Allow the app to access SDS on behalf of the user."</span>
+      <span class="nx">admin_consent_display_name</span> <span class="p">=</span> <span class="s2">"Access SDS"</span>
+      <span class="nx">enabled</span>                    <span class="p">=</span> <span class="kc">true</span>
+      <span class="nx">id</span>                         <span class="p">=</span> <span class="s2">"11111111-2222-3333-4444-555555555555"</span>
+      <span class="nx">type</span>                       <span class="p">=</span> <span class="s2">"User"</span>
+      <span class="nx">value</span>                      <span class="p">=</span> <span class="s2">"user_impersonation"</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="calling-web-app-application-registration">Calling web app Application Registration</h4>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"web_app"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Internal Case Management Web App"</span>
+
+  <span class="nx">required_resource_access</span> <span class="p">{</span>
+    <span class="c1"># Link to the SDS Application ID</span>
+    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">application_id</span>
+
+    <span class="nx">resource_access</span> <span class="p">{</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="s2">"11111111-2222-3333-4444-555555555555"</span> <span class="c1"># The scope ID from above</span>
+      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>                                <span class="c1"># 'Scope' = Delegated/OBO</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><h3 id="zero-trust-alternative">Zero Trust Alternative</h3>
 <p>Flow: <code>User -&gt; Web App (Low Privilege) -&gt; Internal API (High Privilege)</code></p>
 <p>If you want to harden application security, you can use OBO to enforce Least Privilege.</p>
@@ -248,6 +302,38 @@
     Note left of SDS: Validates Token Signature&lt;br/&gt;Checks for 'Files.Write' Role
 
     SDS--&gt;&gt;Client: Return Success / Store File
+</code></pre></div><h3 id="service-to-service-s2s-pattern-terraform">Terraform</h3>
+<h4 id="resource">Resource</h4>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
+
+  <span class="nx">app_role</span> <span class="p">{</span>
+    <span class="nx">allowed_member_types</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"Application"</span><span class="p">]</span> <span class="c1"># 'Application' = S2S/Machine</span>
+    <span class="nx">description</span>          <span class="p">=</span> <span class="s2">"Allows background services to upload files."</span>
+    <span class="nx">display_name</span>         <span class="p">=</span> <span class="s2">"Files.Write"</span>
+    <span class="nx">enabled</span>              <span class="p">=</span> <span class="kc">true</span>
+    <span class="nx">id</span>                   <span class="p">=</span> <span class="s2">"99999999-8888-7777-6666-555555555555"</span>
+    <span class="nx">value</span>                <span class="p">=</span> <span class="s2">"Files.Write"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="consumer">Consumer</h4>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"client_service"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Nightly Backup Service"</span>
+
+  <span class="nx">required_resource_access</span> <span class="p">{</span>
+    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">application_id</span>
+
+    <span class="nx">resource_access</span> <span class="p">{</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="s2">"99999999-8888-7777-6666-555555555555"</span> <span class="c1"># The role ID from above</span>
+      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Role"</span>                                 <span class="c1"># 'Role' = S2S/Machine</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate the password/secret for the client</span>
+<span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"client_secret"</span> <span class="p">{</span>
+  <span class="nx">application_object_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">client_service</span><span class="p">.</span><span class="nx">object_id</span>
+<span class="p">}</span>
 </code></pre></div><h3 id="technical-requirements">Technical Requirements</h3>
 
 <ul>
