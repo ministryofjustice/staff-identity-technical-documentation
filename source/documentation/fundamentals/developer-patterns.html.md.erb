@@ -76,6 +76,47 @@ sequenceDiagram
     WebApp-->>User: Success
 ```
 
+### Terraform
+
+#### Downstream Service Application Registration
+
+``` terraform
+resource "azuread_application" "sds_api" {
+  display_name     = "Secure Document Storage (SDS)"
+  identifier_uris  = ["api://sds.internal.laa"]
+
+  api {
+    # This defines the "Delegated Permission" for OBO
+    oauth2_permission_scope {
+      admin_consent_description  = "Allow the app to access SDS on behalf of the user."
+      admin_consent_display_name = "Access SDS"
+      enabled                    = true
+      id                         = "11111111-2222-3333-4444-555555555555"
+      type                       = "User"
+      value                      = "user_impersonation"
+    }
+  }
+}
+```
+
+#### Calling web app Application Registration
+
+``` terraform
+resource "azuread_application" "web_app" {
+  display_name = "Internal Case Management Web App"
+
+  required_resource_access {
+    # Link to the SDS Application ID
+    resource_app_id = azuread_application.sds_api.application_id
+
+    resource_access {
+      id   = "11111111-2222-3333-4444-555555555555" # The scope ID from above
+      type = "Scope"                                # 'Scope' = Delegated/OBO
+    }
+  }
+}
+```
+
 ### Zero Trust Alternative
 
 Flow: `User -> Web App (Low Privilege) -> Internal API (High Privilege)`
@@ -121,6 +162,47 @@ sequenceDiagram
     Note left of SDS: Validates Token Signature<br/>Checks for 'Files.Write' Role
     
     SDS-->>Client: Return Success / Store File
+```
+
+### Terraform
+
+#### Resource
+
+``` terraform
+resource "azuread_application" "sds_api" {
+  display_name = "Secure Document Storage (SDS)"
+
+  app_role {
+    allowed_member_types = ["Application"] # 'Application' = S2S/Machine
+    description          = "Allows background services to upload files."
+    display_name         = "Files.Write"
+    enabled              = true
+    id                   = "99999999-8888-7777-6666-555555555555"
+    value                = "Files.Write"
+  }
+}
+```
+
+#### Consumer
+
+``` terraform
+resource "azuread_application" "client_service" {
+  display_name = "Nightly Backup Service"
+
+  required_resource_access {
+    resource_app_id = azuread_application.sds_api.application_id
+
+    resource_access {
+      id   = "99999999-8888-7777-6666-555555555555" # The role ID from above
+      type = "Role"                                 # 'Role' = S2S/Machine
+    }
+  }
+}
+
+# Generate the password/secret for the client
+resource "azuread_application_password" "client_secret" {
+  application_object_id = azuread_application.client_service.object_id
+}
 ```
 
 ### Technical Requirements
