@@ -121,14 +121,6 @@
           </li>
           <li>
             <a href="#terraform"><span>Terraform</span></a>
-            <ul>
-              <li>
-                <a href="#downstream-service-application-registration"><span>Downstream Service Application Registration</span></a>
-              </li>
-              <li>
-                <a href="#calling-web-app-application-registration"><span>Calling web app Application Registration</span></a>
-              </li>
-            </ul>
           </li>
           <li>
             <a href="#zero-trust-alternative"><span>Zero Trust Alternative</span></a>
@@ -151,14 +143,6 @@
           </li>
           <li>
             <a href="#service-to-service-s2s-pattern-terraform"><span>Terraform</span></a>
-            <ul>
-              <li>
-                <a href="#resource"><span>Resource</span></a>
-              </li>
-              <li>
-                <a href="#consumer"><span>Consumer</span></a>
-              </li>
-            </ul>
           </li>
           <li>
             <a href="#technical-requirements"><span>Technical Requirements</span></a>
@@ -240,36 +224,141 @@
     API1--&gt;&gt;WebApp: Process &amp; Return Data
     WebApp--&gt;&gt;User: Success
 </code></pre></div><h3 id="terraform">Terraform</h3>
-<h4 id="downstream-service-application-registration">Downstream Service Application Registration</h4>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
-  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
-  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://sds.internal.laa"</span><span class="p">]</span>
+
+<ul>
+<li>The Web App has permission to call the Internal API.</li>
+<li>The Internal API has permission to call the Shared Document API.</li>
+<li>The Internal API is &ldquo;pre-authorized&rdquo; by the Shared Docs API, enabling the silent On-Behalf-Of (OBO) flow.</li>
+</ul>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">provider</span> <span class="s2">"azuread"</span> <span class="p">{}</span>
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 1. RANDOM UUIDS (For Stable Scope IDs)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_internal_api"</span> <span class="p">{}</span>  <span class="c1"># Scope exposed by Internal API</span>
+<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_shared_docs"</span> <span class="p">{}</span>   <span class="c1"># Scope exposed by Shared Docs API</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 2. SHARED DOCUMENT API (The Final Backend)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"shared_docs"</span> <span class="p">{</span>
+  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Shared Document API (Backend)"</span>
+  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://shared-documents"</span><span class="p">]</span>
+  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
 
   <span class="nx">api</span> <span class="p">{</span>
-    <span class="c1"># This defines the "Delegated Permission" for OBO</span>
+    <span class="nx">oauth2_permission_scope</span> <span class="p">{</span>
+      <span class="nx">admin_consent_description</span>  <span class="p">=</span> <span class="s2">"Allow the app to access shared documents."</span>
+      <span class="nx">admin_consent_display_name</span> <span class="p">=</span> <span class="s2">"Read Shared Documents"</span>
+      <span class="nx">enabled</span>                    <span class="p">=</span> <span class="kc">true</span>
+      <span class="nx">id</span>                         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span>
+      <span class="nx">type</span>                       <span class="p">=</span> <span class="s2">"User"</span>
+      <span class="nx">value</span>                      <span class="p">=</span> <span class="s2">"Documents.Read"</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"shared_docs_sp"</span> <span class="p">{</span>
+  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">client_id</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 3. INTERNAL API (The Middle Tier - SDS)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"internal_api"</span> <span class="p">{</span>
+  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Internal SDS API (Middle Tier)"</span>
+  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://internal-sds"</span><span class="p">]</span>
+  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
+
+  <span class="c1"># 3a. Expose its own Scope (for the Web App to call)</span>
+  <span class="nx">api</span> <span class="p">{</span>
     <span class="nx">oauth2_permission_scope</span> <span class="p">{</span>
       <span class="nx">admin_consent_description</span>  <span class="p">=</span> <span class="s2">"Allow the app to access SDS on behalf of the user."</span>
       <span class="nx">admin_consent_display_name</span> <span class="p">=</span> <span class="s2">"Access SDS"</span>
       <span class="nx">enabled</span>                    <span class="p">=</span> <span class="kc">true</span>
-      <span class="nx">id</span>                         <span class="p">=</span> <span class="s2">"11111111-2222-3333-4444-555555555555"</span>
+      <span class="nx">id</span>                         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span>
       <span class="nx">type</span>                       <span class="p">=</span> <span class="s2">"User"</span>
       <span class="nx">value</span>                      <span class="p">=</span> <span class="s2">"user_impersonation"</span>
     <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><h4 id="calling-web-app-application-registration">Calling web app Application Registration</h4>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"web_app"</span> <span class="p">{</span>
-  <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Internal Case Management Web App"</span>
 
+  <span class="c1"># 3b. Request Access to the Shared Document API (Backend)</span>
   <span class="nx">required_resource_access</span> <span class="p">{</span>
-    <span class="c1"># Link to the SDS Application ID</span>
-    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">application_id</span>
+    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">client_id</span>
 
     <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="s2">"11111111-2222-3333-4444-555555555555"</span> <span class="c1"># The scope ID from above</span>
-      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>                                <span class="c1"># 'Scope' = Delegated/OBO</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span> <span class="c1"># Requesting 'Documents.Read'</span>
+      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>
     <span class="p">}</span>
   <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"internal_api_sp"</span> <span class="p">{</span>
+  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span>
+<span class="p">}</span>
+
+<span class="c1"># 3c. Client Secret (Required for OBO flow to authenticate this API)</span>
+<span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"internal_api_secret"</span> <span class="p">{</span>
+  <span class="nx">application_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">display_name</span>   <span class="p">=</span> <span class="s2">"OBO Client Secret"</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 4. WEB APP (The Frontend)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"web_app"</span> <span class="p">{</span>
+  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Case Management Web App (Frontend)"</span>
+  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"https://localhost:5000/getAToken"</span><span class="p">]</span>
+    <span class="nx">implicit_grant</span> <span class="p">{</span>
+      <span class="nx">access_token_issuance_enabled</span> <span class="p">=</span> <span class="kc">false</span>
+      <span class="nx">id_token_issuance_enabled</span>     <span class="p">=</span> <span class="kc">true</span> <span class="c1"># Standard for OIDC login</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1"># 4a. Request Access to the Internal API (Middle Tier)</span>
+  <span class="nx">required_resource_access</span> <span class="p">{</span>
+    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span>
+
+    <span class="nx">resource_access</span> <span class="p">{</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span> <span class="c1"># Requesting 'user_impersonation'</span>
+      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"web_app_sp"</span> <span class="p">{</span>
+  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">client_id</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"web_app_secret"</span> <span class="p">{</span>
+  <span class="nx">application_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">id</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 5. PRE-AUTHORIZATION (The Trust Links)</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="c1"># TRUST LINK 1: Shared Docs trusts Internal API</span>
+<span class="c1"># This enables the "Double Hop" (OBO) without user consent prompt</span>
+<span class="k">resource</span> <span class="s2">"azuread_application_pre_authorized"</span> <span class="s2">"shared_docs_trusts_internal"</span> <span class="p">{</span>
+  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">id</span>       <span class="c1"># The Resource (Backend)</span>
+  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span> <span class="c1"># The Client (Middle Tier)</span>
+  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>   <span class="c1"># The Scope being granted</span>
+<span class="p">}</span>
+
+<span class="c1"># TRUST LINK 2: Internal API trusts Web App</span>
+<span class="c1"># This allows the Web App to call the Internal API silently</span>
+<span class="k">resource</span> <span class="s2">"azuread_application_pre_authorized"</span> <span class="s2">"internal_trusts_webapp"</span> <span class="p">{</span>
+  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">id</span>      <span class="c1"># The Resource (Middle Tier)</span>
+  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">client_id</span>    <span class="c1"># The Client (Frontend)</span>
+  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>  <span class="c1"># The Scope being granted</span>
 <span class="p">}</span>
 </code></pre></div><h3 id="zero-trust-alternative">Zero Trust Alternative</h3>
 <p>Flow: <code>User -&gt; Web App (Low Privilege) -&gt; Internal API (High Privilege)</code></p>
@@ -303,36 +392,75 @@
 
     SDS--&gt;&gt;Client: Return Success / Store File
 </code></pre></div><h3 id="service-to-service-s2s-pattern-terraform">Terraform</h3>
-<h4 id="resource">Resource</h4>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
-  <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="c1"># ==============================================================================</span>
+<span class="c1"># 1. RANDOM UUIDS (For Stable Role IDs)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"role_files_write"</span> <span class="p">{}</span>    <span class="c1"># App Role exposed by SDS API</span>
 
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 2. RESOURCE API (The Service being called)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
+  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
+  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://sds.internal.laa"</span><span class="p">]</span>
+  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
+
+  <span class="c1"># 2a. Define the App Role (Permission)</span>
   <span class="nx">app_role</span> <span class="p">{</span>
-    <span class="nx">allowed_member_types</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"Application"</span><span class="p">]</span> <span class="c1"># 'Application' = S2S/Machine</span>
+    <span class="nx">allowed_member_types</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"Application"</span><span class="p">]</span>                <span class="c1"># 'Application' = S2S/Machine</span>
     <span class="nx">description</span>          <span class="p">=</span> <span class="s2">"Allows background services to upload files."</span>
     <span class="nx">display_name</span>         <span class="p">=</span> <span class="s2">"Files.Write"</span>
     <span class="nx">enabled</span>              <span class="p">=</span> <span class="kc">true</span>
-    <span class="nx">id</span>                   <span class="p">=</span> <span class="s2">"99999999-8888-7777-6666-555555555555"</span>
+    <span class="nx">id</span>                   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>
     <span class="nx">value</span>                <span class="p">=</span> <span class="s2">"Files.Write"</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div><h4 id="consumer">Consumer</h4>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"client_service"</span> <span class="p">{</span>
+
+<span class="c1"># Service Principal for the API (Required for Role Assignment)</span>
+<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"sds_api_sp"</span> <span class="p">{</span>
+  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">client_id</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 3. CONSUMER SERVICE (The Background Worker)</span>
+<span class="c1"># ==============================================================================</span>
+<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"client_service"</span> <span class="p">{</span>
   <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Nightly Backup Service"</span>
 
+  <span class="c1"># 3a. Request Access to the Resource API</span>
   <span class="nx">required_resource_access</span> <span class="p">{</span>
-    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">application_id</span>
+    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">client_id</span>
 
     <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="s2">"99999999-8888-7777-6666-555555555555"</span> <span class="c1"># The role ID from above</span>
-      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Role"</span>                                 <span class="c1"># 'Role' = S2S/Machine</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>      <span class="c1"># The role ID from above</span>
+      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Role"</span>                                   <span class="c1"># 'Role' = S2S/Machine</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="c1"># Generate the password/secret for the client</span>
+<span class="c1"># Service Principal for the Consumer (The Identity that runs the code)</span>
+<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"client_service_sp"</span> <span class="p">{</span>
+  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">client_service</span><span class="p">.</span><span class="nx">client_id</span>
+<span class="p">}</span>
+
+<span class="c1"># 3b. Generate the Secret (The "Password" for the machine)</span>
 <span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"client_secret"</span> <span class="p">{</span>
-  <span class="nx">application_object_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">client_service</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">application_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">client_service</span><span class="p">.</span><span class="nx">id</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># 4. ROLE ASSIGNMENT (The "Admin Consent")</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="c1"># Unlike User flows, S2S flows require explicit assignment (Admin Consent).</span>
+<span class="c1"># This resource grants the 'Files.Write' role to the Backup Service.</span>
+<span class="k">resource</span> <span class="s2">"azuread_app_role_assignment"</span> <span class="s2">"grant_files_write"</span> <span class="p">{</span>
+  <span class="nx">app_role_id</span>         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>           <span class="c1"># The Permission</span>
+  <span class="nx">principal_object_id</span> <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">client_service_sp</span><span class="p">.</span><span class="nx">object_id</span> <span class="c1"># The Consumer (Backup Service)</span>
+  <span class="nx">resource_object_id</span>  <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">sds_api_sp</span><span class="p">.</span><span class="nx">object_id</span>    <span class="c1"># The Resource (SDS API)</span>
 <span class="p">}</span>
 </code></pre></div><h3 id="technical-requirements">Technical Requirements</h3>
 
