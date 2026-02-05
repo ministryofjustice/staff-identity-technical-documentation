@@ -104,6 +104,14 @@
             </ul>
           </li>
           <li>
+            <a href="#practical-examples"><span>Practical examples</span></a>
+            <ul>
+              <li>
+                <a href="#obo-pattern-fix"><span>OBO Pattern Fix</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
             <a href="#scenario-a-no-obo-needed"><span>Scenario A: No OBO Needed</span></a>
             <ul>
               <li>
@@ -173,7 +181,52 @@
 <p>OBO flows are required when an application needs to act as a middleman. It exchanges the user&rsquo;s initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.</p>
 <h4 id="non-tech-analogy">Non-Tech Analogy</h4>
 <p>Imagine giving a lawyer &ldquo;Power of Attorney&rdquo; to sign a house deed for you. The lawyer doesn&rsquo;t sign as themselves; they sign on your behalf using the specific authority you granted them.</p>
-<h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
+<h3 id="practical-examples">Practical examples</h3>
+<p>A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to</p>
+
+<ul>
+<li>Sign in a user (User.Read delegated)</li>
+<li>User will upload a document that will be saved to SharePoint (SharePoint.ReadWrite.OwnedBy)</li>
+<li>Application will call a centralised MOJ API Endpoint to store data such as UPN, Entra ID, DateTime, SharePoint ID, etc</li>
+</ul>
+<p>If we created an application registration, we would have to grant all those permissions on the application, and the seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will also require management of another custom API Auth method between the Application and the centralised API.</p>
+<p>In this scenario, we are giving a public facing application, higher than normal roles to our M365 estate. There is also a weak point in the authentication and data sent to the centralised MOJ API Endpoint. It is trusting that the application making the request to add/update/delete data has not been compromised.</p>
+<p>In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files into SharePoint and trigger API calls to the centralised MOJ API Endpoint without any authentication checks.</p>
+<h4 id="obo-pattern-fix">OBO Pattern Fix</h4>
+<p>We can use OBO to fix this issue by doing the following.</p>
+<p>Create 3 Application Registrations</p>
+
+<ol>
+<li>Public facing Web Application (Delegated User.Read)</li>
+<li>Non public facing Internal API (SharePoint.ReadWrite.OwnedBy)</li>
+<li>Centralised API Endpoint</li>
+</ol>
+<p>3 (Centralised API) trusts 2 (Internal API) to pass the user&rsquo;s identity securely. App 3 validates the token to ensure the request is coming from a real user, preventing data spoofing.</p>
+<p>In this way, even if a bad actor steals the Web Application&rsquo;s secrets, they cannot upload files. The Internal API requires a User Token (acting on behalf of a human). A stolen App Secret only proves the identity of the server, not the user, so the Internal API will reject the request.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
+    participant User
+    participant Web as 1. Public Web App
+    participant Internal as 2. Internal API (Orchestrator)
+    participant SP as SharePoint
+    participant Central as 3. Centralised MOJ API
+
+    User-&gt;&gt;Web: Upload Document
+    Note over Web: App has NO permissions&lt;br/&gt;for SP or Central API.
+
+    Web-&gt;&gt;Internal: Send File + User Token A
+    Note over Internal: Validates Token A.&lt;br/&gt;Exchanges for Token B (SP)&lt;br/&gt;Exchanges for Token C (Central)
+
+    par Parallel/Sequential Actions
+        Internal-&gt;&gt;SP: Upload File (with Token B)
+        SP--&gt;&gt;Internal: Return SharePoint ID
+
+        Internal-&gt;&gt;Central: Store Metadata (UPN, SP ID)&lt;br/&gt;(with Token C)
+        Note right of Central: Extracts User identity&lt;br/&gt;from Token C.&lt;br/&gt;Cannot be spoofed.
+    end
+
+    Internal--&gt;&gt;Web: Success
+    Web--&gt;&gt;User: Done
+</code></pre></div><h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
 <p>Flow: <code>(Single Hop) User -&gt; (Web App -&gt; Internal API)</code></p>
 <p>If the Web App is the only service talking to the API, it can simply request an Access Token specifically for that API during the initial login. No exchange is required because the client requested the correct &ldquo;key&rdquo; upfront.</p>
 <h4 id="diagram">Diagram</h4>
