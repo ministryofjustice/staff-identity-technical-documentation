@@ -112,6 +112,9 @@
             </ul>
           </li>
           <li>
+            <a href="#zero-trust-alternative"><span>Zero Trust Alternative</span></a>
+          </li>
+          <li>
             <a href="#scenario-a-no-obo-needed"><span>Scenario A: No OBO Needed</span></a>
             <ul>
               <li>
@@ -129,9 +132,6 @@
           </li>
           <li>
             <a href="#terraform"><span>Terraform</span></a>
-          </li>
-          <li>
-            <a href="#zero-trust-alternative"><span>Zero Trust Alternative</span></a>
           </li>
         </ul>
       </li>
@@ -185,20 +185,19 @@
 <p>A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to</p>
 
 <ul>
-<li>Sign in a user (User.Read delegated)</li>
-<li>User will upload a document that will be saved to SharePoint (SharePoint.ReadWrite.OwnedBy)</li>
+<li>Sign in a user (<code>User.Read.All</code> delegated)</li>
+<li>User will upload a document that will be saved to SharePoint (<code>SharePoint.ReadWrite.OwnedBy</code>)</li>
 <li>Application will call a centralised MOJ API Endpoint to store data such as UPN, Entra ID, DateTime, SharePoint ID, etc</li>
 </ul>
-<p>If we created an application registration, we would have to grant all those permissions on the application, and the seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will also require management of another custom API Auth method between the Application and the centralised API.</p>
-<p>In this scenario, we are giving a public facing application, higher than normal roles to our M365 estate. There is also a weak point in the authentication and data sent to the centralised MOJ API Endpoint. It is trusting that the application making the request to add/update/delete data has not been compromised.</p>
+<p>If we created an application registration, we would have to grant both permissions on the application. The seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will require management of another custom API Auth method between the Application and the centralised API.</p>
 <p>In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files into SharePoint and trigger API calls to the centralised MOJ API Endpoint without any authentication checks.</p>
 <h4 id="obo-pattern-fix">OBO Pattern Fix</h4>
-<p>We can use OBO to fix this issue by doing the following.</p>
-<p>Create 3 Application Registrations</p>
+<p>We can use OBO to fix this issue.</p>
+<p>We Create 3 Application Registrations</p>
 
 <ol>
-<li>Public facing Web Application (Delegated User.Read)</li>
-<li>Non public facing Internal API (SharePoint.ReadWrite.OwnedBy)</li>
+<li>Public facing Web Application (Delegated <code>User.Read.All</code>)</li>
+<li>Non public facing Internal API (<code>SharePoint.ReadWrite.OwnedBy</code>)</li>
 <li>Centralised API Endpoint</li>
 </ol>
 <p>3 (Centralised API) trusts 2 (Internal API) to pass the user&rsquo;s identity securely. App 3 validates the token to ensure the request is coming from a real user, preventing data spoofing.</p>
@@ -226,7 +225,14 @@
 
     Internal--&gt;&gt;Web: Success
     Web--&gt;&gt;User: Done
-</code></pre></div><h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
+</code></pre></div><h3 id="zero-trust-alternative">Zero Trust Alternative</h3>
+<p>Flow: <code>User -&gt; Web App (Low Privilege) -&gt; Internal API (High Privilege)</code></p>
+<p>If you want to harden application security, you can use OBO to enforce Least Privilege.</p>
+<p>You create two separate App Registrations. The public-facing Web App only receives a &ldquo;Low Privilege&rdquo; token (e.g., <code>User.Read.All</code>).</p>
+<p>If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.</p>
+<p>When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., <code>User.ReadWrite.All</code>) to complete the task.</p>
+<p>This ensures that high-privilege tokens never exist in the browser or the frontend web layer.</p>
+<h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
 <p>Flow: <code>(Single Hop) User -&gt; (Web App -&gt; Internal API)</code></p>
 <p>If the Web App is the only service talking to the API, it can simply request an Access Token specifically for that API during the initial login. No exchange is required because the client requested the correct &ldquo;key&rdquo; upfront.</p>
 <h4 id="diagram">Diagram</h4>
@@ -289,16 +295,18 @@
 </ul>
 <div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">provider</span> <span class="s2">"azuread"</span> <span class="p">{}</span>
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 1. RANDOM UUIDS (For Stable Scope IDs)</span>
-<span class="c1"># ==============================================================================</span>
-<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_internal_api"</span> <span class="p">{}</span>  <span class="c1"># Scope exposed by Internal API</span>
-<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_shared_docs"</span> <span class="p">{}</span>   <span class="c1"># Scope exposed by Shared Docs API</span>
+<span class="c1"># =================================================</span>
+<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_internal_api"</span> <span class="p">{}</span>  
+<span class="c1"># Scope exposed by Internal API</span>
+<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_shared_docs"</span> <span class="p">{}</span>   
+<span class="c1"># Scope exposed by Shared Docs API</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 2. SHARED DOCUMENT API (The Final Backend)</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"shared_docs"</span> <span class="p">{</span>
   <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Shared Document API (Backend)"</span>
   <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://shared-documents"</span><span class="p">]</span>
@@ -321,9 +329,9 @@
 <span class="p">}</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 3. INTERNAL API (The Middle Tier - SDS)</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"internal_api"</span> <span class="p">{</span>
   <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Internal SDS API (Middle Tier)"</span>
   <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://internal-sds"</span><span class="p">]</span>
@@ -346,7 +354,8 @@
     <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">client_id</span>
 
     <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span> <span class="c1"># Requesting 'Documents.Read'</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span> 
+      <span class="c1"># Requesting 'Documents.Read'</span>
       <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>
     <span class="p">}</span>
   <span class="p">}</span>
@@ -363,9 +372,9 @@
 <span class="p">}</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 4. WEB APP (The Frontend)</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"web_app"</span> <span class="p">{</span>
   <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Case Management Web App (Frontend)"</span>
   <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
@@ -374,7 +383,8 @@
     <span class="nx">redirect_uris</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"https://localhost:5000/getAToken"</span><span class="p">]</span>
     <span class="nx">implicit_grant</span> <span class="p">{</span>
       <span class="nx">access_token_issuance_enabled</span> <span class="p">=</span> <span class="kc">false</span>
-      <span class="nx">id_token_issuance_enabled</span>     <span class="p">=</span> <span class="kc">true</span> <span class="c1"># Standard for OIDC login</span>
+      <span class="nx">id_token_issuance_enabled</span>     <span class="p">=</span> <span class="kc">true</span> 
+      <span class="c1"># Standard for OIDC login</span>
     <span class="p">}</span>
   <span class="p">}</span>
 
@@ -383,7 +393,8 @@
     <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span>
 
     <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span> <span class="c1"># Requesting 'user_impersonation'</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span> 
+      <span class="c1"># Requesting 'user_impersonation'</span>
       <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>
     <span class="p">}</span>
   <span class="p">}</span>
@@ -398,33 +409,32 @@
 <span class="p">}</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 5. PRE-AUTHORIZATION (The Trust Links)</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 
 <span class="c1"># TRUST LINK 1: Shared Docs trusts Internal API</span>
 <span class="c1"># This enables the "Double Hop" (OBO) without user consent prompt</span>
 <span class="k">resource</span> <span class="s2">"azuread_application_pre_authorized"</span> <span class="s2">"shared_docs_trusts_internal"</span> <span class="p">{</span>
-  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">id</span>       <span class="c1"># The Resource (Backend)</span>
-  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span> <span class="c1"># The Client (Middle Tier)</span>
-  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>   <span class="c1"># The Scope being granted</span>
+  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">id</span>       
+  <span class="c1"># The Resource (Backend)</span>
+  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span> 
+  <span class="c1"># The Client (Middle Tier)</span>
+  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>   
+  <span class="c1"># The Scope being granted</span>
 <span class="p">}</span>
 
 <span class="c1"># TRUST LINK 2: Internal API trusts Web App</span>
 <span class="c1"># This allows the Web App to call the Internal API silently</span>
 <span class="k">resource</span> <span class="s2">"azuread_application_pre_authorized"</span> <span class="s2">"internal_trusts_webapp"</span> <span class="p">{</span>
-  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">id</span>      <span class="c1"># The Resource (Middle Tier)</span>
-  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">client_id</span>    <span class="c1"># The Client (Frontend)</span>
-  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>  <span class="c1"># The Scope being granted</span>
+  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">id</span>      
+  <span class="c1"># The Resource (Middle Tier)</span>
+  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">client_id</span>    
+  <span class="c1"># The Client (Frontend)</span>
+  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>  
+  <span class="c1"># The Scope being granted</span>
 <span class="p">}</span>
-</code></pre></div><h3 id="zero-trust-alternative">Zero Trust Alternative</h3>
-<p>Flow: <code>User -&gt; Web App (Low Privilege) -&gt; Internal API (High Privilege)</code></p>
-<p>If you want to harden application security, you can use OBO to enforce Least Privilege.</p>
-<p>You create two separate App Registrations. The public-facing Web App only receives a &ldquo;Low Privilege&rdquo; token (e.g., <code>User.Read.All</code>).</p>
-<p>If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.</p>
-<p>When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., <code>User.ReadWrite.All</code>) to complete the task.</p>
-<p>This ensures that high-privilege tokens never exist in the browser or the frontend web layer.</p>
-<h2 id="service-to-service-s2s-pattern">Service to Service (S2S) Pattern</h2>
+</code></pre></div><h2 id="service-to-service-s2s-pattern">Service to Service (S2S) Pattern</h2>
 <h3 id="service-to-service-s2s-pattern-use-case">Use Case</h3>
 <p>Use this for background tasks where no human user is present. This is for &ldquo;Machine-to-Machine&rdquo; communication, such as nightly backups, automated logging, or internal file synchronization.</p>
 <h4 id="service-to-service-s2s-pattern-use-case-non-tech-analogy">Non-Tech Analogy</h4>
@@ -453,15 +463,16 @@
 <blockquote>
 <p>These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.</p>
 </blockquote>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="c1"># ==============================================================================</span>
+<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="c1"># =================================================</span>
 <span class="c1"># 1. RANDOM UUIDS (For Stable Role IDs)</span>
-<span class="c1"># ==============================================================================</span>
-<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"role_files_write"</span> <span class="p">{}</span>    <span class="c1"># App Role exposed by SDS API</span>
+<span class="c1"># =================================================</span>
+<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"role_files_write"</span> <span class="p">{}</span>    
+<span class="c1"># App Role exposed by SDS API</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 2. RESOURCE API (The Service being called)</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
   <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
   <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://sds.internal.laa"</span><span class="p">]</span>
@@ -469,7 +480,8 @@
 
   <span class="c1"># 2a. Define the App Role (Permission)</span>
   <span class="nx">app_role</span> <span class="p">{</span>
-    <span class="nx">allowed_member_types</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"Application"</span><span class="p">]</span>                <span class="c1"># 'Application' = S2S/Machine</span>
+    <span class="nx">allowed_member_types</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"Application"</span><span class="p">]</span>                
+    <span class="c1"># 'Application' = S2S/Machine</span>
     <span class="nx">description</span>          <span class="p">=</span> <span class="s2">"Allows background services to upload files."</span>
     <span class="nx">display_name</span>         <span class="p">=</span> <span class="s2">"Files.Write"</span>
     <span class="nx">enabled</span>              <span class="p">=</span> <span class="kc">true</span>
@@ -484,9 +496,9 @@
 <span class="p">}</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 3. CONSUMER SERVICE (The Background Worker)</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"client_service"</span> <span class="p">{</span>
   <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Nightly Backup Service"</span>
 
@@ -495,8 +507,10 @@
     <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">client_id</span>
 
     <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>      <span class="c1"># The role ID from above</span>
-      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Role"</span>                                   <span class="c1"># 'Role' = S2S/Machine</span>
+      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>      
+      <span class="c1"># The role ID from above</span>
+      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Role"</span>                                   
+      <span class="c1"># 'Role' = S2S/Machine</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -512,16 +526,19 @@
 <span class="p">}</span>
 
 
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 <span class="c1"># 4. ROLE ASSIGNMENT (The "Admin Consent")</span>
-<span class="c1"># ==============================================================================</span>
+<span class="c1"># =================================================</span>
 
 <span class="c1"># Unlike User flows, S2S flows require explicit assignment (Admin Consent).</span>
 <span class="c1"># This resource grants the 'Files.Write' role to the Backup Service.</span>
 <span class="k">resource</span> <span class="s2">"azuread_app_role_assignment"</span> <span class="s2">"grant_files_write"</span> <span class="p">{</span>
-  <span class="nx">app_role_id</span>         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>           <span class="c1"># The Permission</span>
-  <span class="nx">principal_object_id</span> <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">client_service_sp</span><span class="p">.</span><span class="nx">object_id</span> <span class="c1"># The Consumer (Backup Service)</span>
-  <span class="nx">resource_object_id</span>  <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">sds_api_sp</span><span class="p">.</span><span class="nx">object_id</span>    <span class="c1"># The Resource (SDS API)</span>
+  <span class="nx">app_role_id</span>         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>           
+  <span class="c1"># The Permission</span>
+  <span class="nx">principal_object_id</span> <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">client_service_sp</span><span class="p">.</span><span class="nx">object_id</span> 
+  <span class="c1"># The Consumer (Backup Service)</span>
+  <span class="nx">resource_object_id</span>  <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">sds_api_sp</span><span class="p">.</span><span class="nx">object_id</span>    
+  <span class="c1"># The Resource (SDS API)</span>
 <span class="p">}</span>
 </code></pre></div><h3 id="technical-requirements">Technical Requirements</h3>
 
