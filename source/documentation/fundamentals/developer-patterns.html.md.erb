@@ -12,6 +12,60 @@ OBO flows are required when an application needs to act as a middleman. It excha
 
 Imagine giving a lawyer "Power of Attorney" to sign a house deed for you. The lawyer doesn't sign as themselves; they sign on your behalf using the specific authority you granted them.
 
+### Practical examples
+
+A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to
+
+* Sign in a user (User.Read delegated)
+* User will upload a document that will be saved to SharePoint (SharePoint.ReadWrite.OwnedBy)
+* Application will call a centralised MOJ API Endpoint to store data such as UPN, Entra ID, DateTime, SharePoint ID, etc
+
+If we created an application registration, we would have to grant all those permissions on the application, and the seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will also require management of another custom API Auth method between the Application and the centralised API.
+
+In this scenario, we are giving a public facing application, higher than normal roles to our M365 estate. There is also a weak point in the authentication and data sent to the centralised MOJ API Endpoint. It is trusting that the application making the request to add/update/delete data has not been compromised.
+
+In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files into SharePoint and trigger API calls to the centralised MOJ API Endpoint without any authentication checks.
+
+#### OBO Pattern Fix
+
+We can use OBO to fix this issue by doing the following.
+
+Create 3 Application Registrations
+
+1. Public facing Web Application (Delegated User.Read)
+2. Non public facing Internal API (SharePoint.ReadWrite.OwnedBy)
+3. Centralised API Endpoint
+
+3 (Centralised API) trusts 2 (Internal API) to pass the user's identity securely. App 3 validates the token to ensure the request is coming from a real user, preventing data spoofing.
+
+In this way, even if a bad actor steals the Web Application's secrets, they cannot upload files. The Internal API requires a User Token (acting on behalf of a human). A stolen App Secret only proves the identity of the server, not the user, so the Internal API will reject the request.
+
+``` mermaid
+sequenceDiagram
+    participant User
+    participant Web as 1. Public Web App
+    participant Internal as 2. Internal API (Orchestrator)
+    participant SP as SharePoint
+    participant Central as 3. Centralised MOJ API
+
+    User->>Web: Upload Document
+    Note over Web: App has NO permissions<br/>for SP or Central API.
+    
+    Web->>Internal: Send File + User Token A
+    Note over Internal: Validates Token A.<br/>Exchanges for Token B (SP)<br/>Exchanges for Token C (Central)
+    
+    par Parallel/Sequential Actions
+        Internal->>SP: Upload File (with Token B)
+        SP-->>Internal: Return SharePoint ID
+        
+        Internal->>Central: Store Metadata (UPN, SP ID)<br/>(with Token C)
+        Note right of Central: Extracts User identity<br/>from Token C.<br/>Cannot be spoofed.
+    end
+    
+    Internal-->>Web: Success
+    Web-->>User: Done
+```
+
 ### Scenario A: No OBO Needed
 
 Flow: `(Single Hop) User -> (Web App -> Internal API)`
