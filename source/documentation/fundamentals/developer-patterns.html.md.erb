@@ -78,42 +78,140 @@ sequenceDiagram
 
 ### Terraform
 
-#### Downstream Service Application Registration
+* The Web App has permission to call the Internal API.
+* The Internal API has permission to call the Shared Document API.
+* The Internal API is "pre-authorized" by the Shared Docs API, enabling the silent On-Behalf-Of (OBO) flow.
 
 ``` terraform
-resource "azuread_application" "sds_api" {
-  display_name     = "Secure Document Storage (SDS)"
-  identifier_uris  = ["api://sds.internal.laa"]
+provider "azuread" {}
+
+# ==============================================================================
+# 1. RANDOM UUIDS (For Stable Scope IDs)
+# ==============================================================================
+resource "random_uuid" "scope_internal_api" {}  # Scope exposed by Internal API
+resource "random_uuid" "scope_shared_docs" {}   # Scope exposed by Shared Docs API
+
+
+# ==============================================================================
+# 2. SHARED DOCUMENT API (The Final Backend)
+# ==============================================================================
+resource "azuread_application" "shared_docs" {
+  display_name     = "Shared Document API (Backend)"
+  identifier_uris  = ["api://shared-documents"]
+  sign_in_audience = "AzureADMyOrg"
 
   api {
-    # This defines the "Delegated Permission" for OBO
+    oauth2_permission_scope {
+      admin_consent_description  = "Allow the app to access shared documents."
+      admin_consent_display_name = "Read Shared Documents"
+      enabled                    = true
+      id                         = random_uuid.scope_shared_docs.result
+      type                       = "User"
+      value                      = "Documents.Read"
+    }
+  }
+}
+
+resource "azuread_service_principal" "shared_docs_sp" {
+  client_id = azuread_application.shared_docs.client_id
+}
+
+
+# ==============================================================================
+# 3. INTERNAL API (The Middle Tier - SDS)
+# ==============================================================================
+resource "azuread_application" "internal_api" {
+  display_name     = "Internal SDS API (Middle Tier)"
+  identifier_uris  = ["api://internal-sds"]
+  sign_in_audience = "AzureADMyOrg"
+
+  # 3a. Expose its own Scope (for the Web App to call)
+  api {
     oauth2_permission_scope {
       admin_consent_description  = "Allow the app to access SDS on behalf of the user."
       admin_consent_display_name = "Access SDS"
       enabled                    = true
-      id                         = "11111111-2222-3333-4444-555555555555"
+      id                         = random_uuid.scope_internal_api.result
       type                       = "User"
       value                      = "user_impersonation"
     }
   }
-}
-```
 
-#### Calling web app Application Registration
-
-``` terraform
-resource "azuread_application" "web_app" {
-  display_name = "Internal Case Management Web App"
-
+  # 3b. Request Access to the Shared Document API (Backend)
   required_resource_access {
-    # Link to the SDS Application ID
-    resource_app_id = azuread_application.sds_api.application_id
+    resource_app_id = azuread_application.shared_docs.client_id
 
     resource_access {
-      id   = "11111111-2222-3333-4444-555555555555" # The scope ID from above
-      type = "Scope"                                # 'Scope' = Delegated/OBO
+      id   = random_uuid.scope_shared_docs.result # Requesting 'Documents.Read'
+      type = "Scope"
     }
   }
+}
+
+resource "azuread_service_principal" "internal_api_sp" {
+  client_id = azuread_application.internal_api.client_id
+}
+
+# 3c. Client Secret (Required for OBO flow to authenticate this API)
+resource "azuread_application_password" "internal_api_secret" {
+  application_id = azuread_application.internal_api.id
+  display_name   = "OBO Client Secret"
+}
+
+
+# ==============================================================================
+# 4. WEB APP (The Frontend)
+# ==============================================================================
+resource "azuread_application" "web_app" {
+  display_name     = "Case Management Web App (Frontend)"
+  sign_in_audience = "AzureADMyOrg"
+
+  web {
+    redirect_uris = ["https://localhost:5000/getAToken"]
+    implicit_grant {
+      access_token_issuance_enabled = false
+      id_token_issuance_enabled     = true # Standard for OIDC login
+    }
+  }
+
+  # 4a. Request Access to the Internal API (Middle Tier)
+  required_resource_access {
+    resource_app_id = azuread_application.internal_api.client_id
+
+    resource_access {
+      id   = random_uuid.scope_internal_api.result # Requesting 'user_impersonation'
+      type = "Scope"
+    }
+  }
+}
+
+resource "azuread_service_principal" "web_app_sp" {
+  client_id = azuread_application.web_app.client_id
+}
+
+resource "azuread_application_password" "web_app_secret" {
+  application_id = azuread_application.web_app.id
+}
+
+
+# ==============================================================================
+# 5. PRE-AUTHORIZATION (The Trust Links)
+# ==============================================================================
+
+# TRUST LINK 1: Shared Docs trusts Internal API
+# This enables the "Double Hop" (OBO) without user consent prompt
+resource "azuread_application_pre_authorized" "shared_docs_trusts_internal" {
+  application_id       = azuread_application.shared_docs.id       # The Resource (Backend)
+  authorized_app_id    = azuread_application.internal_api.client_id # The Client (Middle Tier)
+  permission_ids       = [random_uuid.scope_shared_docs.result]   # The Scope being granted
+}
+
+# TRUST LINK 2: Internal API trusts Web App
+# This allows the Web App to call the Internal API silently
+resource "azuread_application_pre_authorized" "internal_trusts_webapp" {
+  application_id       = azuread_application.internal_api.id      # The Resource (Middle Tier)
+  authorized_app_id    = azuread_application.web_app.client_id    # The Client (Frontend)
+  permission_ids       = [random_uuid.scope_internal_api.result]  # The Scope being granted
 }
 ```
 
@@ -166,42 +264,76 @@ sequenceDiagram
 
 ### Terraform
 
-#### Resource
-
 ``` terraform
-resource "azuread_application" "sds_api" {
-  display_name = "Secure Document Storage (SDS)"
+# ==============================================================================
+# 1. RANDOM UUIDS (For Stable Role IDs)
+# ==============================================================================
+resource "random_uuid" "role_files_write" {}    # App Role exposed by SDS API
 
+
+# ==============================================================================
+# 2. RESOURCE API (The Service being called)
+# ==============================================================================
+resource "azuread_application" "sds_api" {
+  display_name     = "Secure Document Storage (SDS)"
+  identifier_uris  = ["api://sds.internal.laa"]
+  sign_in_audience = "AzureADMyOrg"
+
+  # 2a. Define the App Role (Permission)
   app_role {
-    allowed_member_types = ["Application"] # 'Application' = S2S/Machine
+    allowed_member_types = ["Application"]                # 'Application' = S2S/Machine
     description          = "Allows background services to upload files."
     display_name         = "Files.Write"
     enabled              = true
-    id                   = "99999999-8888-7777-6666-555555555555"
+    id                   = random_uuid.role_files_write.result
     value                = "Files.Write"
   }
 }
-```
 
-#### Consumer
+# Service Principal for the API (Required for Role Assignment)
+resource "azuread_service_principal" "sds_api_sp" {
+  client_id = azuread_application.sds_api.client_id
+}
 
-``` terraform
+
+# ==============================================================================
+# 3. CONSUMER SERVICE (The Background Worker)
+# ==============================================================================
 resource "azuread_application" "client_service" {
   display_name = "Nightly Backup Service"
 
+  # 3a. Request Access to the Resource API
   required_resource_access {
-    resource_app_id = azuread_application.sds_api.application_id
+    resource_app_id = azuread_application.sds_api.client_id
 
     resource_access {
-      id   = "99999999-8888-7777-6666-555555555555" # The role ID from above
-      type = "Role"                                 # 'Role' = S2S/Machine
+      id   = random_uuid.role_files_write.result      # The role ID from above
+      type = "Role"                                   # 'Role' = S2S/Machine
     }
   }
 }
 
-# Generate the password/secret for the client
+# Service Principal for the Consumer (The Identity that runs the code)
+resource "azuread_service_principal" "client_service_sp" {
+  client_id = azuread_application.client_service.client_id
+}
+
+# 3b. Generate the Secret (The "Password" for the machine)
 resource "azuread_application_password" "client_secret" {
-  application_object_id = azuread_application.client_service.object_id
+  application_id = azuread_application.client_service.id
+}
+
+
+# ==============================================================================
+# 4. ROLE ASSIGNMENT (The "Admin Consent")
+# ==============================================================================
+
+# Unlike User flows, S2S flows require explicit assignment (Admin Consent).
+# This resource grants the 'Files.Write' role to the Backup Service.
+resource "azuread_app_role_assignment" "grant_files_write" {
+  app_role_id         = random_uuid.role_files_write.result           # The Permission
+  principal_object_id = azuread_service_principal.client_service_sp.object_id # The Consumer (Backup Service)
+  resource_object_id  = azuread_service_principal.sds_api_sp.object_id    # The Resource (SDS API)
 }
 ```
 
