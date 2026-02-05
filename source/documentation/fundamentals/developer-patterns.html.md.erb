@@ -16,24 +16,22 @@ Imagine giving a lawyer "Power of Attorney" to sign a house deed for you. The la
 
 A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to
 
-* Sign in a user (User.Read delegated)
-* User will upload a document that will be saved to SharePoint (SharePoint.ReadWrite.OwnedBy)
+* Sign in a user (`User.Read.All` delegated)
+* User will upload a document that will be saved to SharePoint (`SharePoint.ReadWrite.OwnedBy`)
 * Application will call a centralised MOJ API Endpoint to store data such as UPN, Entra ID, DateTime, SharePoint ID, etc
 
-If we created an application registration, we would have to grant all those permissions on the application, and the seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will also require management of another custom API Auth method between the Application and the centralised API.
-
-In this scenario, we are giving a public facing application, higher than normal roles to our M365 estate. There is also a weak point in the authentication and data sent to the centralised MOJ API Endpoint. It is trusting that the application making the request to add/update/delete data has not been compromised.
+If we created an application registration, we would have to grant both permissions on the application. The seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will require management of another custom API Auth method between the Application and the centralised API.
 
 In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files into SharePoint and trigger API calls to the centralised MOJ API Endpoint without any authentication checks.
 
 #### OBO Pattern Fix
 
-We can use OBO to fix this issue by doing the following.
+We can use OBO to fix this issue.
 
-Create 3 Application Registrations
+We Create 3 Application Registrations
 
-1. Public facing Web Application (Delegated User.Read)
-2. Non public facing Internal API (SharePoint.ReadWrite.OwnedBy)
+1. Public facing Web Application (Delegated `User.Read.All`)
+2. Non public facing Internal API (`SharePoint.ReadWrite.OwnedBy`)
 3. Centralised API Endpoint
 
 3 (Centralised API) trusts 2 (Internal API) to pass the user's identity securely. App 3 validates the token to ensure the request is coming from a real user, preventing data spoofing.
@@ -65,6 +63,20 @@ sequenceDiagram
     Internal-->>Web: Success
     Web-->>User: Done
 ```
+
+### Zero Trust Alternative
+
+Flow: `User -> Web App (Low Privilege) -> Internal API (High Privilege)`
+
+If you want to harden application security, you can use OBO to enforce Least Privilege.
+
+You create two separate App Registrations. The public-facing Web App only receives a "Low Privilege" token (e.g., `User.Read.All`).
+
+If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.
+
+When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., `User.ReadWrite.All`) to complete the task.
+
+This ensures that high-privilege tokens never exist in the browser or the frontend web layer.
 
 ### Scenario A: No OBO Needed
 
@@ -141,16 +153,18 @@ sequenceDiagram
 ``` terraform
 provider "azuread" {}
 
-# ==============================================================================
+# =================================================
 # 1. RANDOM UUIDS (For Stable Scope IDs)
-# ==============================================================================
-resource "random_uuid" "scope_internal_api" {}  # Scope exposed by Internal API
-resource "random_uuid" "scope_shared_docs" {}   # Scope exposed by Shared Docs API
+# =================================================
+resource "random_uuid" "scope_internal_api" {}  
+# Scope exposed by Internal API
+resource "random_uuid" "scope_shared_docs" {}   
+# Scope exposed by Shared Docs API
 
 
-# ==============================================================================
+# =================================================
 # 2. SHARED DOCUMENT API (The Final Backend)
-# ==============================================================================
+# =================================================
 resource "azuread_application" "shared_docs" {
   display_name     = "Shared Document API (Backend)"
   identifier_uris  = ["api://shared-documents"]
@@ -173,9 +187,9 @@ resource "azuread_service_principal" "shared_docs_sp" {
 }
 
 
-# ==============================================================================
+# =================================================
 # 3. INTERNAL API (The Middle Tier - SDS)
-# ==============================================================================
+# =================================================
 resource "azuread_application" "internal_api" {
   display_name     = "Internal SDS API (Middle Tier)"
   identifier_uris  = ["api://internal-sds"]
@@ -198,7 +212,8 @@ resource "azuread_application" "internal_api" {
     resource_app_id = azuread_application.shared_docs.client_id
 
     resource_access {
-      id   = random_uuid.scope_shared_docs.result # Requesting 'Documents.Read'
+      id   = random_uuid.scope_shared_docs.result 
+      # Requesting 'Documents.Read'
       type = "Scope"
     }
   }
@@ -215,9 +230,9 @@ resource "azuread_application_password" "internal_api_secret" {
 }
 
 
-# ==============================================================================
+# =================================================
 # 4. WEB APP (The Frontend)
-# ==============================================================================
+# =================================================
 resource "azuread_application" "web_app" {
   display_name     = "Case Management Web App (Frontend)"
   sign_in_audience = "AzureADMyOrg"
@@ -226,7 +241,8 @@ resource "azuread_application" "web_app" {
     redirect_uris = ["https://localhost:5000/getAToken"]
     implicit_grant {
       access_token_issuance_enabled = false
-      id_token_issuance_enabled     = true # Standard for OIDC login
+      id_token_issuance_enabled     = true 
+      # Standard for OIDC login
     }
   }
 
@@ -235,7 +251,8 @@ resource "azuread_application" "web_app" {
     resource_app_id = azuread_application.internal_api.client_id
 
     resource_access {
-      id   = random_uuid.scope_internal_api.result # Requesting 'user_impersonation'
+      id   = random_uuid.scope_internal_api.result 
+      # Requesting 'user_impersonation'
       type = "Scope"
     }
   }
@@ -250,40 +267,34 @@ resource "azuread_application_password" "web_app_secret" {
 }
 
 
-# ==============================================================================
+# =================================================
 # 5. PRE-AUTHORIZATION (The Trust Links)
-# ==============================================================================
+# =================================================
 
 # TRUST LINK 1: Shared Docs trusts Internal API
 # This enables the "Double Hop" (OBO) without user consent prompt
 resource "azuread_application_pre_authorized" "shared_docs_trusts_internal" {
-  application_id       = azuread_application.shared_docs.id       # The Resource (Backend)
-  authorized_app_id    = azuread_application.internal_api.client_id # The Client (Middle Tier)
-  permission_ids       = [random_uuid.scope_shared_docs.result]   # The Scope being granted
+  application_id       = azuread_application.shared_docs.id       
+  # The Resource (Backend)
+  authorized_app_id    = azuread_application.internal_api.client_id 
+  # The Client (Middle Tier)
+  permission_ids       = [random_uuid.scope_shared_docs.result]   
+  # The Scope being granted
 }
 
 # TRUST LINK 2: Internal API trusts Web App
 # This allows the Web App to call the Internal API silently
 resource "azuread_application_pre_authorized" "internal_trusts_webapp" {
-  application_id       = azuread_application.internal_api.id      # The Resource (Middle Tier)
-  authorized_app_id    = azuread_application.web_app.client_id    # The Client (Frontend)
-  permission_ids       = [random_uuid.scope_internal_api.result]  # The Scope being granted
+  application_id       = azuread_application.internal_api.id      
+  # The Resource (Middle Tier)
+  authorized_app_id    = azuread_application.web_app.client_id    
+  # The Client (Frontend)
+  permission_ids       = [random_uuid.scope_internal_api.result]  
+  # The Scope being granted
 }
 ```
 
-### Zero Trust Alternative
 
-Flow: `User -> Web App (Low Privilege) -> Internal API (High Privilege)`
-
-If you want to harden application security, you can use OBO to enforce Least Privilege.
-
-You create two separate App Registrations. The public-facing Web App only receives a "Low Privilege" token (e.g., `User.Read.All`).
-
-If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.
-
-When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., `User.ReadWrite.All`) to complete the task.
-
-This ensures that high-privilege tokens never exist in the browser or the frontend web layer.
 
 ## Service to Service (S2S) Pattern
 
@@ -323,15 +334,16 @@ sequenceDiagram
 > These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.
 
 ``` terraform
-# ==============================================================================
+# =================================================
 # 1. RANDOM UUIDS (For Stable Role IDs)
-# ==============================================================================
-resource "random_uuid" "role_files_write" {}    # App Role exposed by SDS API
+# =================================================
+resource "random_uuid" "role_files_write" {}    
+# App Role exposed by SDS API
 
 
-# ==============================================================================
+# =================================================
 # 2. RESOURCE API (The Service being called)
-# ==============================================================================
+# =================================================
 resource "azuread_application" "sds_api" {
   display_name     = "Secure Document Storage (SDS)"
   identifier_uris  = ["api://sds.internal.laa"]
@@ -339,7 +351,8 @@ resource "azuread_application" "sds_api" {
 
   # 2a. Define the App Role (Permission)
   app_role {
-    allowed_member_types = ["Application"]                # 'Application' = S2S/Machine
+    allowed_member_types = ["Application"]                
+    # 'Application' = S2S/Machine
     description          = "Allows background services to upload files."
     display_name         = "Files.Write"
     enabled              = true
@@ -354,9 +367,9 @@ resource "azuread_service_principal" "sds_api_sp" {
 }
 
 
-# ==============================================================================
+# =================================================
 # 3. CONSUMER SERVICE (The Background Worker)
-# ==============================================================================
+# =================================================
 resource "azuread_application" "client_service" {
   display_name = "Nightly Backup Service"
 
@@ -365,8 +378,10 @@ resource "azuread_application" "client_service" {
     resource_app_id = azuread_application.sds_api.client_id
 
     resource_access {
-      id   = random_uuid.role_files_write.result      # The role ID from above
-      type = "Role"                                   # 'Role' = S2S/Machine
+      id   = random_uuid.role_files_write.result      
+      # The role ID from above
+      type = "Role"                                   
+      # 'Role' = S2S/Machine
     }
   }
 }
@@ -382,16 +397,19 @@ resource "azuread_application_password" "client_secret" {
 }
 
 
-# ==============================================================================
+# =================================================
 # 4. ROLE ASSIGNMENT (The "Admin Consent")
-# ==============================================================================
+# =================================================
 
 # Unlike User flows, S2S flows require explicit assignment (Admin Consent).
 # This resource grants the 'Files.Write' role to the Backup Service.
 resource "azuread_app_role_assignment" "grant_files_write" {
-  app_role_id         = random_uuid.role_files_write.result           # The Permission
-  principal_object_id = azuread_service_principal.client_service_sp.object_id # The Consumer (Backup Service)
-  resource_object_id  = azuread_service_principal.sds_api_sp.object_id    # The Resource (SDS API)
+  app_role_id         = random_uuid.role_files_write.result           
+  # The Permission
+  principal_object_id = azuread_service_principal.client_service_sp.object_id 
+  # The Consumer (Backup Service)
+  resource_object_id  = azuread_service_principal.sds_api_sp.object_id    
+  # The Resource (SDS API)
 }
 ```
 
