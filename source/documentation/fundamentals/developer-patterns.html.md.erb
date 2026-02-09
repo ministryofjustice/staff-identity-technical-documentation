@@ -8,11 +8,11 @@ This document outlines the standard identity patterns used within the MoJ to ens
 
 OBO flows are required when an application needs to act as a middleman. It exchanges the user's initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.
 
-#### Non-Tech Analogy
-
 Imagine giving a lawyer "Power of Attorney" to sign a house deed for you. The lawyer doesn't sign as themselves; they sign on your behalf using the specific authority you granted them.
 
-### Practical examples
+### Practical example
+
+#### The Issue
 
 A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to
 
@@ -30,11 +30,11 @@ We can use OBO to fix this issue.
 
 We Create 3 Application Registrations
 
-1. Public facing Web Application (Delegated `User.Read.All`)
-2. Non public facing Internal API (`SharePoint.ReadWrite.OwnedBy`)
-3. Centralised API Endpoint
+* Service A: Public facing Web Application (Delegated `User.Read.All`)
+* Service B: Non public facing Internal API (`SharePoint.ReadWrite.OwnedBy`)
+* Service C: Centralised API Endpoint
 
-3 (Centralised API) trusts 2 (Internal API) to pass the user's identity securely. App 3 validates the token to ensure the request is coming from a real user, preventing data spoofing.
+C (Centralised API) trusts B (Internal API) to pass the user's identity securely. Service C validates the token to ensure the request is coming from a real user, preventing data spoofing.
 
 In this way, even if a bad actor steals the Web Application's secrets, they cannot upload files. The Internal API requires a User Token (acting on behalf of a human). A stolen App Secret only proves the identity of the server, not the user, so the Internal API will reject the request.
 
@@ -64,237 +64,132 @@ sequenceDiagram
     Web-->>User: Done
 ```
 
-### Zero Trust Alternative
-
-Flow: `User -> Web App (Low Privilege) -> Internal API (High Privilege)`
-
-If you want to harden application security, you can use OBO to enforce Least Privilege.
-
-You create two separate App Registrations. The public-facing Web App only receives a "Low Privilege" token (e.g., `User.Read.All`).
-
-If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.
-
-When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., `User.ReadWrite.All`) to complete the task.
-
-This ensures that high-privilege tokens never exist in the browser or the frontend web layer.
-
-### Scenario A: No OBO Needed
-
-Flow: `(Single Hop) User -> (Web App -> Internal API)`
-
-If the Web App is the only service talking to the API, it can simply request an Access Token specifically for that API during the initial login. No exchange is required because the client requested the correct "key" upfront.
-
-#### Diagram
-
-``` mermaid
-sequenceDiagram
-    participant User as User (Browser)
-    participant Entra as Entra ID
-    participant WebApp as Web App (Frontend/Client)
-    participant API as Internal API (SDS)
-
-    Note over User, WebApp: Initial Login Request
-    User->>WebApp: Access Site / Login
-    WebApp->>Entra: Redirect to Login<br/>(Request scope: api://internal-api/access)
-    
-    Note over User, Entra: User provides credentials & consent
-    Entra-->>WebApp: Returns Auth Code
-    WebApp->>Entra: Exchange Code for Access Token
-    Entra-->>WebApp: Issues Access Token (Audience: Internal API)
-
-    Note over WebApp, API: The "Single Hop" Call
-    WebApp->>API: GET /files (with Access Token)
-    Note right of API: Validates 'aud' = Internal API<br/>Reads 'oid' = User ID
-    API-->>WebApp: Returns Data
-    WebApp-->>User: Renders Content
-```
-
-### Scenario B: OBO Required (Double Hop)
+### OBO Technical Overview (Double Hop)
 
 Flow: `User -> Web App -> Internal API --(call)--> External/Downstream API`
 
 If an Internal API needs to call a second service (like a Shared Document API) as the user, it cannot reuse the token it was given. Tokens are "addressed" to a specific recipient (the Audience). The Internal API must trade the user's token for a new one addressed to the downstream service.
 
-#### Diagram
+### Implementation Example
 
-``` mermaid
-sequenceDiagram
-    participant User as User (Browser)
-    participant WebApp as Web App (Frontend)
-    participant API1 as Internal API (SDS)
-    participant Entra as Entra ID
-    participant API2 as Shared Document API
+#### Setup your Applications in Terraform
 
-    Note over User, WebApp: Initial Interaction
-    User->>WebApp: Performs action
-    WebApp->>API1: Call with Token A (Aud: Internal API)
-    
-    Note over API1, Entra: The "Double Hop" Exchange
-    API1->>Entra: OBO Request:<br/>"Exchange Token A for a token for API2"
-    Note right of Entra: Validates Trust & User Permissions
-    Entra-->>API1: Issue Token B (Aud: Shared Document API)
+You will be required to first setup your Application Registrations in Terraform. For this example we will create 3 applications.
 
-    Note over API1, API2: Final Hop
-    API1->>API2: Call with Token B
-    Note left of API2: Validates 'aud' = API2<br/>Identifies original User
-    API2-->>API1: Return Shared Documents
-    API1-->>WebApp: Process & Return Data
-    WebApp-->>User: Success
+**Source:** [Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf#L94)
+
+> Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `scope_id` of the Shared API inside the Internal API's configuration before the Shared API exists.
+
+Step 1: Create all 3 app registrations in Terraform, but leave the `resource_access` blocks empty (or commented out). Apply this configuration.
+
+Step 2: Once the Apps and their Scopes are created, update the `resource_access` block in the Internal API to reference the Shared API.
+
+Step 3: Apply the Terraform again to create the link.
+
+#### Example Node Implementation
+
+##### Service A: The Frontend (obo-example-frontend)
+
+The frontend's job is to request a token specifically for the "Middle Tier", Service B.
+
+``` node
+// Using @azure/msal-node
+const msalConfig = {
+    auth: {
+        clientId: "FRONTEND_CLIENT_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "FRONTEND_SECRET"
+    }
+};
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
+
+// The user logs in and we request access to the Internal API
+const tokenRequest = {
+    scopes: ["api://obo-example-internal-api/user_impersonation"],
+    // code: ... (from the redirect)
+};
+
+const result = await cca.acquireTokenByCode(tokenRequest);
+const accessTokenForInternalApi = result.accessToken;
 ```
 
-### Terraform
+##### Service B: The Internal API (obo-example-internal-api)
 
-> These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.
+This is the "Middle Tier". This app has `resource_access` to the Shared API. It must perform the exchange.
 
-* The Web App has permission to call the Internal API.
-* The Internal API has permission to call the Shared Document API.
-* The Internal API is "pre-authorized" by the Shared Docs API, enabling the silent On-Behalf-Of (OBO) flow.
+``` node
+const express = require('express');
+const msal = require('@azure/msal-node');
+const app = express();
 
-``` terraform
-provider "azuread" {}
-
-# =================================================
-# 1. RANDOM UUIDS (For Stable Scope IDs)
-# =================================================
-resource "random_uuid" "scope_internal_api" {}  
-# Scope exposed by Internal API
-resource "random_uuid" "scope_shared_docs" {}   
-# Scope exposed by Shared Docs API
-
-
-# =================================================
-# 2. SHARED DOCUMENT API (The Final Backend)
-# =================================================
-resource "azuread_application" "shared_docs" {
-  display_name     = "Shared Document API (Backend)"
-  identifier_uris  = ["api://shared-documents"]
-  sign_in_audience = "AzureADMyOrg"
-
-  api {
-    oauth2_permission_scope {
-      admin_consent_description  = "Allow the app to access shared documents."
-      admin_consent_display_name = "Read Shared Documents"
-      enabled                    = true
-      id                         = random_uuid.scope_shared_docs.result
-      type                       = "User"
-      value                      = "Documents.Read"
+const cca = new msal.ConfidentialClientApplication({
+    auth: {
+        clientId: "INTERNAL_API_CLIENT_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "INTERNAL_API_SECRET"
     }
-  }
-}
+});
 
-resource "azuread_service_principal" "shared_docs_sp" {
-  client_id = azuread_application.shared_docs.client_id
-}
+app.get('/process-documents', async (req, res) => {
+    // 1. Extract the token sent from the Frontend
+    const inboundToken = req.headers.authorization.split(' ')[1];
 
+    // 2. Setup the OBO request for the Shared API
+    const oboRequest = {
+        oboAssertion: inboundToken,
+        // Matches the 'value' in your Shared API terraform
+        scopes: ["api://shared-documents/Documents.Read"], 
+    };
 
-# =================================================
-# 3. INTERNAL API (The Middle Tier - SDS)
-# =================================================
-resource "azuread_application" "internal_api" {
-  display_name     = "Internal SDS API (Middle Tier)"
-  identifier_uris  = ["api://internal-sds"]
-  sign_in_audience = "AzureADMyOrg"
+    try {
+        // 3. Exchange Frontend-Token for Shared-API-Token
+        const response = await cca.acquireTokenOnBehalfOf(oboRequest);
+        const sharedApiToken = response.accessToken;
 
-  # 3a. Expose its own Scope (for the Web App to call)
-  api {
-    oauth2_permission_scope {
-      admin_consent_description  = "Allow the app to access SDS on behalf of the user."
-      admin_consent_display_name = "Access SDS"
-      enabled                    = true
-      id                         = random_uuid.scope_internal_api.result
-      type                       = "User"
-      value                      = "user_impersonation"
+        // 4. Call the Shared API
+        // const data = await axios.get('...', { headers: { Authorization: `Bearer ${sharedApiToken}` } });
+        
+        res.send("Successfully chained identity to Shared API!");
+    } catch (error) {
+        res.status(500).send(error.message);
     }
-  }
-
-  # 3b. Request Access to the Shared Document API (Backend)
-  required_resource_access {
-    resource_app_id = azuread_application.shared_docs.client_id
-
-    resource_access {
-      id   = random_uuid.scope_shared_docs.result 
-      # Requesting 'Documents.Read'
-      type = "Scope"
-    }
-  }
-}
-
-resource "azuread_service_principal" "internal_api_sp" {
-  client_id = azuread_application.internal_api.client_id
-}
-
-# 3c. Client Secret (Required for OBO flow to authenticate this API)
-resource "azuread_application_password" "internal_api_secret" {
-  application_id = azuread_application.internal_api.id
-  display_name   = "OBO Client Secret"
-}
-
-
-# =================================================
-# 4. WEB APP (The Frontend)
-# =================================================
-resource "azuread_application" "web_app" {
-  display_name     = "Case Management Web App (Frontend)"
-  sign_in_audience = "AzureADMyOrg"
-
-  web {
-    redirect_uris = ["https://localhost:5000/getAToken"]
-    implicit_grant {
-      access_token_issuance_enabled = false
-      id_token_issuance_enabled     = true 
-      # Standard for OIDC login
-    }
-  }
-
-  # 4a. Request Access to the Internal API (Middle Tier)
-  required_resource_access {
-    resource_app_id = azuread_application.internal_api.client_id
-
-    resource_access {
-      id   = random_uuid.scope_internal_api.result 
-      # Requesting 'user_impersonation'
-      type = "Scope"
-    }
-  }
-}
-
-resource "azuread_service_principal" "web_app_sp" {
-  client_id = azuread_application.web_app.client_id
-}
-
-resource "azuread_application_password" "web_app_secret" {
-  application_id = azuread_application.web_app.id
-}
-
-
-# =================================================
-# 5. PRE-AUTHORIZATION (The Trust Links)
-# =================================================
-
-# TRUST LINK 1: Shared Docs trusts Internal API
-# This enables the "Double Hop" (OBO) without user consent prompt
-resource "azuread_application_pre_authorized" "shared_docs_trusts_internal" {
-  application_id       = azuread_application.shared_docs.id       
-  # The Resource (Backend)
-  authorized_app_id    = azuread_application.internal_api.client_id 
-  # The Client (Middle Tier)
-  permission_ids       = [random_uuid.scope_shared_docs.result]   
-  # The Scope being granted
-}
-
-# TRUST LINK 2: Internal API trusts Web App
-# This allows the Web App to call the Internal API silently
-resource "azuread_application_pre_authorized" "internal_trusts_webapp" {
-  application_id       = azuread_application.internal_api.id      
-  # The Resource (Middle Tier)
-  authorized_app_id    = azuread_application.web_app.client_id    
-  # The Client (Frontend)
-  permission_ids       = [random_uuid.scope_internal_api.result]  
-  # The Scope being granted
-}
+});
 ```
 
+##### Service C: The Shared API (obo-example-shared-api)
 
+This service doesn't need to exchange tokens, it just needs to verify them.
+
+``` node
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "SHARED_API_CLIENT_ID",
+    audience: "api://shared-documents", // Matches your identifier_uris
+    validateIssuer: true,
+    passReqToCallback: false,
+    loggingLevel: 'info'
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+    // Verify the scope exists in the token
+    if (token.scp.includes("Documents.Read")) {
+        return done(null, { name: token.name }, token);
+    }
+    return done(new Error("Missing Documents.Read scope"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.get('/docs', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+    res.json({ docs: ["Policy1.pdf", "Specs.docx"], user: req.user.name });
+});
+```
 
 ## Service to Service (S2S) Pattern
 
