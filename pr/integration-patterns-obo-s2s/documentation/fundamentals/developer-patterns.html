@@ -97,41 +97,31 @@
         <ul>
           <li>
             <a href="#use-case"><span>Use Case</span></a>
-            <ul>
-              <li>
-                <a href="#non-tech-analogy"><span>Non-Tech Analogy</span></a>
-              </li>
-            </ul>
           </li>
           <li>
-            <a href="#practical-examples"><span>Practical examples</span></a>
+            <a href="#practical-example"><span>Practical example</span></a>
             <ul>
+              <li>
+                <a href="#the-issue"><span>The Issue</span></a>
+              </li>
               <li>
                 <a href="#obo-pattern-fix"><span>OBO Pattern Fix</span></a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="#zero-trust-alternative"><span>Zero Trust Alternative</span></a>
+            <a href="#obo-technical-overview-double-hop"><span>OBO Technical Overview (Double Hop)</span></a>
           </li>
           <li>
-            <a href="#scenario-a-no-obo-needed"><span>Scenario A: No OBO Needed</span></a>
+            <a href="#implementation-example"><span>Implementation Example</span></a>
             <ul>
               <li>
-                <a href="#diagram"><span>Diagram</span></a>
+                <a href="#setup-your-applications-in-terraform"><span>Setup your Applications in Terraform</span></a>
               </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#scenario-b-obo-required-double-hop"><span>Scenario B: OBO Required (Double Hop)</span></a>
-            <ul>
               <li>
-                <a href="#scenario-b-obo-required-double-hop-diagram"><span>Diagram</span></a>
+                <a href="#example-node-implementation"><span>Example Node Implementation</span></a>
               </li>
             </ul>
-          </li>
-          <li>
-            <a href="#terraform"><span>Terraform</span></a>
           </li>
         </ul>
       </li>
@@ -142,15 +132,15 @@
             <a href="#service-to-service-s2s-pattern-use-case"><span>Use Case</span></a>
             <ul>
               <li>
-                <a href="#service-to-service-s2s-pattern-use-case-non-tech-analogy"><span>Non-Tech Analogy</span></a>
+                <a href="#non-tech-analogy"><span>Non-Tech Analogy</span></a>
               </li>
               <li>
-                <a href="#service-to-service-s2s-pattern-use-case-diagram"><span>Diagram</span></a>
+                <a href="#diagram"><span>Diagram</span></a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="#service-to-service-s2s-pattern-terraform"><span>Terraform</span></a>
+            <a href="#terraform"><span>Terraform</span></a>
           </li>
           <li>
             <a href="#technical-requirements"><span>Technical Requirements</span></a>
@@ -179,9 +169,9 @@
 <h2 id="on-behalf-of-obo-pattern">On behalf of (OBO) Pattern</h2>
 <h3 id="use-case">Use Case</h3>
 <p>OBO flows are required when an application needs to act as a middleman. It exchanges the user&rsquo;s initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.</p>
-<h4 id="non-tech-analogy">Non-Tech Analogy</h4>
 <p>Imagine giving a lawyer &ldquo;Power of Attorney&rdquo; to sign a house deed for you. The lawyer doesn&rsquo;t sign as themselves; they sign on your behalf using the specific authority you granted them.</p>
-<h3 id="practical-examples">Practical examples</h3>
+<h3 id="practical-example">Practical example</h3>
+<h4 id="the-issue">The Issue</h4>
 <p>A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to</p>
 
 <ul>
@@ -195,12 +185,12 @@
 <p>We can use OBO to fix this issue.</p>
 <p>We Create 3 Application Registrations</p>
 
-<ol>
-<li>Public facing Web Application (Delegated <code>User.Read.All</code>)</li>
-<li>Non public facing Internal API (<code>SharePoint.ReadWrite.OwnedBy</code>)</li>
-<li>Centralised API Endpoint</li>
-</ol>
-<p>3 (Centralised API) trusts 2 (Internal API) to pass the user&rsquo;s identity securely. App 3 validates the token to ensure the request is coming from a real user, preventing data spoofing.</p>
+<ul>
+<li>Service A: Public facing Web Application (Delegated <code>User.Read.All</code>)</li>
+<li>Service B: Non public facing Internal API (<code>SharePoint.ReadWrite.OwnedBy</code>)</li>
+<li>Service C: Centralised API Endpoint</li>
+</ul>
+<p>C (Centralised API) trusts B (Internal API) to pass the user&rsquo;s identity securely. Service C validates the token to ensure the request is coming from a real user, preventing data spoofing.</p>
 <p>In this way, even if a bad actor steals the Web Application&rsquo;s secrets, they cannot upload files. The Internal API requires a User Token (acting on behalf of a human). A stolen App Secret only proves the identity of the server, not the user, so the Internal API will reject the request.</p>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant User
@@ -225,221 +215,115 @@
 
     Internal--&gt;&gt;Web: Success
     Web--&gt;&gt;User: Done
-</code></pre></div><h3 id="zero-trust-alternative">Zero Trust Alternative</h3>
-<p>Flow: <code>User -&gt; Web App (Low Privilege) -&gt; Internal API (High Privilege)</code></p>
-<p>If you want to harden application security, you can use OBO to enforce Least Privilege.</p>
-<p>You create two separate App Registrations. The public-facing Web App only receives a &ldquo;Low Privilege&rdquo; token (e.g., <code>User.Read.All</code>).</p>
-<p>If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.</p>
-<p>When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., <code>User.ReadWrite.All</code>) to complete the task.</p>
-<p>This ensures that high-privilege tokens never exist in the browser or the frontend web layer.</p>
-<h3 id="scenario-a-no-obo-needed">Scenario A: No OBO Needed</h3>
-<p>Flow: <code>(Single Hop) User -&gt; (Web App -&gt; Internal API)</code></p>
-<p>If the Web App is the only service talking to the API, it can simply request an Access Token specifically for that API during the initial login. No exchange is required because the client requested the correct &ldquo;key&rdquo; upfront.</p>
-<h4 id="diagram">Diagram</h4>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
-    participant User as User (Browser)
-    participant Entra as Entra ID
-    participant WebApp as Web App (Frontend/Client)
-    participant API as Internal API (SDS)
-
-    Note over User, WebApp: Initial Login Request
-    User-&gt;&gt;WebApp: Access Site / Login
-    WebApp-&gt;&gt;Entra: Redirect to Login&lt;br/&gt;(Request scope: api://internal-api/access)
-
-    Note over User, Entra: User provides credentials &amp; consent
-    Entra--&gt;&gt;WebApp: Returns Auth Code
-    WebApp-&gt;&gt;Entra: Exchange Code for Access Token
-    Entra--&gt;&gt;WebApp: Issues Access Token (Audience: Internal API)
-
-    Note over WebApp, API: The "Single Hop" Call
-    WebApp-&gt;&gt;API: GET /files (with Access Token)
-    Note right of API: Validates 'aud' = Internal API&lt;br/&gt;Reads 'oid' = User ID
-    API--&gt;&gt;WebApp: Returns Data
-    WebApp--&gt;&gt;User: Renders Content
-</code></pre></div><h3 id="scenario-b-obo-required-double-hop">Scenario B: OBO Required (Double Hop)</h3>
+</code></pre></div><h3 id="obo-technical-overview-double-hop">OBO Technical Overview (Double Hop)</h3>
 <p>Flow: <code>User -&gt; Web App -&gt; Internal API --(call)--&gt; External/Downstream API</code></p>
 <p>If an Internal API needs to call a second service (like a Shared Document API) as the user, it cannot reuse the token it was given. Tokens are &ldquo;addressed&rdquo; to a specific recipient (the Audience). The Internal API must trade the user&rsquo;s token for a new one addressed to the downstream service.</p>
-<h4 id="scenario-b-obo-required-double-hop-diagram">Diagram</h4>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
-    participant User as User (Browser)
-    participant WebApp as Web App (Frontend)
-    participant API1 as Internal API (SDS)
-    participant Entra as Entra ID
-    participant API2 as Shared Document API
-
-    Note over User, WebApp: Initial Interaction
-    User-&gt;&gt;WebApp: Performs action
-    WebApp-&gt;&gt;API1: Call with Token A (Aud: Internal API)
-
-    Note over API1, Entra: The "Double Hop" Exchange
-    API1-&gt;&gt;Entra: OBO Request:&lt;br/&gt;"Exchange Token A for a token for API2"
-    Note right of Entra: Validates Trust &amp; User Permissions
-    Entra--&gt;&gt;API1: Issue Token B (Aud: Shared Document API)
-
-    Note over API1, API2: Final Hop
-    API1-&gt;&gt;API2: Call with Token B
-    Note left of API2: Validates 'aud' = API2&lt;br/&gt;Identifies original User
-    API2--&gt;&gt;API1: Return Shared Documents
-    API1--&gt;&gt;WebApp: Process &amp; Return Data
-    WebApp--&gt;&gt;User: Success
-</code></pre></div><h3 id="terraform">Terraform</h3>
+<h3 id="implementation-example">Implementation Example</h3>
+<h4 id="setup-your-applications-in-terraform">Setup your Applications in Terraform</h4>
+<p>You will be required to first setup your Application Registrations in Terraform. For this example we will create 3 applications.</p>
+<p><strong>Source:</strong> <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf#L94">Example Terraform Code.</a></p>
 
 <blockquote>
-<p>These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.</p>
+<p>Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the <code>scope_id</code> of the Shared API inside the Internal API&rsquo;s configuration before the Shared API exists.</p>
 </blockquote>
+<p>Step 1: Create all 3 app registrations in Terraform, but leave the <code>resource_access</code> blocks empty (or commented out). Apply this configuration.</p>
+<p>Step 2: Once the Apps and their Scopes are created, update the <code>resource_access</code> block in the Internal API to reference the Shared API.</p>
+<p>Step 3: Apply the Terraform again to create the link.</p>
+<h4 id="example-node-implementation">Example Node Implementation</h4>
+<h5 id="service-a-the-frontend-obo-example-frontend">Service A: The Frontend (obo-example-frontend)</h5>
+<p>The frontend&rsquo;s job is to request a token specifically for the &ldquo;Middle Tier&rdquo;, Service B.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// Using @azure/msal-node
+const msalConfig = {
+    auth: {
+        clientId: "FRONTEND_CLIENT_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "FRONTEND_SECRET"
+    }
+};
 
-<ul>
-<li>The Web App has permission to call the Internal API.</li>
-<li>The Internal API has permission to call the Shared Document API.</li>
-<li>The Internal API is &ldquo;pre-authorized&rdquo; by the Shared Docs API, enabling the silent On-Behalf-Of (OBO) flow.</li>
-</ul>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="k">provider</span> <span class="s2">"azuread"</span> <span class="p">{}</span>
+const cca = new msal.ConfidentialClientApplication(msalConfig);
 
-<span class="c1"># =================================================</span>
-<span class="c1"># 1. RANDOM UUIDS (For Stable Scope IDs)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_internal_api"</span> <span class="p">{}</span>  
-<span class="c1"># Scope exposed by Internal API</span>
-<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"scope_shared_docs"</span> <span class="p">{}</span>   
-<span class="c1"># Scope exposed by Shared Docs API</span>
+// The user logs in and we request access to the Internal API
+const tokenRequest = {
+    scopes: ["api://obo-example-internal-api/user_impersonation"],
+    // code: ... (from the redirect)
+};
 
+const result = await cca.acquireTokenByCode(tokenRequest);
+const accessTokenForInternalApi = result.accessToken;
+</code></pre></div><h5 id="service-b-the-internal-api-obo-example-internal-api">Service B: The Internal API (obo-example-internal-api)</h5>
+<p>This is the &ldquo;Middle Tier&rdquo;. This app has <code>resource_access</code> to the Shared API. It must perform the exchange.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>const express = require('express');
+const msal = require('@azure/msal-node');
+const app = express();
 
-<span class="c1"># =================================================</span>
-<span class="c1"># 2. SHARED DOCUMENT API (The Final Backend)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"shared_docs"</span> <span class="p">{</span>
-  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Shared Document API (Backend)"</span>
-  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://shared-documents"</span><span class="p">]</span>
-  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
+const cca = new msal.ConfidentialClientApplication({
+    auth: {
+        clientId: "INTERNAL_API_CLIENT_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "INTERNAL_API_SECRET"
+    }
+});
 
-  <span class="nx">api</span> <span class="p">{</span>
-    <span class="nx">oauth2_permission_scope</span> <span class="p">{</span>
-      <span class="nx">admin_consent_description</span>  <span class="p">=</span> <span class="s2">"Allow the app to access shared documents."</span>
-      <span class="nx">admin_consent_display_name</span> <span class="p">=</span> <span class="s2">"Read Shared Documents"</span>
-      <span class="nx">enabled</span>                    <span class="p">=</span> <span class="kc">true</span>
-      <span class="nx">id</span>                         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span>
-      <span class="nx">type</span>                       <span class="p">=</span> <span class="s2">"User"</span>
-      <span class="nx">value</span>                      <span class="p">=</span> <span class="s2">"Documents.Read"</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+app.get('/process-documents', async (req, res) =&gt; {
+    // 1. Extract the token sent from the Frontend
+    const inboundToken = req.headers.authorization.split(' ')[1];
 
-<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"shared_docs_sp"</span> <span class="p">{</span>
-  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">client_id</span>
-<span class="p">}</span>
+    // 2. Setup the OBO request for the Shared API
+    const oboRequest = {
+        oboAssertion: inboundToken,
+        // Matches the 'value' in your Shared API terraform
+        scopes: ["api://shared-documents/Documents.Read"], 
+    };
 
+    try {
+        // 3. Exchange Frontend-Token for Shared-API-Token
+        const response = await cca.acquireTokenOnBehalfOf(oboRequest);
+        const sharedApiToken = response.accessToken;
 
-<span class="c1"># =================================================</span>
-<span class="c1"># 3. INTERNAL API (The Middle Tier - SDS)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"internal_api"</span> <span class="p">{</span>
-  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Internal SDS API (Middle Tier)"</span>
-  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://internal-sds"</span><span class="p">]</span>
-  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
+        // 4. Call the Shared API
+        // const data = await axios.get('...', { headers: { Authorization: `Bearer ${sharedApiToken}` } });
 
-  <span class="c1"># 3a. Expose its own Scope (for the Web App to call)</span>
-  <span class="nx">api</span> <span class="p">{</span>
-    <span class="nx">oauth2_permission_scope</span> <span class="p">{</span>
-      <span class="nx">admin_consent_description</span>  <span class="p">=</span> <span class="s2">"Allow the app to access SDS on behalf of the user."</span>
-      <span class="nx">admin_consent_display_name</span> <span class="p">=</span> <span class="s2">"Access SDS"</span>
-      <span class="nx">enabled</span>                    <span class="p">=</span> <span class="kc">true</span>
-      <span class="nx">id</span>                         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span>
-      <span class="nx">type</span>                       <span class="p">=</span> <span class="s2">"User"</span>
-      <span class="nx">value</span>                      <span class="p">=</span> <span class="s2">"user_impersonation"</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
+        res.send("Successfully chained identity to Shared API!");
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+</code></pre></div><h5 id="service-c-the-shared-api-obo-example-shared-api">Service C: The Shared API (obo-example-shared-api)</h5>
+<p>This service doesn&rsquo;t need to exchange tokens, it just needs to verify them.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
 
-  <span class="c1"># 3b. Request Access to the Shared Document API (Backend)</span>
-  <span class="nx">required_resource_access</span> <span class="p">{</span>
-    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">client_id</span>
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "SHARED_API_CLIENT_ID",
+    audience: "api://shared-documents", // Matches your identifier_uris
+    validateIssuer: true,
+    passReqToCallback: false,
+    loggingLevel: 'info'
+};
 
-    <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span> 
-      <span class="c1"># Requesting 'Documents.Read'</span>
-      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+const bearerStrategy = new BearerStrategy(options, (token, done) =&gt; {
+    // Verify the scope exists in the token
+    if (token.scp.includes("Documents.Read")) {
+        return done(null, { name: token.name }, token);
+    }
+    return done(new Error("Missing Documents.Read scope"), null);
+});
 
-<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"internal_api_sp"</span> <span class="p">{</span>
-  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span>
-<span class="p">}</span>
+const app = express();
+passport.use(bearerStrategy);
 
-<span class="c1"># 3c. Client Secret (Required for OBO flow to authenticate this API)</span>
-<span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"internal_api_secret"</span> <span class="p">{</span>
-  <span class="nx">application_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">id</span>
-  <span class="nx">display_name</span>   <span class="p">=</span> <span class="s2">"OBO Client Secret"</span>
-<span class="p">}</span>
-
-
-<span class="c1"># =================================================</span>
-<span class="c1"># 4. WEB APP (The Frontend)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"web_app"</span> <span class="p">{</span>
-  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Case Management Web App (Frontend)"</span>
-  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
-
-  <span class="nx">web</span> <span class="p">{</span>
-    <span class="nx">redirect_uris</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"https://localhost:5000/getAToken"</span><span class="p">]</span>
-    <span class="nx">implicit_grant</span> <span class="p">{</span>
-      <span class="nx">access_token_issuance_enabled</span> <span class="p">=</span> <span class="kc">false</span>
-      <span class="nx">id_token_issuance_enabled</span>     <span class="p">=</span> <span class="kc">true</span> 
-      <span class="c1"># Standard for OIDC login</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="c1"># 4a. Request Access to the Internal API (Middle Tier)</span>
-  <span class="nx">required_resource_access</span> <span class="p">{</span>
-    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span>
-
-    <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span> 
-      <span class="c1"># Requesting 'user_impersonation'</span>
-      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Scope"</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"web_app_sp"</span> <span class="p">{</span>
-  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">client_id</span>
-<span class="p">}</span>
-
-<span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"web_app_secret"</span> <span class="p">{</span>
-  <span class="nx">application_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">id</span>
-<span class="p">}</span>
-
-
-<span class="c1"># =================================================</span>
-<span class="c1"># 5. PRE-AUTHORIZATION (The Trust Links)</span>
-<span class="c1"># =================================================</span>
-
-<span class="c1"># TRUST LINK 1: Shared Docs trusts Internal API</span>
-<span class="c1"># This enables the "Double Hop" (OBO) without user consent prompt</span>
-<span class="k">resource</span> <span class="s2">"azuread_application_pre_authorized"</span> <span class="s2">"shared_docs_trusts_internal"</span> <span class="p">{</span>
-  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">shared_docs</span><span class="p">.</span><span class="nx">id</span>       
-  <span class="c1"># The Resource (Backend)</span>
-  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">client_id</span> 
-  <span class="c1"># The Client (Middle Tier)</span>
-  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_shared_docs</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>   
-  <span class="c1"># The Scope being granted</span>
-<span class="p">}</span>
-
-<span class="c1"># TRUST LINK 2: Internal API trusts Web App</span>
-<span class="c1"># This allows the Web App to call the Internal API silently</span>
-<span class="k">resource</span> <span class="s2">"azuread_application_pre_authorized"</span> <span class="s2">"internal_trusts_webapp"</span> <span class="p">{</span>
-  <span class="nx">application_id</span>       <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">internal_api</span><span class="p">.</span><span class="nx">id</span>      
-  <span class="c1"># The Resource (Middle Tier)</span>
-  <span class="nx">authorized_app_id</span>    <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">web_app</span><span class="p">.</span><span class="nx">client_id</span>    
-  <span class="c1"># The Client (Frontend)</span>
-  <span class="nx">permission_ids</span>       <span class="p">=</span> <span class="p">[</span><span class="nx">random_uuid</span><span class="p">.</span><span class="nx">scope_internal_api</span><span class="p">.</span><span class="nx">result</span><span class="p">]</span>  
-  <span class="c1"># The Scope being granted</span>
-<span class="p">}</span>
+app.get('/docs', passport.authenticate('oauth-bearer', { session: false }), (req, res) =&gt; {
+    res.json({ docs: ["Policy1.pdf", "Specs.docx"], user: req.user.name });
+});
 </code></pre></div><h2 id="service-to-service-s2s-pattern">Service to Service (S2S) Pattern</h2>
 <h3 id="service-to-service-s2s-pattern-use-case">Use Case</h3>
 <p>Use this for background tasks where no human user is present. This is for &ldquo;Machine-to-Machine&rdquo; communication, such as nightly backups, automated logging, or internal file synchronization.</p>
-<h4 id="service-to-service-s2s-pattern-use-case-non-tech-analogy">Non-Tech Analogy</h4>
+<h4 id="non-tech-analogy">Non-Tech Analogy</h4>
 <p>This is like a security guard having a master key to the building. They don&rsquo;t need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.</p>
-<h4 id="service-to-service-s2s-pattern-use-case-diagram">Diagram</h4>
+<h4 id="diagram">Diagram</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant Client as Consumer Service
     participant Entra as Entra ID
@@ -458,7 +342,7 @@
     Note left of SDS: Validates Token Signature&lt;br/&gt;Checks for 'Files.Write' Role
 
     SDS--&gt;&gt;Client: Return Success / Store File
-</code></pre></div><h3 id="service-to-service-s2s-pattern-terraform">Terraform</h3>
+</code></pre></div><h3 id="terraform">Terraform</h3>
 
 <blockquote>
 <p>These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.</p>
