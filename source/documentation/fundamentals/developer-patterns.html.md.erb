@@ -8,83 +8,53 @@ This document outlines the standard identity patterns used within the MoJ to ens
 
 OBO flows are required when an application needs to act as a middleman. It exchanges the user's initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.
 
-Imagine giving a lawyer "Power of Attorney" to sign a house deed for you. The lawyer doesn't sign as themselves; they sign on your behalf using the specific authority you granted them.
+**Analogy:** Imagine giving a lawyer "Power of Attorney" to sign a house deed for you. The lawyer doesn't sign as themselves; they sign on your behalf using the specific authority you granted them.
 
-### Practical example
+### Scenario (Double Hop)
 
-#### The Issue
+Consider a public-facing web app where users upload documents. This app needs to send those documents to a secure, internal "Central API" for storage.
 
-A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to
+**The Problem:** If the Web App simply used its own "Service Secret" to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.
 
-* Sign in a user (`User.Read.All` delegated)
-* User will upload a document that will be saved to SharePoint (`SharePoint.ReadWrite.OwnedBy`)
-* Application will call a centralised MOJ API Endpoint to store data such as UPN, Entra ID, DateTime, SharePoint ID, etc
+**The Solution:** Using OBO, the Web App passes the user's token to an internal orchestrator. That orchestrator exchanges the token for a new one specifically for the Central API. The Central API receives a token that identifies the User, not just the server.
 
-If we created an application registration, we would have to grant both permissions on the application. The seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will require management of another custom API Auth method between the Application and the centralised API.
-
-In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files into SharePoint and trigger API calls to the centralised MOJ API Endpoint without any authentication checks.
-
-#### OBO Pattern Fix
-
-We can use OBO to fix this issue.
-
-We Create 3 Application Registrations
-
-* Service A: Public facing Web Application (Delegated `User.Read.All`)
-* Service B: Non public facing Internal API (`SharePoint.ReadWrite.OwnedBy`)
-* Service C: Centralised API Endpoint
-
-C (Centralised API) trusts B (Internal API) to pass the user's identity securely. Service C validates the token to ensure the request is coming from a real user, preventing data spoofing.
-
-In this way, even if a bad actor steals the Web Application's secrets, they cannot upload files. The Internal API requires a User Token (acting on behalf of a human). A stolen App Secret only proves the identity of the server, not the user, so the Internal API will reject the request.
+In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files and trigger API calls to the Central API without any authentication checks.
 
 ``` mermaid
 sequenceDiagram
     participant User
     participant Web as 1. Public Web App
     participant Internal as 2. Internal API (Orchestrator)
-    participant SP as SharePoint
     participant Central as 3. Centralised MOJ API
 
     User->>Web: Upload Document
-    Note over Web: App has NO permissions<br/>for SP or Central API.
+    Note over Web: App has NO permissions<br/>for Central API.
     
     Web->>Internal: Send File + User Token A
-    Note over Internal: Validates Token A.<br/>Exchanges for Token B (SP)<br/>Exchanges for Token C (Central)
+    Note over Internal: Validates Token A.<br/>Exchanges for Token B (via Entra)<br/>Exchanges for Token C (Central)
     
-    par Parallel/Sequential Actions
-        Internal->>SP: Upload File (with Token B)
-        SP-->>Internal: Return SharePoint ID
-        
-        Internal->>Central: Store Metadata (UPN, SP ID)<br/>(with Token C)
-        Note right of Central: Extracts User identity<br/>from Token C.<br/>Cannot be spoofed.
-    end
+    Internal->>Central: Store Metadata (UPN, Object ID)<br/>(with Token C)
+    Note right of Central: Extracts User identity<br/>from Token C.<br/>Cannot be spoofed.
     
     Internal-->>Web: Success
     Web-->>User: Done
 ```
 
-### OBO Technical Overview (Double Hop)
-
-Flow: `User -> Web App -> Internal API --(call)--> External/Downstream API`
-
-If an Internal API needs to call a second service (like a Shared Document API) as the user, it cannot reuse the token it was given. Tokens are "addressed" to a specific recipient (the Audience). The Internal API must trade the user's token for a new one addressed to the downstream service.
-
-### Implementation Example
+#### Implementation Example
 
 #### Setup your Applications in Terraform
 
 You will be required to first setup your Application Registrations in Terraform. For this example we will create 3 applications.
 
-**Source:** [Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf#L94)
+**Source:** [OBO Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
 
 > Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `scope_id` of the Shared API inside the Internal API's configuration before the Shared API exists.
 
-Step 1: Create all 3 app registrations in Terraform, but leave the `resource_access` blocks empty (or commented out). Apply this configuration.
+**Step 1:** Create all 3 app registrations in Terraform, but leave the `resource_access` blocks empty (or commented out). Apply this configuration.
 
-Step 2: Once the Apps and their Scopes are created, update the `resource_access` block in the Internal API to reference the Shared API.
+**Step 2:** Once the Apps and their Scopes are created, update the `resource_access` block in the Internal API to reference the Shared API.
 
-Step 3: Apply the Terraform again to create the link.
+**Step 3:** Apply the Terraform again to create the link.
 
 #### Example Node Implementation
 
@@ -177,6 +147,7 @@ const options = {
 
 const bearerStrategy = new BearerStrategy(options, (token, done) => {
     // Verify the scope exists in the token
+    // Note: Delegated flows use 'scp' (scope)
     if (token.scp.includes("Documents.Read")) {
         return done(null, { name: token.name }, token);
     }
@@ -197,9 +168,7 @@ app.get('/docs', passport.authenticate('oauth-bearer', { session: false }), (req
 
 Use this for background tasks where no human user is present. This is for "Machine-to-Machine" communication, such as nightly backups, automated logging, or internal file synchronization.
 
-#### Non-Tech Analogy
-
-This is like a security guard having a master key to the building. They don't need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.
+**Analogy:** This is like a security guard having a master key to the building. They don't need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.
 
 #### Diagram
 
@@ -224,95 +193,105 @@ sequenceDiagram
     SDS-->>Client: Return Success / Store File
 ```
 
-### Terraform
+### Implementation Example
 
-> These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.
+#### Setup your Applications in Terraform
 
-``` terraform
-# =================================================
-# 1. RANDOM UUIDS (For Stable Role IDs)
-# =================================================
-resource "random_uuid" "role_files_write" {}    
-# App Role exposed by SDS API
+You will be required to first setup your Application Registrations in Terraform. For this example we will create 2 applications.
 
+**Source:** [S2S Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
 
-# =================================================
-# 2. RESOURCE API (The Service being called)
-# =================================================
-resource "azuread_application" "sds_api" {
-  display_name     = "Secure Document Storage (SDS)"
-  identifier_uris  = ["api://sds.internal.laa"]
-  sign_in_audience = "AzureADMyOrg"
+> Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `resource_access` before the `S2S Example API Resource` Application exists.
 
-  # 2a. Define the App Role (Permission)
-  app_role {
-    allowed_member_types = ["Application"]                
-    # 'Application' = S2S/Machine
-    description          = "Allows background services to upload files."
-    display_name         = "Files.Write"
-    enabled              = true
-    id                   = random_uuid.role_files_write.result
-    value                = "Files.Write"
-  }
-}
+**Step 1:** Create both app registrations in Terraform, but leave the `resource_access` blocks empty (or commented out). Apply this configuration.
 
-# Service Principal for the API (Required for Role Assignment)
-resource "azuread_service_principal" "sds_api_sp" {
-  client_id = azuread_application.sds_api.client_id
-}
+**Step 2:** Once the Apps and their Scopes are created, update the `resource_access` block in the `S2S Example Consumer` to reference the `S2S Example API Resource`.
 
+**Step 3:** Apply the Terraform again to create the link.
 
-# =================================================
-# 3. CONSUMER SERVICE (The Background Worker)
-# =================================================
-resource "azuread_application" "client_service" {
-  display_name = "Nightly Backup Service"
+**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An IDAM Engineer will do this for you.
 
-  # 3a. Request Access to the Resource API
-  required_resource_access {
-    resource_app_id = azuread_application.sds_api.client_id
+* Go to `Entra ID > App Registrations > S2S Example Consumer`.
+* Select `API Permissions`.
+* Click `Grant admin consent for Ministry of Justice`.
+* Without this step, the Consumer will receive a token, but it will lack the required Roles.
 
-    resource_access {
-      id   = random_uuid.role_files_write.result      
-      # The role ID from above
-      type = "Role"                                   
-      # 'Role' = S2S/Machine
+#### Example Node Implementation
+
+##### Consumer Application (s2s-example-consumer)
+
+The consumer application's job is to request an authentication token for the resource service.
+
+``` node
+// SERVICE: s2s-example-client
+const msal = require('@azure/msal-node');
+
+const msalConfig = {
+    auth: {
+        clientId: "CLIENT_APP_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "CLIENT_SECRET", 
     }
-  }
-}
+};
 
-# Service Principal for the Consumer (The Identity that runs the code)
-resource "azuread_service_principal" "client_service_sp" {
-  client_id = azuread_application.client_service.client_id
-}
+const cca = new msal.ConfidentialClientApplication(msalConfig);
 
-# 3b. Generate the Secret (The "Password" for the machine)
-resource "azuread_application_password" "client_secret" {
-  application_id = azuread_application.client_service.id
-}
+async function runBackup() {
+    const tokenRequest = {
+        // For S2S, the scope is ALWAYS the App ID URI + "/.default"
+        // This tells Entra: "Give me all the App Roles I am assigned to"
+        scopes: ["api://s2s-example-api/.default"], 
+    };
 
-
-# =================================================
-# 4. ROLE ASSIGNMENT (The "Admin Consent")
-# =================================================
-
-# Unlike User flows, S2S flows require explicit assignment (Admin Consent).
-# This resource grants the 'Files.Write' role to the Backup Service.
-resource "azuread_app_role_assignment" "grant_files_write" {
-  app_role_id         = random_uuid.role_files_write.result           
-  # The Permission
-  principal_object_id = azuread_service_principal.client_service_sp.object_id 
-  # The Consumer (Backup Service)
-  resource_object_id  = azuread_service_principal.sds_api_sp.object_id    
-  # The Resource (SDS API)
+    try {
+        const response = await cca.acquireTokenByClientCredential(tokenRequest);
+        
+        // Check the Roles
+        // If the Terraform Assignment worked, response.accessToken will contain:
+        // "roles": ["Files.Write"]
+        console.log("Token acquired!", response.accessToken);
+    } catch (error) {
+        console.error(error);
+    }
 }
 ```
 
-### Technical Requirements
+##### Resource API Application (s2s-example-api-resource)
 
-* **Grant Type:** client_credentials
-* **Entra Identity:** Managed Identity (strongly preferred for Azure resources to avoid secret management) or App Registration with a Client Secret.
-* **Permissions:** Application Roles. These are assigned globally to the service identity rather than a specific user.
+The API must validate that the token is valid AND that it contains the specific `Files.Write` role.
+
+``` node
+// SERVICE: s2s-example-api
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "API_CLIENT_ID",
+    audience: "api://s2s-example-api", 
+    validateIssuer: true,
+    passReqToCallback: false,
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+    // CHECK 1: Is it a valid token? (Handled by library)
+    
+    // CHECK 2: Does it have the correct Role?
+    // Note: S2S tokens use the 'roles' claim, not 'scp'
+    if (token.roles && token.roles.includes("Files.Write")) {
+        return done(null, { name: token.appid }, token);
+    }
+    return done(new Error("Missing 'Files.Write' role"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.post('/upload', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+    res.send("File uploaded successfully by Service: " + req.user.name);
+});
+```
 
 ## Which should you use?
 
