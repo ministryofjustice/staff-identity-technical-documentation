@@ -1,43 +1,311 @@
-# Common Software Development Patterns
+# Identity Software Integration Patterns
 
-As we build integrations together into Entra ID, we should share common integration patterns and best practices that are used so that new teams onboarding can take advantage of the work done before them.
+This document outlines the standard identity patterns used within the MoJ to ensure services can talk to each other securely while protecting user data.
 
-This document covers and links to existing patterns discussed and used in various MoJ teams.
+## On behalf of (OBO) Pattern
 
-## On behalf of (OBO) flows
+### Use Case
 
-OBO flows are required when an application needs to exchange a token it received for a new token intended for a totally different downstream service, specifically to maintain the user's identity across that boundary.
+OBO flows are required when an application needs to act as a middleman. It exchanges the user's initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.
 
-### Scenario A: No OBO Needed
+**Analogy:** Imagine giving a lawyer "Power of Attorney" to sign a house deed for you. The lawyer doesn't sign as themselves; they sign on your behalf using the specific authority you granted them.
 
-Flow: `(Single Hop) User -> (Web App -> Internal API)`
+### Scenario (Double Hop)
 
-If the Web App acts as the client, it can simply request an Access Token specifically scoped for the Internal API during the initial login. The Internal API receives this token, validates the `aud` (Audience), and reads the `oid` (User ID) directly. No OBO exchange is required because the client requested the correct token upfront.
+Consider a public-facing web app where users upload documents. This app needs to send those documents to a secure, internal "Central API" for storage.
 
-### Scenario B: OBO Required (Double Hop)
+**The Problem:** If the Web App simply used its own "Service Secret" to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.
 
-Flow: `User -> Web App -> Internal API --(call)--> External/Downstream API`
+**The Solution:** Using OBO, the Web App passes the user's token to an internal orchestrator. That orchestrator exchanges the token for a new one specifically for the Central API. The Central API receives a token that identifies the User, not just the server.
 
-If the Internal API needs to call a downstream service (like a Shared Document API) as the user, it cannot just pass the token it received from the Web App (that token is audienced to the Internal API, not the Document API).
+In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files and trigger API calls to the Central API without any authentication checks.
 
-In this case, the Internal API must use the OBO flow. It takes the user's token, sends it to Entra ID, and exchanges it for a new token where the audience is strictly the "Shared Document API." This ensures the downstream service knows exactly who the user is and can enforce permissions securely.
+``` mermaid
+sequenceDiagram
+    participant User
+    participant Web as 1. Public Web App
+    participant Internal as 2. Internal API (Orchestrator)
+    participant Central as 3. Centralised MOJ API
 
-### Zero Trust Alternative
+    User->>Web: Upload Document
+    Note over Web: App has NO permissions<br/>for Central API.
+    
+    Web->>Internal: Send File + User Token A
+    Note over Internal: Validates Token A.<br/>Exchanges for Token B (via Entra)<br/>Exchanges for Token C (Central)
+    
+    Internal->>Central: Store Metadata (UPN, Object ID)<br/>(with Token C)
+    Note right of Central: Extracts User identity<br/>from Token C.<br/>Cannot be spoofed.
+    
+    Internal-->>Web: Success
+    Web-->>User: Done
+```
 
-Flow: `User -> Web App (Low Privilege) -> Internal API (High Privilege)`
+#### Implementation Example
 
-If you want to harden application security, you can use OBO to enforce Least Privilege.
+#### Setup your Applications in Terraform
 
-You create two separate App Registrations. The public-facing Web App only receives a "Low Privilege" token (e.g., `User.Read.All`).
+You will be required to first setup your Application Registrations in Terraform. For this example we will create 3 applications.
 
-If the Web App is compromised and the token is stolen, the attacker can only read basic profile data. They cannot perform sensitive actions.
+**Source:** [OBO Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
 
-When the user performs a sensitive action, the secure Internal API (which is not exposed to the public internet) uses OBO to exchange that low-privilege token for a high-privilege token (e.g., `User.ReadWrite.All`) to complete the task.
+> Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `scope_id` of the Shared API inside the Internal API's configuration before the Shared API exists.
 
-This ensures that high-privilege tokens never exist in the browser or the frontend web layer.
+**Step 1:** Create all 3 app registrations in Terraform, but leave the `resource_access` blocks empty (or commented out). Apply this configuration.
 
+**Step 2:** Once the Apps and their Scopes are created, update the `resource_access` block in the Internal API to reference the Shared API.
+
+**Step 3:** Apply the Terraform again to create the link.
+
+#### Example Node Implementation
+
+##### Service A: The Frontend (obo-example-frontend)
+
+The frontend's job is to request a token specifically for the "Middle Tier", Service B.
+
+``` node
+// Using @azure/msal-node
+const msalConfig = {
+    auth: {
+        clientId: "FRONTEND_CLIENT_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "FRONTEND_SECRET"
+    }
+};
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
+
+// The user logs in and we request access to the Internal API
+const tokenRequest = {
+    scopes: ["api://obo-example-internal-api/user_impersonation"],
+    // code: ... (from the redirect)
+};
+
+const result = await cca.acquireTokenByCode(tokenRequest);
+const accessTokenForInternalApi = result.accessToken;
+```
+
+##### Service B: The Internal API (obo-example-internal-api)
+
+This is the "Middle Tier". This app has `resource_access` to the Shared API. It must perform the exchange.
+
+``` node
+const express = require('express');
+const msal = require('@azure/msal-node');
+const app = express();
+
+const cca = new msal.ConfidentialClientApplication({
+    auth: {
+        clientId: "INTERNAL_API_CLIENT_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "INTERNAL_API_SECRET"
+    }
+});
+
+app.get('/process-documents', async (req, res) => {
+    // 1. Extract the token sent from the Frontend
+    const inboundToken = req.headers.authorization.split(' ')[1];
+
+    // 2. Setup the OBO request for the Shared API
+    const oboRequest = {
+        oboAssertion: inboundToken,
+        // Matches the 'value' in your Shared API terraform
+        scopes: ["api://shared-documents/Documents.Read"], 
+    };
+
+    try {
+        // 3. Exchange Frontend-Token for Shared-API-Token
+        const response = await cca.acquireTokenOnBehalfOf(oboRequest);
+        const sharedApiToken = response.accessToken;
+
+        // 4. Call the Shared API
+        // const data = await axios.get('...', { headers: { Authorization: `Bearer ${sharedApiToken}` } });
+        
+        res.send("Successfully chained identity to Shared API!");
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+```
+
+##### Service C: The Shared API (obo-example-shared-api)
+
+This service doesn't need to exchange tokens, it just needs to verify them.
+
+``` node
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "SHARED_API_CLIENT_ID",
+    audience: "api://shared-documents", // Matches your identifier_uris
+    validateIssuer: true,
+    passReqToCallback: false,
+    loggingLevel: 'info'
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+    // Verify the scope exists in the token
+    // Note: Delegated flows use 'scp' (scope)
+    if (token.scp.includes("Documents.Read")) {
+        return done(null, { name: token.name }, token);
+    }
+    return done(new Error("Missing Documents.Read scope"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.get('/docs', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+    res.json({ docs: ["Policy1.pdf", "Specs.docx"], user: req.user.name });
+});
+```
+
+## Service to Service (S2S) Pattern
+
+### Use Case
+
+Use this for background tasks where no human user is present. This is for "Machine-to-Machine" communication, such as nightly backups, automated logging, or internal file synchronization.
+
+**Analogy:** This is like a security guard having a master key to the building. They don't need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.
+
+#### Diagram
+
+``` mermaid
+sequenceDiagram
+    participant Client as Consumer Service
+    participant Entra as Entra ID
+    participant SDS as SDS API (Resource)
+
+    Note over Client, Entra: Step 1: Authentication
+    Client->>Entra: Authenticate (via Managed Identity or Secret)<br/>Request token for SDS
+    
+    Note right of Entra: Validates Identity &<br/>Assigned App Roles
+    
+    Entra-->>Client: Issue Access Token<br/>(Contains Application Roles)
+
+    Note over Client, SDS: Step 2: Access Resource
+    Client->>SDS: Call API with Access Token
+    
+    Note left of SDS: Validates Token Signature<br/>Checks for 'Files.Write' Role
+    
+    SDS-->>Client: Return Success / Store File
+```
+
+### Implementation Example
+
+#### Setup your Applications in Terraform
+
+You will be required to first setup your Application Registrations in Terraform. For this example we will create 2 applications.
+
+**Source:** [S2S Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
+
+> Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `resource_access` before the `S2S Example API Resource` Application exists.
+
+**Step 1:** Create both app registrations in Terraform, but leave the `resource_access` blocks empty (or commented out). Apply this configuration.
+
+**Step 2:** Once the Apps and their Scopes are created, update the `resource_access` block in the `S2S Example Consumer` to reference the `S2S Example API Resource`.
+
+**Step 3:** Apply the Terraform again to create the link.
+
+**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An IDAM Engineer will do this for you.
+
+* Go to `Entra ID > App Registrations > S2S Example Consumer`.
+* Select `API Permissions`.
+* Click `Grant admin consent for Ministry of Justice`.
+* Without this step, the Consumer will receive a token, but it will lack the required Roles.
+
+#### Example Node Implementation
+
+##### Consumer Application (s2s-example-consumer)
+
+The consumer application's job is to request an authentication token for the resource service.
+
+``` node
+// SERVICE: s2s-example-client
+const msal = require('@azure/msal-node');
+
+const msalConfig = {
+    auth: {
+        clientId: "CLIENT_APP_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "CLIENT_SECRET", 
+    }
+};
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
+
+async function runBackup() {
+    const tokenRequest = {
+        // For S2S, the scope is ALWAYS the App ID URI + "/.default"
+        // This tells Entra: "Give me all the App Roles I am assigned to"
+        scopes: ["api://s2s-example-api/.default"], 
+    };
+
+    try {
+        const response = await cca.acquireTokenByClientCredential(tokenRequest);
+        
+        // Check the Roles
+        // If the Terraform Assignment worked, response.accessToken will contain:
+        // "roles": ["Files.Write"]
+        console.log("Token acquired!", response.accessToken);
+    } catch (error) {
+        console.error(error);
+    }
+}
+```
+
+##### Resource API Application (s2s-example-api-resource)
+
+The API must validate that the token is valid AND that it contains the specific `Files.Write` role.
+
+``` node
+// SERVICE: s2s-example-api
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "API_CLIENT_ID",
+    audience: "api://s2s-example-api", 
+    validateIssuer: true,
+    passReqToCallback: false,
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+    // CHECK 1: Is it a valid token? (Handled by library)
+    
+    // CHECK 2: Does it have the correct Role?
+    // Note: S2S tokens use the 'roles' claim, not 'scp'
+    if (token.roles && token.roles.includes("Files.Write")) {
+        return done(null, { name: token.appid }, token);
+    }
+    return done(new Error("Missing 'Files.Write' role"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.post('/upload', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+    res.send("File uploaded successfully by Service: " + req.user.name);
+});
+```
+
+## Which should you use?
+
+| If the action is... | Use this Flow | Permission Type |
+| -- | -- | -- |
+| A background cron job cleaning up old files. | S2S | Application Role |
+| A system log upload from a worker node. | S2S | Application Role |
+| A user viewing their own uploaded documents. | OBO | Delegated Scope |
+| An admin service acting on a specific user's file. | OBO | Delegated Scope |
 
 ## Resources
 
 * [Microsoft identity platform and OAuth 2.0 On-Behalf-Of flow](https://docs.azure.cn/en-us/entra/identity-platform/v2-oauth2-on-behalf-of-flow)
+* [Using service-to-service (S2S) authentication](https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/automation-apis-using-s2s-authentication)
 * [EUCS IDAM Team Shared Inbox](mailto:idam@justice.gov.uk)
+
+<script src="../../javascripts/mermaid.vendor"></script>
