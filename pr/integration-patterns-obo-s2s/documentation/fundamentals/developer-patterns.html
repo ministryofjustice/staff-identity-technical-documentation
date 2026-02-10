@@ -99,22 +99,11 @@
             <a href="#use-case"><span>Use Case</span></a>
           </li>
           <li>
-            <a href="#practical-example"><span>Practical example</span></a>
+            <a href="#scenario-double-hop"><span>Scenario (Double Hop)</span></a>
             <ul>
               <li>
-                <a href="#the-issue"><span>The Issue</span></a>
+                <a href="#implementation-example"><span>Implementation Example</span></a>
               </li>
-              <li>
-                <a href="#obo-pattern-fix"><span>OBO Pattern Fix</span></a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#obo-technical-overview-double-hop"><span>OBO Technical Overview (Double Hop)</span></a>
-          </li>
-          <li>
-            <a href="#implementation-example"><span>Implementation Example</span></a>
-            <ul>
               <li>
                 <a href="#setup-your-applications-in-terraform"><span>Setup your Applications in Terraform</span></a>
               </li>
@@ -132,18 +121,20 @@
             <a href="#service-to-service-s2s-pattern-use-case"><span>Use Case</span></a>
             <ul>
               <li>
-                <a href="#non-tech-analogy"><span>Non-Tech Analogy</span></a>
-              </li>
-              <li>
                 <a href="#diagram"><span>Diagram</span></a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="#terraform"><span>Terraform</span></a>
-          </li>
-          <li>
-            <a href="#technical-requirements"><span>Technical Requirements</span></a>
+            <a href="#service-to-service-s2s-pattern-implementation-example"><span>Implementation Example</span></a>
+            <ul>
+              <li>
+                <a href="#service-to-service-s2s-pattern-implementation-example-setup-your-applications-in-terraform"><span>Setup your Applications in Terraform</span></a>
+              </li>
+              <li>
+                <a href="#service-to-service-s2s-pattern-implementation-example-example-node-implementation"><span>Example Node Implementation</span></a>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>
@@ -169,66 +160,40 @@
 <h2 id="on-behalf-of-obo-pattern">On behalf of (OBO) Pattern</h2>
 <h3 id="use-case">Use Case</h3>
 <p>OBO flows are required when an application needs to act as a middleman. It exchanges the user&rsquo;s initial login token for a new token intended for a different downstream service, all while maintaining the identity and permissions of the logged-in user.</p>
-<p>Imagine giving a lawyer &ldquo;Power of Attorney&rdquo; to sign a house deed for you. The lawyer doesn&rsquo;t sign as themselves; they sign on your behalf using the specific authority you granted them.</p>
-<h3 id="practical-example">Practical example</h3>
-<h4 id="the-issue">The Issue</h4>
-<p>A team requests a new Application Registration. The application is built in AWS, public facing and the purpose of the application integrating is to</p>
-
-<ul>
-<li>Sign in a user (<code>User.Read.All</code> delegated)</li>
-<li>User will upload a document that will be saved to SharePoint (<code>SharePoint.ReadWrite.OwnedBy</code>)</li>
-<li>Application will call a centralised MOJ API Endpoint to store data such as UPN, Entra ID, DateTime, SharePoint ID, etc</li>
-</ul>
-<p>If we created an application registration, we would have to grant both permissions on the application. The seperate centralised API Endpoint that the application calls will have to trust that the details sent are valid. This will require management of another custom API Auth method between the Application and the centralised API.</p>
-<p>In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files into SharePoint and trigger API calls to the centralised MOJ API Endpoint without any authentication checks.</p>
-<h4 id="obo-pattern-fix">OBO Pattern Fix</h4>
-<p>We can use OBO to fix this issue.</p>
-<p>We Create 3 Application Registrations</p>
-
-<ul>
-<li>Service A: Public facing Web Application (Delegated <code>User.Read.All</code>)</li>
-<li>Service B: Non public facing Internal API (<code>SharePoint.ReadWrite.OwnedBy</code>)</li>
-<li>Service C: Centralised API Endpoint</li>
-</ul>
-<p>C (Centralised API) trusts B (Internal API) to pass the user&rsquo;s identity securely. Service C validates the token to ensure the request is coming from a real user, preventing data spoofing.</p>
-<p>In this way, even if a bad actor steals the Web Application&rsquo;s secrets, they cannot upload files. The Internal API requires a User Token (acting on behalf of a human). A stolen App Secret only proves the identity of the server, not the user, so the Internal API will reject the request.</p>
+<p><strong>Analogy:</strong> Imagine giving a lawyer &ldquo;Power of Attorney&rdquo; to sign a house deed for you. The lawyer doesn&rsquo;t sign as themselves; they sign on your behalf using the specific authority you granted them.</p>
+<h3 id="scenario-double-hop">Scenario (Double Hop)</h3>
+<p>Consider a public-facing web app where users upload documents. This app needs to send those documents to a secure, internal &ldquo;Central API&rdquo; for storage.</p>
+<p><strong>The Problem:</strong> If the Web App simply used its own &ldquo;Service Secret&rdquo; to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.</p>
+<p><strong>The Solution:</strong> Using OBO, the Web App passes the user&rsquo;s token to an internal orchestrator. That orchestrator exchanges the token for a new one specifically for the Central API. The Central API receives a token that identifies the User, not just the server.</p>
+<p>In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files and trigger API calls to the Central API without any authentication checks.</p>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant User
     participant Web as 1. Public Web App
     participant Internal as 2. Internal API (Orchestrator)
-    participant SP as SharePoint
     participant Central as 3. Centralised MOJ API
 
     User-&gt;&gt;Web: Upload Document
-    Note over Web: App has NO permissions&lt;br/&gt;for SP or Central API.
+    Note over Web: App has NO permissions&lt;br/&gt;for Central API.
 
     Web-&gt;&gt;Internal: Send File + User Token A
-    Note over Internal: Validates Token A.&lt;br/&gt;Exchanges for Token B (SP)&lt;br/&gt;Exchanges for Token C (Central)
+    Note over Internal: Validates Token A.&lt;br/&gt;Exchanges for Token B (via Entra)&lt;br/&gt;Exchanges for Token C (Central)
 
-    par Parallel/Sequential Actions
-        Internal-&gt;&gt;SP: Upload File (with Token B)
-        SP--&gt;&gt;Internal: Return SharePoint ID
-
-        Internal-&gt;&gt;Central: Store Metadata (UPN, SP ID)&lt;br/&gt;(with Token C)
-        Note right of Central: Extracts User identity&lt;br/&gt;from Token C.&lt;br/&gt;Cannot be spoofed.
-    end
+    Internal-&gt;&gt;Central: Store Metadata (UPN, Object ID)&lt;br/&gt;(with Token C)
+    Note right of Central: Extracts User identity&lt;br/&gt;from Token C.&lt;br/&gt;Cannot be spoofed.
 
     Internal--&gt;&gt;Web: Success
     Web--&gt;&gt;User: Done
-</code></pre></div><h3 id="obo-technical-overview-double-hop">OBO Technical Overview (Double Hop)</h3>
-<p>Flow: <code>User -&gt; Web App -&gt; Internal API --(call)--&gt; External/Downstream API</code></p>
-<p>If an Internal API needs to call a second service (like a Shared Document API) as the user, it cannot reuse the token it was given. Tokens are &ldquo;addressed&rdquo; to a specific recipient (the Audience). The Internal API must trade the user&rsquo;s token for a new one addressed to the downstream service.</p>
-<h3 id="implementation-example">Implementation Example</h3>
+</code></pre></div><h4 id="implementation-example">Implementation Example</h4>
 <h4 id="setup-your-applications-in-terraform">Setup your Applications in Terraform</h4>
 <p>You will be required to first setup your Application Registrations in Terraform. For this example we will create 3 applications.</p>
-<p><strong>Source:</strong> <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf#L94">Example Terraform Code.</a></p>
+<p><strong>Source:</strong> <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf">OBO Example Terraform Code.</a></p>
 
 <blockquote>
 <p>Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the <code>scope_id</code> of the Shared API inside the Internal API&rsquo;s configuration before the Shared API exists.</p>
 </blockquote>
-<p>Step 1: Create all 3 app registrations in Terraform, but leave the <code>resource_access</code> blocks empty (or commented out). Apply this configuration.</p>
-<p>Step 2: Once the Apps and their Scopes are created, update the <code>resource_access</code> block in the Internal API to reference the Shared API.</p>
-<p>Step 3: Apply the Terraform again to create the link.</p>
+<p><strong>Step 1:</strong> Create all 3 app registrations in Terraform, but leave the <code>resource_access</code> blocks empty (or commented out). Apply this configuration.</p>
+<p><strong>Step 2:</strong> Once the Apps and their Scopes are created, update the <code>resource_access</code> block in the Internal API to reference the Shared API.</p>
+<p><strong>Step 3:</strong> Apply the Terraform again to create the link.</p>
 <h4 id="example-node-implementation">Example Node Implementation</h4>
 <h5 id="service-a-the-frontend-obo-example-frontend">Service A: The Frontend (obo-example-frontend)</h5>
 <p>The frontend&rsquo;s job is to request a token specifically for the &ldquo;Middle Tier&rdquo;, Service B.</p>
@@ -306,6 +271,7 @@ const options = {
 
 const bearerStrategy = new BearerStrategy(options, (token, done) =&gt; {
     // Verify the scope exists in the token
+    // Note: Delegated flows use 'scp' (scope)
     if (token.scp.includes("Documents.Read")) {
         return done(null, { name: token.name }, token);
     }
@@ -321,8 +287,7 @@ app.get('/docs', passport.authenticate('oauth-bearer', { session: false }), (req
 </code></pre></div><h2 id="service-to-service-s2s-pattern">Service to Service (S2S) Pattern</h2>
 <h3 id="service-to-service-s2s-pattern-use-case">Use Case</h3>
 <p>Use this for background tasks where no human user is present. This is for &ldquo;Machine-to-Machine&rdquo; communication, such as nightly backups, automated logging, or internal file synchronization.</p>
-<h4 id="non-tech-analogy">Non-Tech Analogy</h4>
-<p>This is like a security guard having a master key to the building. They don&rsquo;t need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.</p>
+<p><strong>Analogy:</strong> This is like a security guard having a master key to the building. They don&rsquo;t need a specific tenant to let them in; they have their own ID card that identifies them as an authorized employee.</p>
 <h4 id="diagram">Diagram</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant Client as Consumer Service
@@ -342,96 +307,92 @@ app.get('/docs', passport.authenticate('oauth-bearer', { session: false }), (req
     Note left of SDS: Validates Token Signature&lt;br/&gt;Checks for 'Files.Write' Role
 
     SDS--&gt;&gt;Client: Return Success / Store File
-</code></pre></div><h3 id="terraform">Terraform</h3>
+</code></pre></div><h3 id="service-to-service-s2s-pattern-implementation-example">Implementation Example</h3>
+<h4 id="service-to-service-s2s-pattern-implementation-example-setup-your-applications-in-terraform">Setup your Applications in Terraform</h4>
+<p>You will be required to first setup your Application Registrations in Terraform. For this example we will create 2 applications.</p>
+<p><strong>Source:</strong> <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf">S2S Example Terraform Code.</a></p>
 
 <blockquote>
-<p>These Terraform examples are not to be used for production use or implemented into our repository. They are purely for psuedocode examples and the IDAM team will ensure a module is available to achieve these setups.</p>
+<p>Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the <code>resource_access</code> before the <code>S2S Example API Resource</code> Application exists.</p>
 </blockquote>
-<div class="highlight"><pre class="highlight terraform" tabindex="0"><code><span class="c1"># =================================================</span>
-<span class="c1"># 1. RANDOM UUIDS (For Stable Role IDs)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"random_uuid"</span> <span class="s2">"role_files_write"</span> <span class="p">{}</span>    
-<span class="c1"># App Role exposed by SDS API</span>
-
-
-<span class="c1"># =================================================</span>
-<span class="c1"># 2. RESOURCE API (The Service being called)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"sds_api"</span> <span class="p">{</span>
-  <span class="nx">display_name</span>     <span class="p">=</span> <span class="s2">"Secure Document Storage (SDS)"</span>
-  <span class="nx">identifier_uris</span>  <span class="p">=</span> <span class="p">[</span><span class="s2">"api://sds.internal.laa"</span><span class="p">]</span>
-  <span class="nx">sign_in_audience</span> <span class="p">=</span> <span class="s2">"AzureADMyOrg"</span>
-
-  <span class="c1"># 2a. Define the App Role (Permission)</span>
-  <span class="nx">app_role</span> <span class="p">{</span>
-    <span class="nx">allowed_member_types</span> <span class="p">=</span> <span class="p">[</span><span class="s2">"Application"</span><span class="p">]</span>                
-    <span class="c1"># 'Application' = S2S/Machine</span>
-    <span class="nx">description</span>          <span class="p">=</span> <span class="s2">"Allows background services to upload files."</span>
-    <span class="nx">display_name</span>         <span class="p">=</span> <span class="s2">"Files.Write"</span>
-    <span class="nx">enabled</span>              <span class="p">=</span> <span class="kc">true</span>
-    <span class="nx">id</span>                   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>
-    <span class="nx">value</span>                <span class="p">=</span> <span class="s2">"Files.Write"</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1"># Service Principal for the API (Required for Role Assignment)</span>
-<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"sds_api_sp"</span> <span class="p">{</span>
-  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">client_id</span>
-<span class="p">}</span>
-
-
-<span class="c1"># =================================================</span>
-<span class="c1"># 3. CONSUMER SERVICE (The Background Worker)</span>
-<span class="c1"># =================================================</span>
-<span class="k">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"client_service"</span> <span class="p">{</span>
-  <span class="nx">display_name</span> <span class="p">=</span> <span class="s2">"Nightly Backup Service"</span>
-
-  <span class="c1"># 3a. Request Access to the Resource API</span>
-  <span class="nx">required_resource_access</span> <span class="p">{</span>
-    <span class="nx">resource_app_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">sds_api</span><span class="p">.</span><span class="nx">client_id</span>
-
-    <span class="nx">resource_access</span> <span class="p">{</span>
-      <span class="nx">id</span>   <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>      
-      <span class="c1"># The role ID from above</span>
-      <span class="nx">type</span> <span class="p">=</span> <span class="s2">"Role"</span>                                   
-      <span class="c1"># 'Role' = S2S/Machine</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1"># Service Principal for the Consumer (The Identity that runs the code)</span>
-<span class="k">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"client_service_sp"</span> <span class="p">{</span>
-  <span class="nx">client_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">client_service</span><span class="p">.</span><span class="nx">client_id</span>
-<span class="p">}</span>
-
-<span class="c1"># 3b. Generate the Secret (The "Password" for the machine)</span>
-<span class="k">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"client_secret"</span> <span class="p">{</span>
-  <span class="nx">application_id</span> <span class="p">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">client_service</span><span class="p">.</span><span class="nx">id</span>
-<span class="p">}</span>
-
-
-<span class="c1"># =================================================</span>
-<span class="c1"># 4. ROLE ASSIGNMENT (The "Admin Consent")</span>
-<span class="c1"># =================================================</span>
-
-<span class="c1"># Unlike User flows, S2S flows require explicit assignment (Admin Consent).</span>
-<span class="c1"># This resource grants the 'Files.Write' role to the Backup Service.</span>
-<span class="k">resource</span> <span class="s2">"azuread_app_role_assignment"</span> <span class="s2">"grant_files_write"</span> <span class="p">{</span>
-  <span class="nx">app_role_id</span>         <span class="p">=</span> <span class="nx">random_uuid</span><span class="p">.</span><span class="nx">role_files_write</span><span class="p">.</span><span class="nx">result</span>           
-  <span class="c1"># The Permission</span>
-  <span class="nx">principal_object_id</span> <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">client_service_sp</span><span class="p">.</span><span class="nx">object_id</span> 
-  <span class="c1"># The Consumer (Backup Service)</span>
-  <span class="nx">resource_object_id</span>  <span class="p">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">sds_api_sp</span><span class="p">.</span><span class="nx">object_id</span>    
-  <span class="c1"># The Resource (SDS API)</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="technical-requirements">Technical Requirements</h3>
+<p><strong>Step 1:</strong> Create both app registrations in Terraform, but leave the <code>resource_access</code> blocks empty (or commented out). Apply this configuration.</p>
+<p><strong>Step 2:</strong> Once the Apps and their Scopes are created, update the <code>resource_access</code> block in the <code>S2S Example Consumer</code> to reference the <code>S2S Example API Resource</code>.</p>
+<p><strong>Step 3:</strong> Apply the Terraform again to create the link.</p>
+<p><strong>Step 4 (Important):</strong> Grant <code>Admin Consent</code> in the Entra Portal. An IDAM Engineer will do this for you.</p>
 
 <ul>
-<li><strong>Grant Type:</strong> client_credentials</li>
-<li><strong>Entra Identity:</strong> Managed Identity (strongly preferred for Azure resources to avoid secret management) or App Registration with a Client Secret.</li>
-<li><strong>Permissions:</strong> Application Roles. These are assigned globally to the service identity rather than a specific user.</li>
+<li>Go to <code>Entra ID &gt; App Registrations &gt; S2S Example Consumer</code>.</li>
+<li>Select <code>API Permissions</code>.</li>
+<li>Click <code>Grant admin consent for Ministry of Justice</code>.</li>
+<li>Without this step, the Consumer will receive a token, but it will lack the required Roles.</li>
 </ul>
-<h2 id="which-should-you-use">Which should you use?</h2>
+<h4 id="service-to-service-s2s-pattern-implementation-example-example-node-implementation">Example Node Implementation</h4>
+<h5 id="consumer-application-s2s-example-consumer">Consumer Application (s2s-example-consumer)</h5>
+<p>The consumer application&rsquo;s job is to request an authentication token for the resource service.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// SERVICE: s2s-example-client
+const msal = require('@azure/msal-node');
+
+const msalConfig = {
+    auth: {
+        clientId: "CLIENT_APP_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "CLIENT_SECRET", 
+    }
+};
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
+
+async function runBackup() {
+    const tokenRequest = {
+        // For S2S, the scope is ALWAYS the App ID URI + "/.default"
+        // This tells Entra: "Give me all the App Roles I am assigned to"
+        scopes: ["api://s2s-example-api/.default"], 
+    };
+
+    try {
+        const response = await cca.acquireTokenByClientCredential(tokenRequest);
+
+        // Check the Roles
+        // If the Terraform Assignment worked, response.accessToken will contain:
+        // "roles": ["Files.Write"]
+        console.log("Token acquired!", response.accessToken);
+    } catch (error) {
+        console.error(error);
+    }
+}
+</code></pre></div><h5 id="resource-api-application-s2s-example-api-resource">Resource API Application (s2s-example-api-resource)</h5>
+<p>The API must validate that the token is valid AND that it contains the specific <code>Files.Write</code> role.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// SERVICE: s2s-example-api
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "API_CLIENT_ID",
+    audience: "api://s2s-example-api", 
+    validateIssuer: true,
+    passReqToCallback: false,
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) =&gt; {
+    // CHECK 1: Is it a valid token? (Handled by library)
+
+    // CHECK 2: Does it have the correct Role?
+    // Note: S2S tokens use the 'roles' claim, not 'scp'
+    if (token.roles &amp;&amp; token.roles.includes("Files.Write")) {
+        return done(null, { name: token.appid }, token);
+    }
+    return done(new Error("Missing 'Files.Write' role"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.post('/upload', passport.authenticate('oauth-bearer', { session: false }), (req, res) =&gt; {
+    res.send("File uploaded successfully by Service: " + req.user.name);
+});
+</code></pre></div><h2 id="which-should-you-use">Which should you use?</h2>
 <div class="table-container">
         <table>
           <tr>
