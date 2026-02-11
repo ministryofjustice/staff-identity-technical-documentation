@@ -14,9 +14,9 @@ OBO flows are required when an application needs to act as a middleman. It excha
 
 Consider a public-facing web app where users upload documents. This app needs to send those documents to a secure, internal "Central API" for storage.
 
-**The Problem:** If the Web App simply used its own "Service Secret" to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.
+**The Problem:** If the Web App simply used its own **Client Secret** to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.
 
-**The Solution:** Using OBO, the Web App passes the user's token to an internal orchestrator. That orchestrator exchanges the token for a new one specifically for the Central API. The Central API receives a token that identifies the User, not just the server.
+**The Solution:** Using OBO, the Web App requests an access token specifically for the **Internal API**. The Internal API receives this token, validates it, and then exchanges it with Entra ID for a **new** token addressed to the Central API. This ensures the final service knows exactly which user initiated the request.
 
 In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files and trigger API calls to the Central API without any authentication checks.
 
@@ -28,13 +28,13 @@ sequenceDiagram
     participant Central as 3. Centralised MOJ API
 
     User->>Web: Upload Document
-    Note over Web: App has NO permissions<br/>for Central API.
+    Note over Web: App is logged in.<br/>Requests NEW Access Token<br/>specifically for Internal API.
     
-    Web->>Internal: Send File + User Token A
-    Note over Internal: Validates Token A.<br/>Exchanges for Token B (via Entra)<br/>Exchanges for Token C (Central)
+    Web->>Internal: Send File + Token A (Aud: Internal API)
+    Note over Internal: Validates Token A.<br/>Exchanges Token A for Token B<br/>(Aud: Central API)
     
-    Internal->>Central: Store Metadata (UPN, Object ID)<br/>(with Token C)
-    Note right of Central: Extracts User identity<br/>from Token C.<br/>Cannot be spoofed.
+    Internal->>Central: Store Metadata (UPN, Object ID)<br/>(with Token B)
+    Note right of Central: Extracts User identity<br/>from Token B.<br/>Cannot be spoofed.
     
     Internal-->>Web: Success
     Web-->>User: Done
@@ -63,25 +63,30 @@ You will be required to first setup your Application Registrations in Terraform.
 The frontend's job is to request a token specifically for the "Middle Tier", Service B.
 
 ``` node
+// SERVICE: obo-example-frontend
 // Using @azure/msal-node
+
 const msalConfig = {
     auth: {
         clientId: "FRONTEND_CLIENT_ID",
         authority: "https://login.microsoftonline.com/TENANT_ID",
-        clientSecret: "FRONTEND_SECRET"
+        clientSecret: "FRONTEND_CLIENT_SECRET" // Updated variable name to match feedback
     }
 };
 
 const cca = new msal.ConfidentialClientApplication(msalConfig);
 
-// The user logs in and we request access to the Internal API
+// The user logs in. 
+// We request a token specifically for the Internal API (Service B).
+// This ensures the token's Audience (aud) is set to the Internal API, not the Frontend.
 const tokenRequest = {
     scopes: ["api://obo-example-internal-api/user_impersonation"],
-    // code: ... (from the redirect)
+    // code: ... (authorization code received from the user's redirect)
 };
 
 const result = await cca.acquireTokenByCode(tokenRequest);
 const accessTokenForInternalApi = result.accessToken;
+// This token can now be sent to the Internal API in the Authorization header.
 ```
 
 ##### Service B: The Internal API (obo-example-internal-api)
