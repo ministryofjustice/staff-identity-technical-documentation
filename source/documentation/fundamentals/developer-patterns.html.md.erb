@@ -293,6 +293,164 @@ app.post('/upload', passport.authenticate('oauth-bearer', { session: false }), (
 });
 ```
 
+## Authorization Code Pattern
+
+### Use Case
+
+Use this for server-side web applications where a human user logs in and the application needs to perform actions on their behalf. This is for "User-to-Machine" communication, such as a caseworker viewing their assigned cases or a user updating their own profile.
+
+**Analogy:** This is like giving a valet driver your car keys. You (the User) give the valet (the Web App) a specific key that allows them to drive and park the car (Access the API), but it doesn't transfer ownership of the car to them.
+
+#### Diagram
+
+``` mermaid
+ssequenceDiagram
+    actor User
+    participant Browser
+    participant WebApp as Web App (Client)
+    participant Entra as Entra ID
+    participant API as Backend API (Resource)
+
+    Note over User, Entra: Step 1: Login & Authorization
+    User->>Browser: Click "Login"
+    Browser->>Entra: Redirect to Sign-In Page<br/>(Requesting 'Case.Create' scope)
+    User->>Entra: Enter Credentials & Consent
+    Entra-->>Browser: Return Authorization Code
+    Browser->>WebApp: Send Code to Callback URL
+
+    Note over WebApp, Entra: Step 2: Token Exchange (Back Channel)
+    WebApp->>Entra: Exchange Code + Client Secret
+    Entra-->>WebApp: Issue Access Token<br/>(Contains 'scp': 'Case.Create')
+
+    Note over WebApp, API: Step 3: Access Resource
+    WebApp->>API: Call API (Authorization: Bearer Token)
+    
+    Note left of API: Validates Token Signature<br/>Checks for 'Case.Create' Scope
+    
+    API-->>WebApp: Return Success / Created Case ID
+```
+
+### Implementation Example
+
+#### Setup your Applications in Terraform
+
+You will be required to first setup your Application Registrations in Terraform. For this example we will create 2 applications: a Backend API and a Frontend Web Client.
+
+**Source:** [S2S Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
+
+> Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `oauth2_permission_scope_ids` before the `Backend API` Application exists.
+
+**Step 1:** Create both app registrations in Terraform. Define the `oauth2_permission_scope` (e.g., `Case.Create`) in the **Backend API**, but leave the `required_resource_access` block in the **Frontend Client** empty. Apply this configuration.
+
+**Step 2:** Once the `Backend API` and its Scopes are created, update the `required_resource_access` block in the `Frontend Web Client` to reference the Backend API.
+
+**Step 3:** Apply the Terraform again to create the link.
+
+**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An IDAM Engineer will do this for you.
+
+* Go to `Entra ID > App Registrations > Frontend Web Client`.
+* Select `API Permissions`.
+* Click `Grant admin consent for Ministry of Justice`.
+* Without this step, the Consumer will receive a token, but it will lack the required Roles.
+
+#### Example Node Implementation
+
+##### Consumer Application (auth-code-client)
+
+The web application's job is to redirect the user to sign in, receive the code, and exchange it for a token to call the API.
+
+``` node
+// SERVICE: auth-code-client (Express App)
+const msal = require('@azure/msal-node');
+const express = require('express');
+
+const msalConfig = {
+    auth: {
+        clientId: "CLIENT_APP_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "CLIENT_SECRET", 
+    }
+};
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
+const app = express();
+
+// 1. Trigger Login
+app.get('/login', async (req, res) => {
+    const authCodeUrlParameters = {
+        scopes: ["api://backend-api-id/Case.Create", "user.read"],
+        redirectUri: "http://localhost:3000/redirect",
+    };
+
+    // Get the URL to sign the user in and redirect them
+    const response = await cca.getAuthCodeUrl(authCodeUrlParameters);
+    res.redirect(response);
+});
+
+// 2. Handle Callback
+app.get('/redirect', async (req, res) => {
+    const tokenRequest = {
+        code: req.query.code, // The Authorization Code from Entra
+        scopes: ["api://backend-api-id/Case.Create", "user.read"],
+        redirectUri: "http://localhost:3000/redirect",
+    };
+
+    try {
+        const response = await cca.acquireTokenByCode(tokenRequest);
+        
+        // Success! We have a token for the user.
+        // response.accessToken contains the 'scp' claim.
+        console.log("User Token Acquired!");
+        res.send("Login Successful. Token: " + response.accessToken);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+    }
+});
+```
+
+##### Resource API Application (auth-code-api)
+
+The API must validate that the token is valid AND that the user has delegated the specific `Case.Create` permission (scope) to the app.
+
+``` node
+// SERVICE: auth-code-api
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "API_CLIENT_ID",
+    audience: "api://backend-api-id", 
+    validateIssuer: true,
+    passReqToCallback: false,
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+    // CHECK 1: Is it a valid token? (Handled by library)
+    
+    // CHECK 2: Does it have the correct Scope?
+    // Note: Delegated tokens use the 'scp' claim (Space separated string)
+    // We check if "Case.Create" is present in that string.
+    
+    const scopes = token.scp.split(' ');
+    if (scopes.includes("Case.Create")) {
+        return done(null, { oid: token.oid, name: token.name }, token);
+    }
+    
+    return done(new Error("Missing 'Case.Create' scope"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.post('/create-case', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+    // The user identity is now available in req.user
+    res.send(`Case created successfully by user: ${req.user.name} (OID: ${req.user.oid})`);
+});
+```
+
 ## Which should you use?
 
 | If the action is... | Use this Flow | Permission Type |
