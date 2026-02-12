@@ -309,7 +309,7 @@ Use this for server-side web applications where a human user logs in and the app
 #### Diagram
 
 ``` mermaid
-ssequenceDiagram
+sequenceDiagram
     actor User
     participant Browser
     participant WebApp as Web App (Client)
@@ -341,7 +341,7 @@ ssequenceDiagram
 
 You will be required to first setup your Application Registrations in Terraform. For this example we will create 2 applications: a Backend API and a Frontend Web Client.
 
-**Source:** [S2S Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
+**Source:** [Authorization Code Example Terraform Code.](https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf)
 
 > Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the `oauth2_permission_scope_ids` before the `Backend API` Application exists.
 
