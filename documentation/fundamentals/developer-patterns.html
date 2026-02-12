@@ -139,6 +139,30 @@
         </ul>
       </li>
       <li>
+        <a href="#authorization-code-pattern"><span>Authorization Code Pattern</span></a>
+        <ul>
+          <li>
+            <a href="#authorization-code-pattern-use-case"><span>Use Case</span></a>
+            <ul>
+              <li>
+                <a href="#authorization-code-pattern-use-case-diagram"><span>Diagram</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#authorization-code-pattern-implementation-example"><span>Implementation Example</span></a>
+            <ul>
+              <li>
+                <a href="#authorization-code-pattern-implementation-example-setup-your-applications-in-terraform"><span>Setup your Applications in Terraform</span></a>
+              </li>
+              <li>
+                <a href="#authorization-code-pattern-implementation-example-example-node-implementation"><span>Example Node Implementation</span></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
         <a href="#which-should-you-use"><span>Which should you use?</span></a>
       </li>
       <li>
@@ -163,8 +187,8 @@
 <p><strong>Analogy:</strong> Imagine giving a lawyer &ldquo;Power of Attorney&rdquo; to sign a house deed for you. The lawyer doesn&rsquo;t sign as themselves; they sign on your behalf using the specific authority you granted them.</p>
 <h3 id="scenario-double-hop">Scenario (Double Hop)</h3>
 <p>Consider a public-facing web app where users upload documents. This app needs to send those documents to a secure, internal &ldquo;Central API&rdquo; for storage.</p>
-<p><strong>The Problem:</strong> If the Web App simply used its own &ldquo;Service Secret&rdquo; to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.</p>
-<p><strong>The Solution:</strong> Using OBO, the Web App passes the user&rsquo;s token to an internal orchestrator. That orchestrator exchanges the token for a new one specifically for the Central API. The Central API receives a token that identifies the User, not just the server.</p>
+<p><strong>The Problem:</strong> If the Web App simply used its own <strong>Client Secret</strong> to talk to the Central API, a compromised Web App could upload malicious files as any user. The Central API would have no way of knowing who actually pressed the button.</p>
+<p><strong>The Solution:</strong> Using OBO, the Web App requests an access token specifically for the <strong>Internal API</strong>. The Internal API receives this token, validates it, and then exchanges it with Entra ID for a <strong>new</strong> token addressed to the Central API. This ensures the final service knows exactly which user initiated the request.</p>
 <p>In this scenario, if a secret for this application is stolen, a bad actor could cause a large amount of damage by being able to upload files and trigger API calls to the Central API without any authentication checks.</p>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
     participant User
@@ -173,13 +197,13 @@
     participant Central as 3. Centralised MOJ API
 
     User-&gt;&gt;Web: Upload Document
-    Note over Web: App has NO permissions&lt;br/&gt;for Central API.
+    Note over Web: App is logged in.&lt;br/&gt;Requests NEW Access Token&lt;br/&gt;specifically for Internal API.
 
-    Web-&gt;&gt;Internal: Send File + User Token A
-    Note over Internal: Validates Token A.&lt;br/&gt;Exchanges for Token B (via Entra)&lt;br/&gt;Exchanges for Token C (Central)
+    Web-&gt;&gt;Internal: Send File + Token A (Aud: Internal API)
+    Note over Internal: Validates Token A.&lt;br/&gt;Exchanges Token A for Token B&lt;br/&gt;(Aud: Central API)
 
-    Internal-&gt;&gt;Central: Store Metadata (UPN, Object ID)&lt;br/&gt;(with Token C)
-    Note right of Central: Extracts User identity&lt;br/&gt;from Token C.&lt;br/&gt;Cannot be spoofed.
+    Internal-&gt;&gt;Central: Store Metadata (UPN, Object ID)&lt;br/&gt;(with Token B)
+    Note right of Central: Extracts User identity&lt;br/&gt;from Token B.&lt;br/&gt;Cannot be spoofed.
 
     Internal--&gt;&gt;Web: Success
     Web--&gt;&gt;User: Done
@@ -197,25 +221,30 @@
 <h4 id="example-node-implementation">Example Node Implementation</h4>
 <h5 id="service-a-the-frontend-obo-example-frontend">Service A: The Frontend (obo-example-frontend)</h5>
 <p>The frontend&rsquo;s job is to request a token specifically for the &ldquo;Middle Tier&rdquo;, Service B.</p>
-<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// Using @azure/msal-node
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// SERVICE: obo-example-frontend
+// Using @azure/msal-node
+
 const msalConfig = {
     auth: {
         clientId: "FRONTEND_CLIENT_ID",
         authority: "https://login.microsoftonline.com/TENANT_ID",
-        clientSecret: "FRONTEND_SECRET"
+        clientSecret: "FRONTEND_CLIENT_SECRET" // Updated variable name to match feedback
     }
 };
 
 const cca = new msal.ConfidentialClientApplication(msalConfig);
 
-// The user logs in and we request access to the Internal API
+// The user logs in. 
+// We request a token specifically for the Internal API (Service B).
+// This ensures the token's Audience (aud) is set to the Internal API, not the Frontend.
 const tokenRequest = {
     scopes: ["api://obo-example-internal-api/user_impersonation"],
-    // code: ... (from the redirect)
+    // code: ... (authorization code received from the user's redirect)
 };
 
 const result = await cca.acquireTokenByCode(tokenRequest);
 const accessTokenForInternalApi = result.accessToken;
+// This token can now be sent to the Internal API in the Authorization header.
 </code></pre></div><h5 id="service-b-the-internal-api-obo-example-internal-api">Service B: The Internal API (obo-example-internal-api)</h5>
 <p>This is the &ldquo;Middle Tier&rdquo;. This app has <code>resource_access</code> to the Shared API. It must perform the exchange.</p>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>const express = require('express');
@@ -391,6 +420,141 @@ passport.use(bearerStrategy);
 
 app.post('/upload', passport.authenticate('oauth-bearer', { session: false }), (req, res) =&gt; {
     res.send("File uploaded successfully by Service: " + req.user.name);
+});
+</code></pre></div><h2 id="authorization-code-pattern">Authorization Code Pattern</h2>
+<h3 id="authorization-code-pattern-use-case">Use Case</h3>
+<p>Use this for server-side web applications where a human user logs in and the application needs to perform actions on their behalf. This is for &ldquo;User-to-Machine&rdquo; communication, such as a caseworker viewing their assigned cases or a user updating their own profile.</p>
+<p><strong>Analogy:</strong> This is like giving a valet driver your car keys. You (the User) give the valet (the Web App) a specific key that allows them to drive and park the car (Access the API), but it doesn&rsquo;t transfer ownership of the car to them.</p>
+<h4 id="authorization-code-pattern-use-case-diagram">Diagram</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>sequenceDiagram
+    actor User
+    participant Browser
+    participant WebApp as Web App (Client)
+    participant Entra as Entra ID
+    participant API as Backend API (Resource)
+
+    Note over User, Entra: Step 1: Login &amp; Authorization
+    User-&gt;&gt;Browser: Click "Login"
+    Browser-&gt;&gt;Entra: Redirect to Sign-In Page&lt;br/&gt;(Requesting 'Case.Create' scope)
+    User-&gt;&gt;Entra: Enter Credentials &amp; Consent
+    Entra--&gt;&gt;Browser: Return Authorization Code
+    Browser-&gt;&gt;WebApp: Send Code to Callback URL
+
+    Note over WebApp, Entra: Step 2: Token Exchange (Back Channel)
+    WebApp-&gt;&gt;Entra: Exchange Code + Client Secret
+    Entra--&gt;&gt;WebApp: Issue Access Token&lt;br/&gt;(Contains 'scp': 'Case.Create')
+
+    Note over WebApp, API: Step 3: Access Resource
+    WebApp-&gt;&gt;API: Call API (Authorization: Bearer Token)
+
+    Note left of API: Validates Token Signature&lt;br/&gt;Checks for 'Case.Create' Scope
+
+    API--&gt;&gt;WebApp: Return Success / Created Case ID
+</code></pre></div><h3 id="authorization-code-pattern-implementation-example">Implementation Example</h3>
+<h4 id="authorization-code-pattern-implementation-example-setup-your-applications-in-terraform">Setup your Applications in Terraform</h4>
+<p>You will be required to first setup your Application Registrations in Terraform. For this example we will create 2 applications: a Backend API and a Frontend Web Client.</p>
+<p><strong>Source:</strong> <a href="https://github.com/ministryofjustice/staff-identity-idam-entra-infra/blob/main/terraform/envs/nleexternal/idam-testing/main.tf">Authorization Code Example Terraform Code.</a></p>
+
+<blockquote>
+<p>Important Note on Circular Dependencies: When creating these applications from scratch, Terraform may fail if you try to reference the <code>oauth2_permission_scope_ids</code> before the <code>Backend API</code> Application exists.</p>
+</blockquote>
+<p><strong>Step 1:</strong> Create both app registrations in Terraform. Define the <code>oauth2_permission_scope</code> (e.g., <code>Case.Create</code>) in the <strong>Backend API</strong>, but leave the <code>required_resource_access</code> block in the <strong>Frontend Client</strong> empty. Apply this configuration.</p>
+<p><strong>Step 2:</strong> Once the <code>Backend API</code> and its Scopes are created, update the <code>required_resource_access</code> block in the <code>Frontend Web Client</code> to reference the Backend API.</p>
+<p><strong>Step 3:</strong> Apply the Terraform again to create the link.</p>
+<p><strong>Step 4 (Important):</strong> Grant <code>Admin Consent</code> in the Entra Portal. An IDAM Engineer will do this for you.</p>
+
+<ul>
+<li>Go to <code>Entra ID &gt; App Registrations &gt; Frontend Web Client</code>.</li>
+<li>Select <code>API Permissions</code>.</li>
+<li>Click <code>Grant admin consent for Ministry of Justice</code>.</li>
+<li>Without this step, the Consumer will receive a token, but it will lack the required Roles.</li>
+</ul>
+<h4 id="authorization-code-pattern-implementation-example-example-node-implementation">Example Node Implementation</h4>
+<h5 id="consumer-application-auth-code-client">Consumer Application (auth-code-client)</h5>
+<p>The web application&rsquo;s job is to redirect the user to sign in, receive the code, and exchange it for a token to call the API.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// SERVICE: auth-code-client (Express App)
+const msal = require('@azure/msal-node');
+const express = require('express');
+
+const msalConfig = {
+    auth: {
+        clientId: "CLIENT_APP_ID",
+        authority: "https://login.microsoftonline.com/TENANT_ID",
+        clientSecret: "CLIENT_SECRET", 
+    }
+};
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
+const app = express();
+
+// 1. Trigger Login
+app.get('/login', async (req, res) =&gt; {
+    const authCodeUrlParameters = {
+        scopes: ["api://backend-api-id/Case.Create", "user.read"],
+        redirectUri: "http://localhost:3000/redirect",
+    };
+
+    // Get the URL to sign the user in and redirect them
+    const response = await cca.getAuthCodeUrl(authCodeUrlParameters);
+    res.redirect(response);
+});
+
+// 2. Handle Callback
+app.get('/redirect', async (req, res) =&gt; {
+    const tokenRequest = {
+        code: req.query.code, // The Authorization Code from Entra
+        scopes: ["api://backend-api-id/Case.Create", "user.read"],
+        redirectUri: "http://localhost:3000/redirect",
+    };
+
+    try {
+        const response = await cca.acquireTokenByCode(tokenRequest);
+
+        // Success! We have a token for the user.
+        // response.accessToken contains the 'scp' claim.
+        console.log("User Token Acquired!");
+        res.send("Login Successful. Token: " + response.accessToken);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+    }
+});
+</code></pre></div><h5 id="resource-api-application-auth-code-api">Resource API Application (auth-code-api)</h5>
+<p>The API must validate that the token is valid AND that the user has delegated the specific <code>Case.Create</code> permission (scope) to the app.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>// SERVICE: auth-code-api
+const express = require('express');
+const passport = require('passport');
+const { BearerStrategy } = require('passport-azure-ad');
+
+const options = {
+    identityMetadata: "https://login.microsoftonline.com/TENANT_ID/v2.0/.well-known/openid-configuration",
+    clientID: "API_CLIENT_ID",
+    audience: "api://backend-api-id", 
+    validateIssuer: true,
+    passReqToCallback: false,
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) =&gt; {
+    // CHECK 1: Is it a valid token? (Handled by library)
+
+    // CHECK 2: Does it have the correct Scope?
+    // Note: Delegated tokens use the 'scp' claim (Space separated string)
+    // We check if "Case.Create" is present in that string.
+
+    const scopes = token.scp.split(' ');
+    if (scopes.includes("Case.Create")) {
+        return done(null, { oid: token.oid, name: token.name }, token);
+    }
+
+    return done(new Error("Missing 'Case.Create' scope"), null);
+});
+
+const app = express();
+passport.use(bearerStrategy);
+
+app.post('/create-case', passport.authenticate('oauth-bearer', { session: false }), (req, res) =&gt; {
+    // The user identity is now available in req.user
+    res.send(`Case created successfully by user: ${req.user.name} (OID: ${req.user.oid})`);
 });
 </code></pre></div><h2 id="which-should-you-use">Which should you use?</h2>
 <div class="table-container">
