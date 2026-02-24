@@ -93,7 +93,7 @@
     <a href="#handling-error-aadsts75011"><span>Handling Error - AADSTS75011</span></a>
     <ul>
       <li>
-        <a href="#end-user-error"><span>End user error</span></a>
+        <a href="#end-user-experience"><span>End user experience</span></a>
       </li>
       <li>
         <a href="#cause"><span>Cause</span></a>
@@ -133,23 +133,24 @@
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="handling-error-aadsts75011">Handling Error - AADSTS75011</h1>
 <p>This document explains an issue encountered when an SSO application receives an authentication method which does not match those requested in the SAML RequestedAuthnContext.</p>
-<h2 id="end-user-error">End user error</h2>
-<p>When an end user attempts to sign into a service and the authentication method supplied in the SAML response does not match the request, they will see the below error message: &ldquo;Error - AADSTS75011 Authentication method $receivedMethodType by which the user authenticated with the service doesn&rsquo;t match requested authentication method $requestedMethodType. Contact the $appname application owner.&rdquo;</p>
+<h2 id="end-user-experience">End user experience</h2>
+<p>When an end user attempts to sign into a service and the authentication method supplied in the SAML response does not match the request, they will see the below error message:</p>
+<p>&ldquo;Error - AADSTS75011 Authentication method $receivedMethodType by which the user authenticated with the service doesn&rsquo;t match requested authentication method $requestedMethodType. Contact the $appname application owner.&rdquo;</p>
 <p><a href="../images/documentation-AADSTS75011-error.jpeg" rel="noopener noreferrer"><img src="../images/documentation-AADSTS75011-error.jpeg" alt="image showing the typical error message" /></a></p>
 <h2 id="cause">Cause</h2>
 <p>Microsoft provide information about this error here: 
 <a href="https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts75011-auth-method-mismatch">Error - AADSTS75011 Authentication method &hellip;</a></p>
 <p>To summarise, this can occur when your app requests a method such as &ldquo;Password&rdquo; but receives an alternative authentication method such as an &ldquo;X509&rdquo; certificate or &ldquo;FIDO&rdquo;.</p>
 <h3 id="example-setup">Example setup</h3>
-<p>Your app (SP, Service Provider) sends a SAML AuthNRequest including RequestedAuthnContext e.g. <code>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</code>
-Entra (IdP, Identity Provider) acts as the evaluates the user’s current session. If that session was created with a different method (e.g. X590, FIDO etc), the requested context does not match the actual AuthnContext and Entra returns the error AADSTS75011.</p>
+<p>Your app (SP, Service Provider) sends a SAML AuthNRequest including RequestedAuthnContext e.g. <code>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</code></p>
+<p>Entra (IdP, Identity Provider) acts as the evaluates the user’s current session. If that session was created with a different method (e.g. X590, FIDO etc), the requested context does not match the actual AuthnContext and Entra returns the error AADSTS75011.</p>
 <h3 id="observed-scenarios">Observed scenarios</h3>
 <p>This has specifically been observed and reported recently when users have enrolled and authenticated with WHfB (Windows Hello for Business) which is more secure than typical passwords.</p>
 <h2 id="remediation">Remediation</h2>
-<p>There are a couple of options to resolve this error which must be completed on the application side. IDAM recommend using <em>Option 1</em> as this provides future proofing for any other authentication methods that may be employed in future.</p>
+<p>There are a couple of options to resolve this error which must be completed on the application side. IDAM recommend using <strong>Option 1</strong> as this provides future proofing for any other authentication methods that may be employed in future.</p>
 <h3 id="option-1-remove-the-requestedauthncontext">Option 1: Remove the RequestedAuthnContext</h3>
-<p>This is typically an optional field, so by not requesting specific authentication contexts, your app will not be tied to specific authentication methods and add an element of future proofing.
-Alternatively, you could set the RequestedAuthnContext to Unspecified
+<p>This is typically an optional field, so by not requesting specific authentication contexts, your app will not be tied to specific authentication methods and add an element of future proofing.</p>
+<p>Alternatively, you could set the RequestedAuthnContext to Unspecified
 <code>urn:oasis:names:tc:SAML:2.0:ac:classes:Unspecified</code></p>
 <h3 id="option-2-adjust-requestedauthncontext-to-allow-the-x509-authentication-methods">Option 2: Adjust RequestedAuthnContext to allow the X509 authentication methods</h3>
 <p>By adding <code>urn:oasis:names:tc:SAML:2.0:ac:classes:X509</code> your app will accept authentication from X.509 certificates (such as WHfB uses).
