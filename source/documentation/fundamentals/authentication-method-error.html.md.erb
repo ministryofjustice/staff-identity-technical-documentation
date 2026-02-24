@@ -2,9 +2,11 @@
 
 This document explains an issue encountered when an SSO application receives an authentication method which does not match those requested in the SAML RequestedAuthnContext.
 
-## End user error
+## End user experience
 
-When an end user attempts to sign into a service and the authentication method supplied in the SAML response does not match the request, they will see the below error message: "Error - AADSTS75011 Authentication method $receivedMethodType by which the user authenticated with the service doesn't match requested authentication method $requestedMethodType. Contact the $appname application owner."
+When an end user attempts to sign into a service and the authentication method supplied in the SAML response does not match the request, they will see the below error message:
+
+"Error - AADSTS75011 Authentication method $receivedMethodType by which the user authenticated with the service doesn't match requested authentication method $requestedMethodType. Contact the $appname application owner."
 
 ![image showing the typical error message](../images/documentation-AADSTS75011-error.jpeg)
 
@@ -17,6 +19,7 @@ To summarise, this can occur when your app requests a method such as "Password" 
 
 ### Example setup
 Your app (SP, Service Provider) sends a SAML AuthNRequest including RequestedAuthnContext e.g. ```urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport```
+
 Entra (IdP, Identity Provider) acts as the evaluates the user’s current session. If that session was created with a different method (e.g. X590, FIDO etc), the requested context does not match the actual AuthnContext and Entra returns the error AADSTS75011.
 
 ### Observed scenarios
@@ -25,10 +28,11 @@ This has specifically been observed and reported recently when users have enroll
 
 ## Remediation
 
-There are a couple of options to resolve this error which must be completed on the application side. IDAM recommend using *Option 1* as this provides future proofing for any other authentication methods that may be employed in future.
+There are a couple of options to resolve this error which must be completed on the application side. IDAM recommend using **Option 1** as this provides future proofing for any other authentication methods that may be employed in future.
 
 ### Option 1: Remove the RequestedAuthnContext
 This is typically an optional field, so by not requesting specific authentication contexts, your app will not be tied to specific authentication methods and add an element of future proofing.
+
 Alternatively, you could set the RequestedAuthnContext to Unspecified
 ```urn:oasis:names:tc:SAML:2.0:ac:classes:Unspecified```
 ### Option 2: Adjust RequestedAuthnContext to allow the X509 authentication methods
