@@ -153,8 +153,8 @@
 <p>Alternatively, you could set the RequestedAuthnContext to Unspecified
 <code>urn:oasis:names:tc:SAML:2.0:ac:classes:Unspecified</code></p>
 <h3 id="option-2-adjust-requestedauthncontext-to-allow-the-x509-authentication-methods">Option 2: Adjust RequestedAuthnContext to allow the X509 authentication methods</h3>
-<p>By adding <code>urn:oasis:names:tc:SAML:2.0:ac:classes:X509</code> your app will accept authentication from X.509 certificates (such as WHfB uses).
-<strong>not recommended</strong></p>
+<p>By adding <code>urn:oasis:names:tc:SAML:2.0:ac:classes:X509</code> your app will accept authentication from X.509 certificates (such as WHfB uses).</p>
+<p><strong>Not recommended:</strong></p>
 <h3 id="option-3-force-re-auth">Option 3: Force re-auth</h3>
 <p>You could add forceAuthn=&ldquo;true&rdquo; to your AuthNRequest, so that Entra can honour the requested context, however this causes additional prompts for the user and lessens the  SSO experience.</p>
 
