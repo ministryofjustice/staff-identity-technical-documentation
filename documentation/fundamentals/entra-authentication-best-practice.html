@@ -162,7 +162,37 @@
 </ul>
 <p>Managed Identities and Workload Identities are recommended because they remove the need for storing passwords and eliminate the security risks associated with service accounts, such as static credentials, compromise or lack of MFA.</p>
 <p>These identity solutions provide secure, automated authentication for applications and services, reducing operational overhead and improving security compared to traditional service accounts.</p>
-<h2 id="example-authentication-best-practice-use-cases">Example Authentication Best Practice Use Cases</h2>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Question</th>
+<th>Yes</th>
+<th>No</th>
+</tr><tr>
+<td>Is the workload running inside Azure?</td>
+<td>Use <strong>Managed Identity</strong>
+</td>
+<td>Use <strong>Service Principal</strong>
+</td>
+</tr><tr>
+<td>Does the identity need to be tied to one resource</td>
+<td><strong>System-Assigned MI</strong></td>
+<td>Go to next question</td>
+</tr><tr>
+<td>Does the identity need to be shared across resources?</td>
+<td><strong>User-Assigned MI</strong></td>
+<td><strong>System-Assigned MI</strong></td>
+</tr><tr>
+<td>Does the workload require external access (on‑prem, CI/CD, SaaS)?</td>
+<td><strong>Service Principal</strong></td>
+<td><strong>Managed Identity</strong></td>
+</tr><tr>
+<td>Do you need Graph API permissions not supported by MI?</td>
+<td><strong>Service Principal</strong></td>
+<td>MI if supported</td>
+</tr>
+        </table>
+      </div><h2 id="example-authentication-best-practice-use-cases">Example Authentication Best Practice Use Cases</h2>
 <h3 id="use-case-1-you-run-powershell-or-other-scripts-via-a-service-account">Use case 1: You run PowerShell or other Scripts via a service account</h3>
 <p>Options:</p>
 
