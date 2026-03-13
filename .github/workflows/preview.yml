@@ -47,7 +47,7 @@ jobs:
           folder: github-pages
           target-folder: pr/${{ steps.generate_slug.outputs.slug }}
       - name: Publish env
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: Preview environment
           message: |
