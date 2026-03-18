@@ -206,6 +206,19 @@ git checkout <span class="nt">-b</span> <span class="s2">"IDAM-xxxx-name-of-your
 <li>Set appropriate tags, (department and team).</li>
 <li>Update the module source to the latest version. This can be found in the <code>Modules</code> folder, in the root of the directory.</li>
 </ul></li>
+<li><p>CODEOWNERS<br>
+To protect your code from modifications without your approval, you should ensure your folders are listed appropriately in the CODEOWNERS file.</p>
+
+<ul>
+<li>Navigate to the file .github\CODEOWNERS</li>
+<li>Follow the existing patterns:
+
+<ul>
+<li>Add your directory e.g. terraform\envs\devl\test-app</li>
+<li>Add your team in the format: @ministryofjustice/team-name on the same line (refer to the existing data as an example)</li>
+</ul></li>
+</ul>
+<p>This will then ensure your team is added as reviewers for any PR affecting your directory.</p></li>
 </ol>
 
 <hr>
