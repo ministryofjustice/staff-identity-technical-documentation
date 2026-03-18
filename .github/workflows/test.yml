@@ -15,10 +15,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ministryofjustice/tech-docs-github-pages-publisher:v3
+      image: ghcr.io/ministryofjustice/tech-docs-github-pages-publisher:v6.2.0
     steps:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Compile Markdown to HTML and create artifact
         run: |
-          /scripts/deploy.sh
+          /usr/local/bin/package

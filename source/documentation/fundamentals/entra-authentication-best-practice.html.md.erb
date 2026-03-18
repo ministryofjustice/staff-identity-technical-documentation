@@ -31,6 +31,14 @@ Managed Identities and Workload Identities are recommended because they remove t
 
 These identity solutions provide secure, automated authentication for applications and services, reducing operational overhead and improving security compared to traditional service accounts.
 
+| Question | Yes | No |
+|---|---|---|
+| Is the workload running inside Azure? | Use **Managed Identity** | Use **Service Principal** |
+| Does the identity need to be tied to one resource | **System-Assigned MI** | Go to next question |
+| Does the identity need to be shared across resources? | **User-Assigned MI** | **System-Assigned MI** |
+| Does the workload require external access (on‑prem, CI/CD, SaaS)? | **Service Principal** | **Managed Identity** |
+| Do you need Graph API permissions not supported by MI? | **Service Principal** | MI if supported |
+
 ## Example Authentication Best Practice Use Cases
 
 ### Use case 1: You run PowerShell or other Scripts via a service account 
