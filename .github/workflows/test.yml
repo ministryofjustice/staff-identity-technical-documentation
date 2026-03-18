@@ -21,4 +21,4 @@ jobs:
         uses: actions/checkout@v6
       - name: Compile Markdown to HTML and create artifact
         run: |
-          /scripts/deploy.sh
+          /usr/local/bin/package
