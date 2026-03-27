@@ -1,0 +1,82 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "automerge": false,
+  "packageRules": [
+    {
+      "description": "Ruby gems - patch updates (3 day stabilisation)",
+      "matchManagers": ["bundler"],
+      "matchUpdateTypes": ["patch"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Ruby gems - minor updates (7 day stabilisation)",
+      "matchManagers": ["bundler"],
+      "matchUpdateTypes": ["minor"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Ruby gems - major updates (30 day stabilisation)",
+      "matchManagers": ["bundler"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "30 days"
+    },
+    {
+      "description": "GitHub Actions - patch updates (3 day stabilisation)",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["patch"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "GitHub Actions - minor updates (7 day stabilisation)",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "GitHub Actions - major updates (30 day stabilisation)",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "30 days"
+    },
+    {
+      "description": "Docker images (tech-docs-github-pages-publisher) - patch updates (3 day stabilisation)",
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "matchUpdateTypes": ["patch"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Docker images - minor updates (7 day stabilisation)",
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "matchUpdateTypes": ["minor"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Docker images - major updates (30 day stabilisation)",
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "30 days"
+    },
+    {
+      "description": "pre-commit hooks - patch updates (3 day stabilisation)",
+      "matchManagers": ["pre-commit"],
+      "matchUpdateTypes": ["patch"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "pre-commit hooks - minor updates (7 day stabilisation)",
+      "matchManagers": ["pre-commit"],
+      "matchUpdateTypes": ["minor"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "pre-commit hooks - major updates (30 day stabilisation)",
+      "matchManagers": ["pre-commit"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "30 days"
+    }
+  ]
+}
