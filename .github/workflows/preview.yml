@@ -5,6 +5,12 @@ on:
     branches:
       - "main"
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,12 +18,12 @@ jobs:
       image: ghcr.io/ministryofjustice/tech-docs-github-pages-publisher:v6.2.0
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Compile Markdown to HTML and create artifact
         run: |
           /usr/local/bin/package
       - name: Upload artifact to be published
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: github-pages
           path: artifact.tar
@@ -27,9 +33,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Download a Build Artifact from build
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: github-pages
           path: github-pages
@@ -41,13 +47,13 @@ jobs:
         id: generate_slug
         run: echo "##[set-output name=slug;]$(echo ${GITHUB_HEAD_REF#refs/heads/} | sed -r 's/[~\^]+//g' | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r 's/^-+\|-+$//g' | tr A-Z a-z)"
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.8.0
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f
         with:
           branch: gh-pages
           folder: github-pages
           target-folder: pr/${{ steps.generate_slug.outputs.slug }}
       - name: Publish env
-        uses: marocchino/sticky-pull-request-comment@v3
+        uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987
         with:
           header: Preview environment
           message: |
