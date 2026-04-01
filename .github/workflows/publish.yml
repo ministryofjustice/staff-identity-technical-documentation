@@ -29,9 +29,24 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Compile Markdown to HTML and create artifact
         run: /usr/local/bin/package
+      - name: Upload raw artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: github-pages
+          path: artifact.tar
+          retention-days: 1
+
+  package:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download raw artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: github-pages
       - name: Unpack artifact
         run: |
-          mkdir -p unpacked-artifact
+          mkdir unpacked-artifact
           tar -xvf artifact.tar -C unpacked-artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
@@ -39,7 +54,7 @@ jobs:
           path: unpacked-artifact
 
   deploy:
-    needs: build
+    needs: package
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
