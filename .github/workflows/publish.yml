@@ -30,7 +30,9 @@ jobs:
       - name: Compile Markdown to HTML and create artifact
         run: /usr/local/bin/package
       - name: Unpack artifact
-        run: tar -xvf artifact.tar -C unpacked-artifact
+        run: |
+          mkdir -p unpacked-artifact
+          tar -xvf artifact.tar -C unpacked-artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
