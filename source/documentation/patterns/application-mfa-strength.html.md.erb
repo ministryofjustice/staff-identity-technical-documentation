@@ -2,6 +2,16 @@
 
 The IDAM team allows you to require MFA for users of your Single Sign-On (SSO) applications. You can use this to protect your security posture based on the specific risk and data within your application.
 
+## Authentication for Justice users
+
+Every Justice identity has one or more authentication methods assigned to it. These methods include Windows Hello for Business (WHfB), FIDO2 security keys, and SMS.
+
+When a user signs in to a service for the first time, they must authenticate to the specific level required by that application.
+
+## Session management
+
+If a user accesses two different applications that require the same MFA level, they only need to authenticate once. Entra ID trusts the active session based on preconfigured timeout settings and other security factors.
+
 ## Choose your MFA level
 
 You must select one of two MFA options based on your application's risk profile.
@@ -18,7 +28,7 @@ Use this level for applications that do not provide privileged access to resourc
 
 ### Use phishing-resistant MFA
 
-You must use this level for high-risk applications that allow access to sensitive data or systems. If these systems are compromised, they can cause major damage. Allowed phishing-resistant methods are:
+You must use this level for high-risk applications that allow access to sensitive data or systems. This includes any privileged access (e.g. system administrator) in order to comply with the MOJ Technical Standards. If these systems are compromised, they can cause major damage. Allowed phishing-resistant methods are:
 
 * Windows Hello for Business
 * FIDO2
