@@ -1,0 +1,49 @@
+# Require multi-factor authentication (MFA) for your application
+
+The IDAM team allows you to require MFA for users of your Single Sign-On (SSO) applications. You can use this to protect your security posture based on the specific risk and data within your application.
+
+## Choose your MFA level
+
+You must select one of two MFA options based on your application's risk profile.
+
+### Use standard MFA
+
+Use this level for applications that do not provide privileged access to resources or data. Standard MFA requires users to use one of the following methods:
+
+* SMS
+* Windows Hello for Business (WHfB)
+* Microsoft Authenticator
+* Microsoft Authenticator Passkey
+* FIDO2
+
+### Use phishing-resistant MFA
+
+You must use this level for high-risk applications that allow access to sensitive data or systems. If these systems are compromised, they can cause major damage. Allowed phishing-resistant methods are:
+
+* Windows Hello for Business
+* FIDO2
+* Microsoft Authenticator Passkeys
+
+> **Security Requirement**
+>
+> You must assess your application's risk level before choosing an MFA requirement. High-risk applications must use phishing-resistant MFA to meet NCSC and Zero Trust standards.
+
+## Future MFA options
+
+The IDAM team will add more MFA options over time. We will update this guidance when new methods become available.
+
+# Request MFA for your application
+
+To set up MFA, you must submit a request to the IDAM team mailbox [idam@justice.gov.uk](mailto:idam@justice.gov.uk).
+
+In your email, you must include:
+
+* the Service Owner and Product Owner contact details
+* the Service Owner and Product Owner copied (CC) into the email
+* the Application or Client ID, if you know it
+* the Application Name
+* the environment, for example, DEVL, NLE, PROD, or ALL
+
+> **Security Note**
+>
+> Ensure all stakeholders are copied into the request to prevent delays in authorization.
