@@ -108,6 +108,12 @@
     <a href="#require-multi-factor-authentication-mfa-for-your-application"><span>Require multi-factor authentication (MFA) for your application</span></a>
     <ul>
       <li>
+        <a href="#authentication-for-justice-users"><span>Authentication for Justice users</span></a>
+      </li>
+      <li>
+        <a href="#session-management"><span>Session management</span></a>
+      </li>
+      <li>
         <a href="#choose-your-mfa-level"><span>Choose your MFA level</span></a>
         <ul>
           <li>
@@ -137,6 +143,11 @@
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="require-multi-factor-authentication-mfa-for-your-application">Require multi-factor authentication (MFA) for your application</h1>
 <p>The IDAM team allows you to require MFA for users of your Single Sign-On (SSO) applications. You can use this to protect your security posture based on the specific risk and data within your application.</p>
+<h2 id="authentication-for-justice-users">Authentication for Justice users</h2>
+<p>Every Justice identity has one or more authentication methods assigned to it. These methods include Windows Hello for Business (WHfB), FIDO2 security keys, and SMS.</p>
+<p>When a user signs in to a service for the first time, they must authenticate to the specific level required by that application.</p>
+<h2 id="session-management">Session management</h2>
+<p>If a user accesses two different applications that require the same MFA level, they only need to authenticate once. Entra ID trusts the active session based on preconfigured timeout settings and other security factors.</p>
 <h2 id="choose-your-mfa-level">Choose your MFA level</h2>
 <p>You must select one of two MFA options based on your application&rsquo;s risk profile.</p>
 <h3 id="use-standard-mfa">Use standard MFA</h3>
@@ -150,7 +161,7 @@
 <li>FIDO2</li>
 </ul>
 <h3 id="use-phishing-resistant-mfa">Use phishing-resistant MFA</h3>
-<p>You must use this level for high-risk applications that allow access to sensitive data or systems. If these systems are compromised, they can cause major damage. Allowed phishing-resistant methods are:</p>
+<p>You must use this level for high-risk applications that allow access to sensitive data or systems. This includes any privileged access (e.g. system administrator) in order to comply with the MOJ Technical Standards. If these systems are compromised, they can cause major damage. Allowed phishing-resistant methods are:</p>
 
 <ul>
 <li>Windows Hello for Business</li>
