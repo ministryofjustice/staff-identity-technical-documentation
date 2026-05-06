@@ -112,7 +112,6 @@ You must meet the following conditions to promote this pattern to production:
 | 1. Unit testing | Development team | The CI/CD pipeline must include a passing test where the module rejects a validly signed token with a rogue `tid` and returns an `HTTP 401`. |
 | 2. Module versioning | Development team | The backend API must use the latest approved version of the centralised auth module. |
 | 3. Tenant verification | Entra team | You must review and lock the allow list to prevent the accidental addition of unauthorised tenants. |
-| 4. Least privilege | Entra team | You must only grant the external frontend delegated permissions (scopes). Do not grant application permissions (app roles). This ensures the application always maintains user context. |
 
 > **Compliance Warning: Manage preview feature risks**
 > The Entra ID "Allow only certain tenants" feature is currently in preview and is subject to change or temporary outages. You must implement the internal `tid` check in the Java application. This defense-in-depth strategy ensures the application rejects rogue tokens before the API processes any data. This guarantees zero reliance on a single point of failure.
