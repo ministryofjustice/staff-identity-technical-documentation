@@ -1,0 +1,119 @@
+# Deploy a secure multi-tenant backend API
+
+This guide explains how to deploy a single backend API. This API serves frontend applications in both internal and external Entra ID tenants. 
+
+You will use a multi-tenant app registration in the internal tenant. Entra ID native tenant restrictions secure this registration. A centralised application-level token validation module provides defense-in-depth.
+
+This pattern removes code duplication. It stops API replication across tenants. It centralises identity management and reduces developer overhead for secret management.
+
+## Diagram
+
+``` mermaid
+graph TD
+    %% Styling Definitions
+    classDef tenant fill:#fdfbf7,stroke:#333,stroke-width:2px,color:#000;
+    classDef entra fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000;
+    classDef frontend fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef backend fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef auth fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% External Tenant Boundary
+    subgraph External_Tenant [External Tenant Boundary]
+        ExtUser((External User))
+        ExtFE["External Frontend App<br/>(Single-Tenant)"]:::frontend
+        ExtSP["Backend Service Principal<br/>(Enterprise Application)"]:::entra
+    end
+
+    %% Internal Tenant Boundary
+    subgraph Internal_Tenant [Internal Tenant Boundary]
+        IntUser((Internal User))
+        IntFE["Internal Frontend App<br/>(Single-Tenant)"]:::frontend
+        
+        subgraph Entra_Config [Internal Entra ID]
+            IntAppReg["Backend API App Reg<br/>(Multi-Tenant)"]:::entra
+            TenantLock["Tenant Allow-List<br/>(Native Entra Block)"]:::entra
+            IntAppReg --- TenantLock
+        end
+        
+        subgraph Infrastructure [Physical Server / Cloud]
+            BackendAPI["Physical Backend API"]:::backend
+            JavaAuth{"Centralised Java Auth Module<br/>(Verifies MS Signature & TID)"}:::auth
+            BackendAPI --- JavaAuth
+        end
+    end
+
+    %% Flow: External
+    ExtUser -->|1. Authenticates| ExtFE
+    ExtFE -->|2. Requests Token| ExtSP
+    ExtSP -.->|3. Checks Allowed Tenants| TenantLock
+    ExtFE -->|4. HTTP Request + Bearer Token| BackendAPI
+
+    %% Flow: Internal
+    IntUser -->|1. Authenticates| IntFE
+    IntFE -->|2. Requests Token| IntAppReg
+    IntFE -->|3. HTTP Request + Bearer Token| BackendAPI
+```
+
+## Understand the architecture flow
+
+1. An external user signs in to the frontend application in the external tenant.
+2. Entra ID authenticates the user. It issues an access token scoped for the backend API.
+3. The frontend application sends the access token via a `Bearer` header to the physical backend API hosted internally.
+
+> **Security Requirement: Entra Native Gate**
+> Entra ID must validate if the requesting tenant is on the backend API's allow list. If it is not, Entra ID natively blocks the token request.
+
+> **Security Requirement: Defense-in-Depth Gates**
+> The centralised auth module must verify the token's cryptographic signature against Microsoft's public keys. As a fallback, the module must also verify that the `tid` (Tenant ID) matches the hardcoded allow list.
+
+## Team responsibilities
+
+### Secure the infrastructure (Entra Identity team)
+
+* **App registration lifecycle:** Create and manage the backend multi-tenant app registration in the internal tenant.
+* **Cross-tenant provisioning:** Execute the admin consent flow to project the enterprise application (service principal) into the external tenant.
+* **Tenant allow listing:** Configure and maintain the allow list on the app registration.
+* **Permission management:** Define API scopes (like `access_as_user`) and approve frontend API permissions.
+
+### Secure the application (Development team)
+
+* **Centralised auth module:** Develop and maintain a standardised Java (or other) module.
+* **Token validation:** Validate Microsoft JWT signatures strictly. Do not require client secrets in the backend.
+* **Secondary tenant validation:** Implement a software-level check of the `tid` claim as a fallback security measure.
+* **Automated testing:** Write and maintain unit tests. These tests must inject invalid `tid` claims to ensure the module rejects them with an `HTTP 401` response.
+
+## Configure the environments
+
+### 1. Configure Entra ID
+
+1. Register `API-Backend-MultiTenant` in the internal tenant. Set the supported account types to multiple Entra ID tenants.
+2. Go to **Authentication** > **Supported account types**. Select **Allow only certain tenants (Preview)**. Add the tenant IDs for the internal and external tenants.
+3. Define an App ID URI and create the `access_as_user` scope.
+4. Construct the admin consent URL. An external tenant administrator must execute this URL to create the local service principal.
+5. Register the single-tenant frontend application in the external tenant. Grant it permission to the `access_as_user` scope.
+
+### 2. Configure the application
+
+1. Integrate the approved Microsoft JWT validation library into the backend framework.
+2. Define the single internal client ID in the application configuration.
+3. Add the custom `OAuth2TokenValidator` to check the `tid` claim.
+
+```java
+// Example Allow-List
+private final List<String> allowedTenants = List.of("INTERNAL_TENANT_ID", "EXTERNAL_TENANT_ID");
+```
+
+## Review security and deployment gates
+
+You must meet the following conditions to promote this pattern to production:
+
+| Gate | Owner | Requirement |
+| --- | --- | --- |
+| 1. Unit testing | Development team | The CI/CD pipeline must include a passing test where the module rejects a validly signed token with a rogue `tid` and returns an `HTTP 401`. |
+| 2. Module versioning | Development team | The backend API must use the latest approved version of the centralised auth module. |
+| 3. Tenant verification | Entra team | You must review and lock the allow list to prevent the accidental addition of unauthorised tenants. |
+
+> **Compliance Warning: Manage preview feature risks**
+> The Entra ID "Allow only certain tenants" feature is currently in preview and is subject to change or temporary outages. You must implement the internal `tid` check in the Java application. This defense-in-depth strategy ensures the application rejects rogue tokens before the API processes any data. This guarantees zero reliance on a single point of failure.
+
+<script src="../../javascripts/mermaid.vendor"></script>
