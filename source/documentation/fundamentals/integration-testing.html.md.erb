@@ -1,36 +1,46 @@
-# Integration Testing with Entra ID
+# Test Entra ID integrations
 
-## Problem Statement
+You can create end-to-end integration tests for applications using Entra ID Single Sign-On (SSO). Use test users in development and staging environments to test your GitHub pull request pipelines.
 
-As a Developer, I want to create end to end integration tests for my application that integrates SSO with Entra ID and have access to test users in a Dev and Staging environment to test against in my GitHub PR Pipelines.
+## Request test users
 
-## What can you test
+The Identity and Access Management (IDAM) team provides test users in the `DEVL` environment for automated testing. 
 
-The IDAM team can provide you with a set of test users in our DEVL environment. These can be used in your automated testing.
+To get test users and configure your application registration:
 
-To request test users and access to automated testing you should raise a Demand with the Demand team for the IDAM team to create the users and configure the Application Registration ready for use.
+1. Raise a demand request with the Demand team. 
+2. Wait for the IDAM team to create the users and configure your application registration.
 
-**We do not allow automated testing against our NLE and LIVE environment.**
+## Configure multifactor authentication (MFA)
 
-### Reasons for not allowing automated testing in NLE and LIVE
+> **Security Warning:** Your automated testing framework must support MFA. We cannot disable MFA for automated test accounts in the development tenant.
 
-Due to security and governance standards, we cannot allow testing in these environments for the following reasons.
+Most testing frameworks handle MFA by generating and storing an MFA seed during the test user's first login. 
 
-* Conditional Access Policies will prevent users from logging in. As these users will be logging in from a GitHub ephemeral environment, this log in will fail.
-* NLE and LIVE users will require certain compliance rules preventing access in an automated way.
-* Generic test users in NLE and LIVE pose an issue where passwords would be shared among multiple people and could be disabled or changed at any moment breaking path to live in pipelines.
+Review the following examples to see how to configure MFA in popular frameworks:
 
-Due to these limitations, it is not recommended to include the Entra ID log in flow as part of your integration tests in any environment apart from DEVL. To overcome the above scenarios, we would have to reduce our Security and Governance practices.
+* [Playwright](https://iamguidozam.blog/2025/12/17/automate-microsoft-mfa-login-using-playwright/)
+* [ZAP](https://www.zaproxy.org/docs/desktop/addons/authentication-helper/browser-auth/#automation-framework)
 
-## Solution for testing in NLE and LIVE
+## Restrict automated testing to the DEVL environment
 
-We recommend you use a Mock OAuth Provider as part of your pipelines. This will enable you to have full control over Authorisation test scenarios during your testing and a faster feedback loop.
+> **Compliance Note:** Do not run automated tests against the `NLE` (Non-Live Environment) or `LIVE` environments. 
 
-Many existing integrations follow this pattern, an example can be found below by OPG in their Sirius codebase which integrates with Entra ID.
+Testing in `NLE` or `LIVE` violates security and governance standards for the following reasons:
 
-[https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider](https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider)
+* Conditional Access Policies block logins from GitHub ephemeral environments.
+* Compliance rules block automated access for `NLE` and `LIVE` users.
+* Shared generic test user passwords create security risks and can break pipelines if disabled.
 
-## Section Contents
+Only include the Entra ID login flow in your `DEVL` integration tests. 
+
+## Mock the OAuth provider 
+
+Use a mock OAuth provider in your pipelines for `NLE` and `LIVE` testing. This gives you full control over authorisation scenarios and provides faster feedback. 
+
+Review the [OPG Sirius mock OAuth provider codebase](https://github.com/ministryofjustice/opg-sirius/tree/main/mock-oauth-provider) for an example Entra ID integration.
+
+## Related documentation
 
 * [Tenant Overview](/documentation/fundamentals/tenant-overview.html)
 * [Integration Testing](/documentation/fundamentals/integration-testing.html)
