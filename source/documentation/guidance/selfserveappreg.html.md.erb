@@ -2,7 +2,7 @@
 title: Self Serve Application Registration
 ---
 
-# IDAM Terraform App Registration Setup Guide
+# <%= config[:tech_docs][:team] %> Terraform App Registration Setup Guide
 
 This guide walks engineers and developers through using Terraform in the [`staff-identity-idam-entra-infra`](https://github.com/ministryofjustice/staff-identity-idam-entra-infra) repository to create app registrations in Azure Entra ID.
 
@@ -136,10 +136,10 @@ Please ensure you add a business justification for each application and delegate
 
 2. Review the job and terraform plan for the region you are deploying to. This will show if any errors need fixing, e.g. incorrect format, code errors etc.
 If there are any errors, fix these then push again, then run the terraform plan again and check all the output is successful.
-3. The IDAM team will automatically get notified to review your pull request.
-4. You will need to await for the IDAM team to approve your pull request, which may be delayed if we need to raise a change request for the permissions you have requested. 
+3. The <%= config[:tech_docs][:team] %> team will automatically get notified to review your pull request.
+4. You will need to await for the <%= config[:tech_docs][:team] %> team to approve your pull request, which may be delayed if we need to raise a change request for the permissions you have requested. 
 5. You should be notified once we have merged your pull request
-6. Please check the deployed config in the Azure portal and ensure it aligns with your expectations. If not, please reach out to the IDAM team on Slack here: [staff-identity-authentication-services](https://moj.enterprise.slack.com/archives/C04AFS7TV7S)
+6. Please check the deployed config in the Azure portal and ensure it aligns with your expectations. If not, please reach out to the <%= config[:tech_docs][:team] %> team on Slack here: [staff-identity-authentication-services](https://moj.enterprise.slack.com/archives/C04AFS7TV7S)
 
 ---
 
@@ -147,7 +147,7 @@ If there are any errors, fix these then push again, then run the terraform plan 
 
 After merging:
 
-1. The IDAM team will confirm that GitHub Actions run successfully.
+1. The <%= config[:tech_docs][:team] %> team will confirm that GitHub Actions run successfully.
 2. If errors arise we will reach out to you regarding the error
 3. In these situation we will work collaboratively with you in order to resolve the issue.
 
@@ -167,4 +167,4 @@ Should there be further issues, we would need to go through steps 1 - 5 again, u
 If Graph permissions are needed (delegated or application):
 
 * Mention this in your pull request.
-* The IDAM team will handle the admin consent process.
+* The <%= config[:tech_docs][:team] %> team will handle the admin consent process.

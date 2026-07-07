@@ -95,11 +95,11 @@ For more information on managing Secrets, see the Best Practices section below.
 
 In here you can add additional API permissions your application can have access to for MSGraph. The standard is `Delegated` `User.Read` which will allow users to authenticate into your application.
 
-If this is all you require from your application, then this section can be left as is. If you require more permissions then please contact the IDAM team or ask in the dedicated Slack channel for more information.
+If this is all you require from your application, then this section can be left as is. If you require more permissions then please contact the <%= config[:tech_docs][:team] %> team or ask in the dedicated Slack channel for more information.
 
 ##### Owners
 
-This section defines the Owners of the application that have access to configure it. This would usually be your development team. You should always have a minimum of 2 people as Owners at all time. We also encourage when in Production to add a shared mailbox to the Owner list. This will allow us to send you automated notifications for expiring credentials and allow the IDAM team to contact you if we have any issues.
+This section defines the Owners of the application that have access to configure it. This would usually be your development team. You should always have a minimum of 2 people as Owners at all time. We also encourage when in Production to add a shared mailbox to the Owner list. This will allow us to send you automated notifications for expiring credentials and allow the <%= config[:tech_docs][:team] %> team to contact you if we have any issues.
 
 ### Best Practices
 
@@ -141,9 +141,9 @@ Do not store or share your secret anywhere else such as
 
 #### Problems, guidance, or incidents
 
-If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the IDAM team (<%= config[:tech_docs][:email] %>) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.
+If you lose, misconfigure, or accidentally expose your secret in any way or are unsure around the guidance above, contact the <%= config[:tech_docs][:team] %> team (<%= config[:tech_docs][:email] %>) immediately. We will revoke the old secret and generate a new one for you or provide one-to-one guidance on next steps.
 
 
 ## Resources
 
-* [<%= config[:tech_docs][:department] %> IDAM Team Shared Inbox](mailto:<%= config[:tech_docs][:email] %>)
+* [<%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team Shared Inbox](mailto:<%= config[:tech_docs][:email] %>)

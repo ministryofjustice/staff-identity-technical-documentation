@@ -214,7 +214,7 @@ You will be required to first setup your Application Registrations in Terraform.
 
 **Step 3:** Apply the Terraform again to create the link.
 
-**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An IDAM Engineer will do this for you.
+**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An <%= config[:tech_docs][:team] %> Engineer will do this for you.
 
 * Go to `Entra ID > App Registrations > S2S Example Consumer`.
 * Select `API Permissions`.
@@ -351,7 +351,7 @@ You will be required to first setup your Application Registrations in Terraform.
 
 **Step 3:** Apply the Terraform again to create the link.
 
-**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An IDAM Engineer will do this for you.
+**Step 4 (Important):** Grant `Admin Consent` in the Entra Portal. An <%= config[:tech_docs][:team] %> Engineer will do this for you.
 
 * Go to `Entra ID > App Registrations > Frontend Web Client`.
 * Select `API Permissions`.
@@ -469,6 +469,6 @@ app.post('/create-case', passport.authenticate('oauth-bearer', { session: false 
 
 * [Microsoft identity platform and OAuth 2.0 On-Behalf-Of flow](https://docs.azure.cn/en-us/entra/identity-platform/v2-oauth2-on-behalf-of-flow)
 * [Using service-to-service (S2S) authentication](https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/automation-apis-using-s2s-authentication)
-* [<%= config[:tech_docs][:department] %> IDAM Team Shared Inbox](mailto:<%= config[:tech_docs][:email] %>)
+* [<%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team Shared Inbox](mailto:<%= config[:tech_docs][:email] %>)
 
 <script src="../../javascripts/mermaid.vendor"></script>
