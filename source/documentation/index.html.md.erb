@@ -11,11 +11,11 @@ If your query does not match the requests below, email the **[<%= config[:tech_d
 | **Account Management** | Add user account (MOJO Production) | [Request new user account](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=7404ac3137b723005f7cd1b543990e3e&searchTerm=SERVICE%20ACCOUNT) |
 | | Delete user account (MOJO Production) | [Request account deletion](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=c195e78edb73e7441b4ffc45ae9619f2&searchTerm=SERVICE%20ACCOUNT) |
 | | Request service account (MOJO Production) | [Request service account access](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=2ab6ea321b142a9025dc6351f54bcb15&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=2ab6ea321b142a9025dc6351f54bcb15) |
-| | Add or remove guest account (MOJO Production) | Email the [<%= config[:tech_docs][:department] %> IDAM Team](mailto:idam@justice.gov.uk) |
+| | Add or remove guest account (MOJO Production) | Email the [<%= config[:tech_docs][:department] %> IDAM Team](mailto:<%= config[:tech_docs][:email] %>) |
 | | Add or remove privileged account (MOJO LIVE, NLE, or DEV) | [Manage privileged account](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=8161246a1b170a50a1e2ddf0b24bcbdb&searchTerm=SERVICE%20ACCOUNT) |
-| | Add or remove privileged account (DOM1 Dev / NLE) | Email the [<%= config[:tech_docs][:department] %> IDAM Team](mailto:idam@justice.gov.uk) |
+| | Add or remove privileged account (DOM1 Dev / NLE) | Email the [<%= config[:tech_docs][:department] %> IDAM Team](mailto:<%= config[:tech_docs][:email] %>) |
 | **Application Consent** | Approve delegated application consent | Request via a formal demand for business justification review. [Follow demand guidance](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
-| **Security Groups** | Add or remove a user | Group owners perform these tasks. If the owner is unavailable, email the [<%= config[:tech_docs][:department] %> IDAM Team](mailto:idam@justice.gov.uk) |
+| **Security Groups** | Add or remove a user | Group owners perform these tasks. If the owner is unavailable, email the [<%= config[:tech_docs][:department] %> IDAM Team](mailto:<%= config[:tech_docs][:email] %>) |
 | | Create a new security group | Raise a demand request. [Follow demand guidance](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
 | **Access Packages** | Add, amend, or delete a user | [Manage access package user](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=8161246a1b170a50a1e2ddf0b24bcbdb&searchTerm=SERVICE%20ACCOUNT) |
 | | Create or amend an access package | [Submit new demand request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
@@ -27,13 +27,13 @@ If your query does not match the requests below, email the **[<%= config[:tech_d
 
 ## Ways of working
 
-  * All requests must follow the correct request route as outlined above. Any other enquires are to be sent to be sent to IDAM@Justice.gov.uk for work items to be raised. Any requests sent by any other means will be ignored.
+  * All requests must follow the correct request route as outlined above. Any other enquires are to be sent to be sent to <%= config[:tech_docs][:email] %> for work items to be raised. Any requests sent by any other means will be ignored.
 
   * New request items are triaged twice per week (Mondays and Wednesdays)
 
   * There is a minimum of a 5-day Service Level Expectation (SLE) for all requests, regardless of how trivial they may seem, as we get 100's of requests a week all of which needs to be prioritised against existing workloads and commitments.
 
-  * All updates on tickets are to be requested through IDAM@Justice.gov.uk. Whilst the assigned engineer may reach out to you using Teams/Slack in order to progress the task, any requests for updates on work sent directly to engineers will be ignored.
+  * All updates on tickets are to be requested through <%= config[:tech_docs][:email] %>. Whilst the assigned engineer may reach out to you using Teams/Slack in order to progress the task, any requests for updates on work sent directly to engineers will be ignored.
 
   * Standard service offerings must be requested using the relevant offering on the service catalogue. This is the quickest way to make sure standard requests get processed as quickly as possible. 
 
@@ -78,4 +78,4 @@ Integration guidance for professional bodies and non-Ministry of Justice users.
 
 ## Support
 
-  * [Email the <%= config[:tech_docs][:department] %> IDAM Team](mailto:idam@justice.gov.uk)
+  * [Email the <%= config[:tech_docs][:department] %> IDAM Team](mailto:<%= config[:tech_docs][:email] %>)
