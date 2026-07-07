@@ -70,7 +70,7 @@ You should provide the following information with the demand request.
     * 1 or more Technical Owners
 * Name of the group
     * Pattern should be all lowercase `<organisation>-<team>-<function-of-group>`. e.g. `<%= config[:tech_docs][:department] %>-<%= config[:tech_docs][:team] %>-cmsadministrators`
-* Description on the purpose of the group (max 250 charaters)
+* Description on the purpose of the group (max 250 characters)
 
 > It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.
 
@@ -94,7 +94,7 @@ This will then be assigned to the <%= config[:tech_docs][:team] %> team to sched
 
 Optionally, we can enable your SSO Application Registration to send a list of Security Group GUIDs that the user belongs too.
 
-This can be benefitial for modern applications that require levels of authorisation within their application.
+This can be beneficial for modern applications that require levels of authorisation within their application.
 
 For example, you could create 3 Security Groups as shown below and when a user logs in, the GUID will be passed down to the application. From here you can setup your application to assign the role appropriate for their group.
 

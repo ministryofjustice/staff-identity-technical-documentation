@@ -1,4 +1,4 @@
-# Enta Authentication Best Practice
+# Entra Authentication Best Practice
 
 ## Latest Updates
 
@@ -21,10 +21,10 @@ This is especially important for those that currently use service accounts witho
 
 Microsoft's recommended approach is to transition away from service accounts with passwords. Better options include:
 
-* Managed Identities - [Microsofts Managed Identity Documentation](https://docs.azure.cn/en-us/entra/identity/managed-identities-azure-resources/overview)
+* Managed Identities - [Microsoft's Managed Identity Documentation](https://docs.azure.cn/en-us/entra/identity/managed-identities-azure-resources/overview)
     * Ideal for resources already running in Azure (VMs, Functions, Logic Apps).
     * Eliminates credential management.
-* Workload Identities - [Microsofts Workload Identity Documentation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview)
+* Workload Identities - [Microsoft's Workload Identity Documentation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview)
     * Purpose-built for non-human interaction (Applications, Services, Scripts, or Containers)
 
 Managed Identities and Workload Identities are recommended because they remove the need for storing passwords and eliminate the security risks associated with service accounts, such as static credentials, compromise or lack of MFA. 
