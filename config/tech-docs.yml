@@ -32,3 +32,8 @@ prevent_indexing: true
 show_contribution_banner: true
 github_repo: ministryofjustice/staff-identity-technical-documentation
 github_branch: main
+
+# Text variables
+department: "DISO"
+team: "IDAM"
+email: "idam@justice.gov.uk"
