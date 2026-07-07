@@ -69,7 +69,7 @@ You should provide the following information with the demand request.
     * 1 or more Business Owners
     * 1 or more Technical Owners
 * Name of the group
-    * Pattern should be all lowercase `<organisation>-<team>-<function-of-group>`. e.g. `eucs-idam-cmsadministrators`
+    * Pattern should be all lowercase `<organisation>-<team>-<function-of-group>`. e.g. `<%= config[:tech_docs][:department] %>-idam-cmsadministrators`
 * Description on the purpose of the group (max 250 charaters)
 
 > It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.
@@ -100,9 +100,9 @@ For example, you could create 3 Security Groups as shown below and when a user l
 
 | Security Group Name        | GUID                                      | Description                                                         |
 | -------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| eucs-idamn-cms-admins      | a000000bc-00d0-00e0-00f0-00000000000      | Users assigned to this group have full admin access to application  |
-| eucs-idam-cms-contributors | a000000bc-00d0-00e0-00f0-00000000000     | Users assigned to this group have contributor access to application |
-| eucs-idam-cms-readers      | a000000bc-00d0-00e0-00f0-00000000000    | Users assigned to this group have read only access to application   |
+| <%= config[:tech_docs][:department] %>-idamn-cms-admins      | a000000bc-00d0-00e0-00f0-00000000000      | Users assigned to this group have full admin access to application  |
+| <%= config[:tech_docs][:department] %>-idam-cms-contributors | a000000bc-00d0-00e0-00f0-00000000000     | Users assigned to this group have contributor access to application |
+| <%= config[:tech_docs][:department] %>-idam-cms-readers      | a000000bc-00d0-00e0-00f0-00000000000    | Users assigned to this group have read only access to application   |
 
 Instead of creating more resources to manage users and groups, you can use the Self Service Security Groups within Entra ID to manage users, and the groups they belong too via the [Microsoft My Groups interface](https://myaccount.microsoft.com/groups/).
 
@@ -112,4 +112,4 @@ For more information on what information exists within the access token, see thi
 
 ## Resources
 
-* [EUCS IDAM Team Shared Inbox](mailto:idam@justice.gov.uk)
+* [<%= config[:tech_docs][:department] %> IDAM Team Shared Inbox](mailto:idam@justice.gov.uk)
