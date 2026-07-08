@@ -1,43 +1,43 @@
-# EUCS IDAM End User Guidance
+# <%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> End User Guidance
 
-Access user guides, technical advice, and Identity and Access Management (IdAM) policies. Use this page to raise service requests and queries.
+Access user guides, technical advice, and Identity and Access Management (<%= config[:tech_docs][:team] %>) policies. Use this page to raise service requests and queries.
 
 ## Service Requests
 
-If your query does not match the requests below, email the **[EUCS IDAM Team](mailto:idam@justice.gov.uk)**.
+If your query does not match the requests below, email the **[<%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team](mailto:<%= config[:tech_docs][:email] %>)**.
 
 | Category | Task | How to raise the request |
 | :--- | :--- | :--- |
 | **Account Management** | Add user account (MOJO Production) | [Request new user account](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=7404ac3137b723005f7cd1b543990e3e&searchTerm=SERVICE%20ACCOUNT) |
 | | Delete user account (MOJO Production) | [Request account deletion](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=c195e78edb73e7441b4ffc45ae9619f2&searchTerm=SERVICE%20ACCOUNT) |
 | | Request service account (MOJO Production) | [Request service account access](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=2ab6ea321b142a9025dc6351f54bcb15&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=2ab6ea321b142a9025dc6351f54bcb15) |
-| | Add or remove guest account (MOJO Production) | Email the [EUCS IDAM Team](mailto:idam@justice.gov.uk) |
+| | Add or remove guest account (MOJO Production) | [Guest User Account](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=28021c011bf67a103393a797b04bcbd1&table=sc_cat_item&searchTerm=guest%20invite) |
 | | Add or remove privileged account (MOJO LIVE, NLE, or DEV) | [Manage privileged account](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=8161246a1b170a50a1e2ddf0b24bcbdb&searchTerm=SERVICE%20ACCOUNT) |
-| | Add or remove privileged account (DOM1 Dev / NLE) | Email the [EUCS IDAM Team](mailto:idam@justice.gov.uk) |
+| | Add or remove privileged account (DOM1 Dev / NLE) | Email the [<%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team](mailto:<%= config[:tech_docs][:email] %>) |
 | **Application Consent** | Approve delegated application consent | Request via a formal demand for business justification review. [Follow demand guidance](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
-| **Security Groups** | Add or remove a user | Group owners perform these tasks. If the owner is unavailable, email the [EUCS IDAM Team](mailto:idam@justice.gov.uk) |
-| | Create a new security group | Raise a demand request. [Follow demand guidance](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
+| **Security Groups** | Add or remove a user | Group owners perform these tasks, via the Entra portal or [MyGroups link](http://mygroups.microsoft.com). <br>If the owner is unavailable, email the [<%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team](mailto:<%= config[:tech_docs][:email] %>) |
+| | Create a new security group | [Create New Security Group](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=8161246a1b170a50a1e2ddf0b24bcbdb&searchTerm=SERVICE%20ACCOUNT) |
 | **Access Packages** | Add, amend, or delete a user | [Manage access package user](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=8161246a1b170a50a1e2ddf0b24bcbdb&searchTerm=SERVICE%20ACCOUNT) |
 | | Create or amend an access package | [Submit new demand request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
 | | Create custom roles or service principals | [Submit new demand request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
 | **Single Sign-On** | Create an application registration | [Submit new demand request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) or [use self-service registration](/documentation/guidance/selfserveappreg.html) |
-| | Delete an application registration | [Submit new demand request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx) |
-| | Renew secret or certificate | [Renew Entra ID certificate/secret](https://mojprod.service-now.com/moj_sp%3Fid%3Dsc_cat_item%26table%3Dsc_cat_item%26sys_id%3D1c192ec11b930a10a1e2ddf0b24bcb77). Application owners can update secrets directly. |
-| **Multi-Factor Authentication** | Manage MFA tokens | Use the [Technology Portal](https://mojprod.service-now.com/moj_sp) to assign or delete tokens. |
+| | Delete an application registration | [Delete Application Registration](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=68eaa65f1b57c290a1e2ddf0b24bcbf2&searchTerm=application%20registration) |
+| | Renew secret or certificate | [Renew Entra ID certificate/secret](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=1c192ec11b930a10a1e2ddf0b24bcb77). <br>N.B. Application owners can update secrets directly, please contact us to be added as an owner for your app if you are not already. |
+| **Multi-Factor Authentication** | Manage MFA tokens | Use the [MFA Token Assignment- MoJO](https://mojprod.service-now.com/moj_sp?id=sc_cat_item&table=sc_cat_item&sys_id=df553d7c1b46399025dc6351f54bcb26) to assign tokens. |
 
 ## Ways of working
 
-  * All requests must follow the correct request route as outlined above. Any other enquires are to be sent to be sent to IDAM@Justice.gov.uk for work items to be raised. Any requests sent by any other means will be ignored.
+  * All requests must follow the correct request route as outlined above. Any other enquires are to be sent to be sent to <%= config[:tech_docs][:email] %> for work items to be raised. Any requests sent by any other means will be ignored.
 
   * New request items are triaged twice per week (Mondays and Wednesdays)
 
   * There is a minimum of a 5-day Service Level Expectation (SLE) for all requests, regardless of how trivial they may seem, as we get 100's of requests a week all of which needs to be prioritised against existing workloads and commitments.
 
-  * All updates on tickets are to be requested through IDAM@Justice.gov.uk. Whilst the assigned engineer may reach out to you using Teams/Slack in order to progress the task, any requests for updates on work sent directly to engineers will be ignored.
+  * All updates on tickets are to be requested through <%= config[:tech_docs][:email] %>. Whilst the assigned engineer may reach out to you using Teams/Slack in order to progress the task, any requests for updates on work sent directly to engineers will be ignored.
 
   * Standard service offerings must be requested using the relevant offering on the service catalogue. This is the quickest way to make sure standard requests get processed as quickly as possible. 
 
-  * Any request that requires expediting faster than 5 days must include a business justification for the expedited change, so that this can be used to support justifications to the Technology Change Management team. All non-standard changes are subject to a 5-day change approval period, which will also need to be accounted for more complex work. The Technology Change Management Team will not accept justifications that do not clearly articulate why the standard approval windows cannot apply, so the emphasis needs to be on engaging with IDAM well in advance to prevent disruptions is essential so you can meet your planned timelines.
+  * Any request that requires expediting faster than 5 days must include a business justification for the expedited change, so that this can be used to support justifications to the Technology Change Management team. All non-standard changes are subject to a 5-day change approval period, which will also need to be accounted for more complex work. The Technology Change Management Team will not accept justifications that do not clearly articulate why the standard approval windows cannot apply, so the emphasis needs to be on engaging with <%= config[:tech_docs][:team] %> well in advance to prevent disruptions is essential so you can meet your planned timelines.
 
   * We are continually trying to improve our automation within the team, including the routes available for teams to be self-managing when engaging with our service. Please ensure you have read our End User Guidance Pages to benefit from those capabilities when they are available. 
 
@@ -78,4 +78,4 @@ Integration guidance for professional bodies and non-Ministry of Justice users.
 
 ## Support
 
-  * [Email the EUCS IDAM Team](mailto:idam@justice.gov.uk)
+  * [Email the <%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team](mailto:<%= config[:tech_docs][:email] %>)

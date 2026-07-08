@@ -28,7 +28,7 @@ This has specifically been observed and reported recently when users have enroll
 
 ## Remediation
 
-There are a couple of options to resolve this error which must be completed on the application side. IDAM recommend using **Option 1** as this provides future proofing for any other authentication methods that may be employed in future.
+There are a couple of options to resolve this error which must be completed on the application side. <%= config[:tech_docs][:team] %> recommend using **Option 1** as this provides future proofing for any other authentication methods that may be employed in future.
 
 ### Option 1: Remove the RequestedAuthnContext
 This is typically an optional field, so by not requesting specific authentication contexts, your app will not be tied to specific authentication methods and add an element of future proofing.
