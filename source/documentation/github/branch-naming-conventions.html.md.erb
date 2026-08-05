@@ -1,0 +1,170 @@
+# Branch Naming Convention
+
+## Overview
+
+To improve consistency, auditability, and automation across our repositories, we are introducing a standardised branch naming convention.
+
+This convention ensures that branch names:
+
+- Clearly identify the type of change being made.
+- Indicate the team making the change.
+- Optional service management ticket or work item reference.
+- Provide a meaningful description of the change.
+
+By adopting a common structure, teams can quickly understand the purpose and ownership of each branch.
+
+## Branch Naming Format
+
+### Validation Pattern
+
+The following regular expression is used to validate branch names:
+
+```regex
+^(new|update|removal|fix)\/[a-z0-9-]+\/([a-z]+-[0-9]+\/)?[a-z0-9-]+(?:-[a-z0-9-]+)*$
+```
+
+```text
+action/team-name/ticket-reference?/description
+```
+Where:
+
+- `action` is mandatory.
+- `team-name` is mandatory.
+- `ticket-reference` is optional.
+- `description` is mandatory.
+
+## Examples
+
+### Valid Examples
+
+```text
+new/idam/adding-new-app
+new/idam/jira-1234/adding-new-app
+update/ai/ado-5678/update-api-permissions
+removal/mwp/removing-api-perms
+fix/platform/ABC-999/fix-auth-timeout
+```
+
+### Invalid Examples
+
+```text
+feature/idam/new-app
+new/adding-new-app
+new/idam/jira/new-app
+new/idam/jira-1234
+```
+
+## Naming Convention Breakdown
+
+### Action
+
+The action identifies the type of change being introduced.
+
+#### Supported values
+
+```text
+new
+update
+removal
+fix
+```
+
+| Action | Usage |
+|----------|----------|
+| `new` | Introducing a new capability, application, feature, or resource |
+| `update` | Modifying or enhancing an existing capability |
+| `removal` | Removing a capability, configuration, permission, or resource |
+| `fix` | Correcting a defect, issue, or unexpected behaviour |
+
+#### Examples
+
+```text
+new/idam/adding-new-app
+update/ai/improve-model-processing
+removal/mwp/removing-api-perms
+fix/platform/fix-auth-timeout
+```
+
+#### Team Name
+
+The team name identifies ownership of the change.
+
+The value is not restricted to a predefined list and can represent any current or future team.
+
+#### Examples
+
+```text
+idam
+ai
+mwp
+platform
+cloud-team
+developer-experience
+```
+
+#### Examples in use
+
+```text
+new/idam/adding-new-app
+update/cloud-team/update-network-rules
+fix/platform/fix-auth-timeout
+```
+
+
+### Ticket Reference (Optional)
+
+A ticket reference can be included when work is associated with a tracked item in Jira, Azure DevOps, or another work management platform.
+
+#### Format
+
+```text
+<ticket-prefix>-<number>
+```
+
+### Examples
+
+```text
+jira-1234
+ado-5678
+workitem-999
+```
+
+#### Examples in use
+
+```text
+new/idam/jira-1234/
+```
+
+### Description
+
+The description portion of the branch name should provide a concise, meaningful summary of the change being made.
+
+#### Example
+
+```text
+new/idam/jira-1234/adding-new-app
+```
+
+#### Description component
+
+```text
+adding-new-app
+```
+
+#### Invalid Descriptions
+```text
+Adding-New-App
+adding_new_App
+adding new app 
+adding/new/app
+```
+
+#### Description Guidance
+
+When creating a description:
+
+- Use lowercase characters only.
+- Separate words using hyphens (`-`).
+- Clearly describe the purpose of the change.
+- Keep descriptions concise and readable.
+- Avoid generic terms such as `changes`, `updates`, `test`, or `misc`.
