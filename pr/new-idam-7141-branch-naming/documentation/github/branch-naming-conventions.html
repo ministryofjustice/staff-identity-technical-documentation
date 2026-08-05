@@ -134,52 +134,56 @@
         <ul>
           <li>
             <a href="#action"><span>Action</span></a>
-          </li>
-          <li>
-            <a href="#supported-values"><span>Supported values</span></a>
-          </li>
-          <li>
-            <a href="#naming-convention-breakdown-examples"><span>Examples</span></a>
-          </li>
-          <li>
-            <a href="#team-name"><span>Team Name</span></a>
-          </li>
-          <li>
-            <a href="#naming-convention-breakdown-examples-2"><span>Examples</span></a>
-          </li>
-          <li>
-            <a href="#examples-in-use"><span>Examples in use</span></a>
-          </li>
-          <li>
-            <a href="#ticket-reference-optional"><span>Ticket Reference (Optional)</span></a>
-          </li>
-          <li>
-            <a href="#format"><span>Format</span></a>
-          </li>
-          <li>
-            <a href="#naming-convention-breakdown-examples-3"><span>Examples</span></a>
-          </li>
-          <li>
-            <a href="#naming-convention-breakdown-examples-in-use"><span>Examples in use</span></a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#description"><span>Description</span></a>
-        <ul>
-          <li>
-            <a href="#example"><span>Example</span></a>
-          </li>
-          <li>
-            <a href="#description-component"><span>Description component</span></a>
             <ul>
               <li>
-                <a href="#invalid-descriptions"><span>Invalid Descriptions</span></a>
+                <a href="#supported-values"><span>Supported values</span></a>
+              </li>
+              <li>
+                <a href="#action-examples"><span>Examples</span></a>
+              </li>
+              <li>
+                <a href="#team-name"><span>Team Name</span></a>
+              </li>
+              <li>
+                <a href="#action-examples-2"><span>Examples</span></a>
+              </li>
+              <li>
+                <a href="#examples-in-use"><span>Examples in use</span></a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="#description-guidance"><span>Description Guidance</span></a>
+            <a href="#ticket-reference-optional"><span>Ticket Reference (Optional)</span></a>
+            <ul>
+              <li>
+                <a href="#format"><span>Format</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#naming-convention-breakdown-examples"><span>Examples</span></a>
+            <ul>
+              <li>
+                <a href="#naming-convention-breakdown-examples-examples-in-use"><span>Examples in use</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#description"><span>Description</span></a>
+            <ul>
+              <li>
+                <a href="#example"><span>Example</span></a>
+              </li>
+              <li>
+                <a href="#description-component"><span>Description component</span></a>
+              </li>
+              <li>
+                <a href="#invalid-descriptions"><span>Invalid Descriptions</span></a>
+              </li>
+              <li>
+                <a href="#description-guidance"><span>Description Guidance</span></a>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>
@@ -234,7 +238,7 @@ new/idam/jira-1234
 </code></pre></div><h2 id="naming-convention-breakdown">Naming Convention Breakdown</h2>
 <h3 id="action">Action</h3>
 <p>The action identifies the type of change being introduced.</p>
-<h3 id="supported-values">Supported values</h3>
+<h4 id="supported-values">Supported values</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new
 update
 removal
@@ -258,47 +262,47 @@ fix
 <td>Correcting a defect, issue, or unexpected behaviour</td>
 </tr>
         </table>
-      </div><h3 id="naming-convention-breakdown-examples">Examples</h3>
+      </div><h4 id="action-examples">Examples</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/adding-new-app
 update/ai/improve-model-processing
 removal/mwp/removing-api-perms
 fix/platform/fix-auth-timeout
-</code></pre></div><h3 id="team-name">Team Name</h3>
+</code></pre></div><h4 id="team-name">Team Name</h4>
 <p>The team name identifies ownership of the change.</p>
 <p>The value is not restricted to a predefined list and can represent any current or future team.</p>
-<h3 id="naming-convention-breakdown-examples-2">Examples</h3>
+<h4 id="action-examples-2">Examples</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>idam
 ai
 mwp
 platform
 cloud-team
 developer-experience
-</code></pre></div><h3 id="examples-in-use">Examples in use</h3>
+</code></pre></div><h4 id="examples-in-use">Examples in use</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/adding-new-app
 update/cloud-team/update-network-rules
 fix/platform/fix-auth-timeout
 </code></pre></div><h3 id="ticket-reference-optional">Ticket Reference (Optional)</h3>
 <p>A ticket reference can be included when work is associated with a tracked item in Jira, Azure DevOps, or another work management platform.</p>
-<h3 id="format">Format</h3>
+<h4 id="format">Format</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>&lt;ticket-prefix&gt;-&lt;number&gt;
-</code></pre></div><h3 id="naming-convention-breakdown-examples-3">Examples</h3>
+</code></pre></div><h3 id="naming-convention-breakdown-examples">Examples</h3>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>jira-1234
 ado-5678
 workitem-999
-</code></pre></div><h3 id="naming-convention-breakdown-examples-in-use">Examples in use</h3>
+</code></pre></div><h4 id="naming-convention-breakdown-examples-examples-in-use">Examples in use</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/jira-1234/
-</code></pre></div><h2 id="description">Description</h2>
+</code></pre></div><h3 id="description">Description</h3>
 <p>The description portion of the branch name should provide a concise, meaningful summary of the change being made.</p>
-<h3 id="example">Example</h3>
+<h4 id="example">Example</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/jira-1234/adding-new-app
-</code></pre></div><h3 id="description-component">Description component</h3>
+</code></pre></div><h4 id="description-component">Description component</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>adding-new-app
 </code></pre></div><h4 id="invalid-descriptions">Invalid Descriptions</h4>
 <div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>Adding-New-App
 adding_new_App
 adding new app 
 adding/new/app
-</code></pre></div><h3 id="description-guidance">Description Guidance</h3>
+</code></pre></div><h4 id="description-guidance">Description Guidance</h4>
 <p>When creating a description:</p>
 
 <ul>
