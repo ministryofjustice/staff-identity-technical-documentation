@@ -63,19 +63,26 @@ Projects not in CODEOWNERS: terraform/envs/live/example-project
 
 ## Fixing a failure
 
-1. Open `.github/CODEOWNERS` in the repository root.
-2. Add a line for your project, for example:
+### Step 1 — Open the CODEOWNERS file
 
-   ```text
-   terraform/envs/live/example-project/ @your-team
-   ```
+Open `.github/CODEOWNERS` in the repository root.
 
-3. Commit and push the change:
+### Step 2 — Add an entry for your project
 
-   ```bash
-   git add .github/CODEOWNERS
-   git commit -S -m "chore: add CODEOWNERS entry for example-project"
-   git push
-   ```
+Add a line for your project, for example:
 
-4. The `codeowners` job re-runs automatically and should now pass.
+```text
+terraform/envs/live/example-project/ @your-team
+```
+
+### Step 3 — Commit and push the change
+
+```bash
+git add .github/CODEOWNERS
+git commit -S -m "chore: add CODEOWNERS entry for example-project"
+git push
+```
+
+### Step 4 — Re-run the check
+
+The `codeowners` job re-runs automatically and should now pass.
