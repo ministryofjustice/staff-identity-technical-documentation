@@ -45,21 +45,13 @@ jobs:
           tar -xvf artifact.tar
       - name: Generate slug
         id: generate_slug
-        env:
-          PR_NUMBER: ${{ github.event.number }}
-        run: |
-          slug=$(echo "${GITHUB_HEAD_REF}" | sed -r 's/[~\^]+//g' | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r 's/^-+\|-+$//g' | tr A-Z a-z)
-          if [ -z "$slug" ]; then
-            slug="pr-${PR_NUMBER}"
-          fi
-          echo "slug=${slug}" >> "$GITHUB_OUTPUT"
+        run: echo "##[set-output name=slug;]$(echo ${GITHUB_HEAD_REF#refs/heads/} | sed -r 's/[~\^]+//g' | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r 's/^-+\|-+$//g' | tr A-Z a-z)"
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
           branch: gh-pages
           folder: github-pages
           target-folder: pr/${{ steps.generate_slug.outputs.slug }}
-          clean: false
       - name: Publish env
         uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         with:
