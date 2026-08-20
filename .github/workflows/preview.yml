@@ -59,3 +59,18 @@ jobs:
           message: |
             ## Preview environment
             https://user-guide.staff-identity.service.justice.gov.uk/pr/${{ steps.generate_slug.outputs.slug }}/index.html
+
+  upload-preview-to-app-service:
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/upload-preview-to-app-service.yml
+    with:
+      artifact-name: github-pages
+    secrets:
+      AZURE_APP_SERVICE_NAME: ${{ secrets.AZURE_APP_SERVICE_NAME }}
+      AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}

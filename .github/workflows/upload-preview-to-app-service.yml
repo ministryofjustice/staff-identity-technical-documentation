@@ -1,0 +1,89 @@
+name: Upload preview artifact to Azure App Service
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: Name of the build artifact that contains artifact.tar
+        required: false
+        type: string
+        default: github-pages
+      slot-name:
+        description: Optional deployment slot name
+        required: false
+        type: string
+        default: ""
+    secrets:
+      AZURE_APP_SERVICE_NAME:
+        description: Azure App Service name
+        required: true
+      AZURE_RESOURCE_GROUP_NAME:
+        description: Azure Resource Group that contains the App Service
+        required: true
+      ARM_CLIENT_ID:
+        description: Azure Entra application client ID for OIDC login
+        required: true
+      ARM_TENANT_ID:
+        description: Azure Entra tenant ID for OIDC login
+        required: true
+      ARM_SUBSCRIPTION_ID:
+        description: Azure subscription ID for OIDC login
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ARM_USE_OIDC: true
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: app-service-preview-artifact
+
+      - name: Unpack and package site artifact
+        shell: bash
+        run: |
+          mkdir -p site
+          tar -xvf app-service-preview-artifact/artifact.tar -C site
+          cd site
+          zip -r ../site.zip .
+
+      - name: Azure login
+        uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: Deploy zip artifact to App Service
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.slot-name }}" ]; then
+            az webapp deploy \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP_NAME }}" \
+              --name "${{ secrets.AZURE_APP_SERVICE_NAME }}" \
+              --slot "${{ inputs.slot-name }}" \
+              --src-path site.zip \
+              --type zip \
+              --clean true \
+              --restart true \
+              --only-show-errors
+          else
+            az webapp deploy \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP_NAME }}" \
+              --name "${{ secrets.AZURE_APP_SERVICE_NAME }}" \
+              --src-path site.zip \
+              --type zip \
+              --clean true \
+              --restart true \
+              --only-show-errors
+          fi
