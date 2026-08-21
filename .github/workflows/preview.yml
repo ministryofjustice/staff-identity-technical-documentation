@@ -95,4 +95,4 @@ jobs:
           header: App Service preview environment
           message: |
             ## App Service preview environment
-            https://${{ secrets.AZURE_APP_SERVICE_NAME }}.azurewebsites.net/pr/${{ github.event.pull_request.number }}/index.html
+            https://${{ secrets.AZURE_APP_SERVICE_NAME }}-b0c9d9a5c8cwakd0.uksouth-01.azurewebsites.net/pr/${{ github.event.pull_request.number }}/index.html
