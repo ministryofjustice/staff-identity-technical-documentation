@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - "main"
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   contents: write
@@ -13,6 +17,7 @@ permissions:
 
 jobs:
   build:
+    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/ministryofjustice/tech-docs-github-pages-publisher:v6.2.0
@@ -30,6 +35,7 @@ jobs:
           retention-days: 1
 
   deploy-preview:
+    if: ${{ github.event.action != 'closed' }}
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -59,3 +65,34 @@ jobs:
           message: |
             ## Preview environment
             https://user-guide.staff-identity.service.justice.gov.uk/pr/${{ steps.generate_slug.outputs.slug }}/index.html
+
+  upload-preview-to-app-service:
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/upload-preview-to-app-service.yml
+    with:
+      artifact_name: github-pages
+      deployment_action: deploy
+      preview_subpath: pr/${{ github.event.pull_request.number }}
+    secrets:
+      AZURE_APP_SERVICE_NAME: ${{ secrets.AZURE_APP_SERVICE_NAME }}
+      AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+  publish-app-service-preview-url:
+    needs: upload-preview-to-app-service
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Publish App Service preview URL
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        with:
+          header: App Service preview environment
+          message: |
+            ## App Service preview environment
+            https://${{ secrets.AZURE_APP_SERVICE_NAME }}-b0c9d9a5c8cwakd0.uksouth-01.azurewebsites.net/pr/${{ github.event.pull_request.number }}/index.html
