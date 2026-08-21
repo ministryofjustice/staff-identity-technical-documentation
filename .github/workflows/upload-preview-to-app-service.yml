@@ -53,15 +53,6 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
     steps:
-      - name: Resolve deploy target path
-        shell: bash
-        run: |
-          if [ -n "${{ inputs.preview_subpath }}" ]; then
-            echo "DEPLOY_TARGET=/home/site/wwwroot/${{ inputs.preview_subpath }}" >> "$GITHUB_ENV"
-          else
-            echo "DEPLOY_TARGET=/home/site/wwwroot" >> "$GITHUB_ENV"
-          fi
-
       - name: Download build artifact
         if: ${{ inputs.deployment_action == 'deploy' }}
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -73,9 +64,14 @@ jobs:
         if: ${{ inputs.deployment_action == 'deploy' }}
         shell: bash
         run: |
-          mkdir -p site
-          tar -xvf app-service-preview-artifact/artifact.tar -C site
-          cd site
+          mkdir -p site-root
+          if [ -n "${{ inputs.preview_subpath }}" ]; then
+            mkdir -p "site-root/${{ inputs.preview_subpath }}"
+            tar -xvf app-service-preview-artifact/artifact.tar -C "site-root/${{ inputs.preview_subpath }}"
+          else
+            tar -xvf app-service-preview-artifact/artifact.tar -C site-root
+          fi
+          cd site-root
           zip -r ../site.zip .
 
       - name: Azure login
@@ -96,7 +92,6 @@ jobs:
               --slot "${{ inputs.slot_name }}" \
               --src-path "site.zip" \
               --type zip \
-              --target-path "${DEPLOY_TARGET}" \
               --restart true \
               --only-show-errors
           else
@@ -105,7 +100,6 @@ jobs:
               --name "${{ secrets.AZURE_APP_SERVICE_NAME }}" \
               --src-path "site.zip" \
               --type zip \
-              --target-path "${DEPLOY_TARGET}" \
               --restart true \
               --only-show-errors
           fi
