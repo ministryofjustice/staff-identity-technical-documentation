@@ -61,26 +61,24 @@ Kudu is the App Service management site used for file operations and deployment 
 
 ### Navigate to the preview folder root
 
-1. In Kudu, open Debug Console.
-2. Choose Bash.
-3. Navigate to `/home/site/wwwroot/pr/`.
+1. In Kudu, select Tools.
+2. Select File Manager.
+3. Browse to `site`.
+4. Browse to `wwwroot`.
+5. Browse to `pr`.
 
 ### Delete stale PR folders
 
-Use one of these methods:
+Use File Manager only:
 
-- File Manager: select stale `pr/<number>` folders and delete them.
-- Bash console: remove selected folders with shell commands.
+1. In `pr`, identify the stale `pr/<number>` folders you approved for deletion.
+2. Select one folder.
+3. Select Delete.
+4. Confirm the deletion prompt.
+5. Repeat for each approved folder.
 
-If you use Bash, delete only explicit folder names.
-Do not run broad wildcard deletes unless the team has reviewed the exact command.
-
-Example safe pattern:
-
-```bash
-rm -rf /home/site/wwwroot/pr/123
-rm -rf /home/site/wwwroot/pr/456
-```
+Delete only the exact folder numbers you approved.
+Do not delete the whole `pr` folder.
 
 ### Validate after deletion
 
@@ -100,8 +98,10 @@ Check:
 
 ### Deletion fails in File Manager
 
-Try the Bash console in Kudu.
+Refresh the Kudu page and try again.
 If files are locked, retry after a short pause.
+
+If deletion still fails, ask a platform engineer to investigate App Service file locks or access restrictions.
 
 ### A deleted preview URL still works
 
@@ -116,7 +116,7 @@ Follow these guardrails every time:
 
 1. Never delete `/home/site/wwwroot` directly.
 2. Only delete specific `pr/<number>` folders.
-3. Do not run unreviewed bulk-delete commands.
+3. Use Tools -> File Manager in Kudu for all cleanup.
 4. Keep a simple audit note of what changed.
 
 ## Related runbooks
