@@ -16,7 +16,7 @@ To run this repository locally you will need the following tools.
 * Push to GitHub
 * Create Pull Request
 * Review generated site that is linked in the Pull Request
-* Obtain approval from the IDAM Team
+* Obtain approval from the <%= config[:tech_docs][:team] %> Team
 * Merge Pull Request into `main` branch
 
 ### Development

@@ -1,0 +1,30 @@
+# Signed Commits Enforcement
+
+## Overview
+
+To improve the security and integrity of our source code repositories, all commits pushed to protected branches must be cryptographically signed and verified.
+
+GitHub uses commit signatures to verify that commits were created by a trusted contributor and have not been modified after creation. Once enabled, unsigned commits will be blocked from merging into protected branches.
+
+## What This Means for You
+
+Before contributing code, you must:
+
+1. Create a signing key (GPG, SSH, or S/MIME).
+2. Add the public key to your GitHub account.
+3. Configure Git to sign commits automatically.
+4. Verify that your commits appear as **Verified** in GitHub.
+
+## Why We Are Enforcing Signed Commits
+
+Signed commits provide several security benefits:
+
+- Verify the identity of commit authors.
+- Reduce the risk of impersonation and commit spoofing.
+- Improve traceability and auditability of code changes.
+- Strengthen our software supply chain security posture.
+- Support compliance with security best practices.
+
+## Getting Started
+
+Guidance for creating signing keys and configuring Git to sign commits can be found in the [GitHub documentation](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).

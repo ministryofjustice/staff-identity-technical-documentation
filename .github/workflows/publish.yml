@@ -36,6 +36,22 @@ jobs:
           path: artifact.tar
           retention-days: 1
 
+  upload-release-to-app-service:
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/upload-preview-to-app-service.yml
+    with:
+      artifact_name: github-pages-raw
+      deployment_action: deploy
+    secrets:
+      AZURE_APP_SERVICE_NAME: ${{ secrets.AZURE_APP_SERVICE_NAME }}
+      AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
   package:
     needs: build
     runs-on: ubuntu-latest

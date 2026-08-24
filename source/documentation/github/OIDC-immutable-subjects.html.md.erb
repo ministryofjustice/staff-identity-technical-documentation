@@ -1,0 +1,171 @@
+# GitHub Actions OIDC Immutable Subject Claims
+
+## Summary
+GitHub Actions now supports an immutable OpenID Connect (OIDC) subject format that includes immutable repository and owner IDs.
+
+This format reduces subject recycling risks associated with Microsoft Entra Federated Identity Credentials (FICs) that rely on mutable repository and owner names.
+
+Microsoft recommends migrating existing GitHub Actions FICs to the immutable subject format to strengthen workload identity security and reduce the risk of unauthorized access resulting from reused repository or owner names.
+
+## Impact on Your Organization
+
+### Who Is Affected
+
+- Organizations that use GitHub Actions OIDC authentication with Microsoft Entra Federated Identity Credentials.
+- Administrators who manage App Registrations or User Assigned Managed Identities that trust GitHub Actions OIDC tokens should review existing FICs.
+
+### Platforms and Services
+
+- Microsoft Entra
+- GitHub Actions
+- GitHub.com
+
+## What Is Changing?
+
+GitHub now supports an immutable subject format.
+
+Instead of using only repository and owner names, GitHub includes:
+
+- GitHub Owner ID
+- GitHub Repository ID
+
+### Name-Based Format
+
+```text
+repo:<owner>/<repo>:ref:refs/heads/main
+```
+
+Example:
+
+```text
+repo:contoso/webapp:ref:refs/heads/main
+```
+
+### Immutable Format
+
+```text
+repo:<owner>@<owner_id>/<repo>@<repo_id>:ref:refs/heads/main
+```
+
+Example:
+
+```text
+repo:contoso@123456/webapp@987654321:ref:refs/heads/main
+```
+
+The IDs are permanent and never reused.
+
+Even if a repository is renamed, deleted, or recreated:
+
+- Owner ID remains unique.
+- Repository ID remains unique.
+- Subject values remain tied to the original repository.
+
+## What Will Happen
+
+- Existing FICs that use name-based subjects will continue to work for repositories that retain their current names and subject format.
+- FICs configured to trust only a previous name-based subject will not match tokens from repositories that use the immutable subject format.
+- Affected GitHub Actions workflows might fail to obtain Microsoft Entra tokens until the corresponding FICs are updated.
+- Existing repositories can be opted into the immutable subject format through GitHub OIDC settings.
+
+## Background: How GitHub Actions OIDC Works
+
+Many organizations no longer store Azure Service Principal secrets in GitHub.
+
+Instead:
+
+1. A GitHub Actions workflow requests an OIDC token from GitHub.
+2. Microsoft Entra validates that token.
+3. If the token matches a configured Federated Identity Credential (FIC), Entra issues an access token.
+4. The workflow can access Azure resources without storing credentials.
+
+A FIC contains a **Subject Identifier** that tells Microsoft Entra which GitHub repository and workflow context are trusted.
+
+Example:
+
+```text
+repo:contoso/webapp:ref:refs/heads/main
+```
+
+Meaning:
+
+> Trust workflows running from the `main` branch of the `contoso/webapp` repository.
+
+## The Security Problem with the Old Format
+
+The original subject format relies entirely on repository names and organization names.
+
+Example:
+
+```text
+repo:contoso/webapp:ref:refs/heads/main
+```
+
+Names are mutable:
+
+- Repositories can be renamed.
+- Organizations can be renamed.
+- Names can potentially be recycled after deletion.
+
+### Example Risk Scenario
+
+1. A FIC trusts:
+
+   ```text
+   repo:contoso/webapp:ref:refs/heads/main
+   ```
+
+2. The repository is deleted.
+
+3. A different repository is later created using the same name:
+
+   ```text
+   contoso/webapp
+   ```
+
+4. The generated OIDC subject could match the previous trusted subject.
+
+This creates what Microsoft refers to as a **subject recycling risk**.
+
+Microsoft wants trust relationships bound to a specific repository object rather than a reusable repository name.
+
+
+## Who Needs to Take Action?
+
+You should review this change if you:
+
+✅ Use GitHub Actions
+
+✅ Authenticate to Azure using OIDC
+
+✅ Have Federated Identity Credentials configured on:
+
+- App Registrations
+- Service Principals
+- User Assigned Managed Identities
+
+## What This Means for Infrastructure Teams
+
+From an Azure and GitHub administration perspective:
+
+- This is primarily a security hardening change.
+- Existing repositories are not automatically broken.
+- Existing FICs continue working while repositories emit legacy subjects.
+- Any repository switched to immutable subjects requires matching Entra FIC updates.
+- Azure deployments using GitHub OIDC should be reviewed before enabling immutable subjects broadly.
+
+## Organization-Level vs Repository-Level Configuration
+
+Immutable subject claims can be enabled at:
+
+### Repository Level
+
+Individual repositories can opt in to immutable subjects.
+
+Admins can go to Settings -> Actions -> OIDC and enable immutable subjects here.
+
+### Organization Level
+
+Organizations can centrally enable immutable subjects for repositories.
+
+Existing repositories created before 15 July 2026 remain on the legacy format until opted in or governed by organizational configuration.

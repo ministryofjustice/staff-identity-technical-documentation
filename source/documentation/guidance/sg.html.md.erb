@@ -15,16 +15,16 @@ There are four types of configuration your Application Registration may use for 
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | All MoJ Users Security Group | Anyone who has an identity within the Ministry of Justice in Entra will be able to Authenticate to your application. Any Joiners or Leavers will automatically be added or removed for you. |
 | Dynamic Security Group       | Built around pattern matching, this type of group allows you to specify automatic group assignment of Joiners and Leavers. This can be for example `Judiciary Only Group` that is setup to automatically add any users where their email address ends in `@judiciary.uk`. |
-| [IDAM Team Managed Static Security Group](#idam-team-managed-static-security-group)                 | A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application. |
+| [<%= config[:tech_docs][:team] %> Team Managed Static Security Group](#<%= config[:tech_docs][:team] %>-team-managed-static-security-group)                 | A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application. |
 | [Self Service Security Group](#self-service-security-group)                 | The ability to delegate responsibility for the management of users in the Security Group to a set of defined Owners. |
 
 ## Self Service Security Group
 
-Upon request, the IDAM Team will set up 1 or many Security Groups for you and assign 2 or more people within your team as Owners of the group. These Owners will be responsible for the management of Users and Owners assigned to the group moving forward.
+Upon request, the <%= config[:tech_docs][:team] %> Team will set up 1 or many Security Groups for you and assign 2 or more people within your team as Owners of the group. These Owners will be responsible for the management of Users and Owners assigned to the group moving forward.
 
 ### Governance
 
-The IDAM Team will monitor Governance policies on the groups created. This includes
+The <%= config[:tech_docs][:team] %> Team will monitor Governance policies on the groups created. This includes
 
 * Does the group have a minimum of 2 Owners
 * Does the group only contain Members and not Guest users
@@ -54,11 +54,11 @@ To manage your Security/M365 Groups, you will use the [Microsoft My Groups](http
 * Click `Owners`
 * Click the `Add` button to begin adding new owners
 
-## IDAM Team Managed Static Security Group
+## <%= config[:tech_docs][:team] %> Team Managed Static Security Group
 
 ### Adding a new Entra Security Group
 
-You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.
+You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the <%= config[:tech_docs][:team] %> Team to action.
 
 The link to the demand process can be found at [Technology Services New Demand Request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx)
 
@@ -69,14 +69,14 @@ You should provide the following information with the demand request.
     * 1 or more Business Owners
     * 1 or more Technical Owners
 * Name of the group
-    * Pattern should be all lowercase `<organisation>-<team>-<function-of-group>`. e.g. `eucs-idam-cmsadministrators`
-* Description on the purpose of the group (max 250 charaters)
+    * Pattern should be all lowercase `<organisation>-<team>-<function-of-group>`. e.g. `<%= config[:tech_docs][:department] %>-<%= config[:tech_docs][:team] %>-cmsadministrators`
+* Description on the purpose of the group (max 250 characters)
 
 > It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.
 
 ### Adding/Removing new users to a Entra Security Group
 
-You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.
+You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the <%= config[:tech_docs][:team] %> Team to action.
 
 The link to the demand process can be found at [Technology Services New Demand Request](https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx)
 
@@ -88,28 +88,28 @@ You will need to provide the following details
 | Group Name  | Group name in Entra ID to add users too.            |
 | Environment | Is this for the Entra DEV, NLE or LIVE environment. |
 
-This will then be assigned to the IDAM team to schedule and communicate when we will complete the request.
+This will then be assigned to the <%= config[:tech_docs][:team] %> team to schedule and communicate when we will complete the request.
 
 ## Send Security Groups in user Access token claim
 
 Optionally, we can enable your SSO Application Registration to send a list of Security Group GUIDs that the user belongs too.
 
-This can be benefitial for modern applications that require levels of authorisation within their application.
+This can be beneficial for modern applications that require levels of authorisation within their application.
 
 For example, you could create 3 Security Groups as shown below and when a user logs in, the GUID will be passed down to the application. From here you can setup your application to assign the role appropriate for their group.
 
 | Security Group Name        | GUID                                      | Description                                                         |
 | -------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| eucs-idamn-cms-admins      | a000000bc-00d0-00e0-00f0-00000000000      | Users assigned to this group have full admin access to application  |
-| eucs-idam-cms-contributors | a000000bc-00d0-00e0-00f0-00000000000     | Users assigned to this group have contributor access to application |
-| eucs-idam-cms-readers      | a000000bc-00d0-00e0-00f0-00000000000    | Users assigned to this group have read only access to application   |
+| <%= config[:tech_docs][:department] %>-<%= config[:tech_docs][:team] %>-cms-admins      | a000000bc-00d0-00e0-00f0-00000000000      | Users assigned to this group have full admin access to application  |
+| <%= config[:tech_docs][:department] %>-<%= config[:tech_docs][:team] %>-cms-contributors | a000000bc-00d0-00e0-00f0-00000000000     | Users assigned to this group have contributor access to application |
+| <%= config[:tech_docs][:department] %>-<%= config[:tech_docs][:team] %>-cms-readers      | a000000bc-00d0-00e0-00f0-00000000000    | Users assigned to this group have read only access to application   |
 
 Instead of creating more resources to manage users and groups, you can use the Self Service Security Groups within Entra ID to manage users, and the groups they belong too via the [Microsoft My Groups interface](https://myaccount.microsoft.com/groups/).
 
-Once the IDAM Team have setup the Security Group for you, we will pass the GUIDs to you and enable this functionality for your application.
+Once the <%= config[:tech_docs][:team] %> Team have setup the Security Group for you, we will pass the GUIDs to you and enable this functionality for your application.
 
 For more information on what information exists within the access token, see this Microsoft article [https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference)
 
 ## Resources
 
-* [EUCS IDAM Team Shared Inbox](mailto:idam@justice.gov.uk)
+* [<%= config[:tech_docs][:department] %> <%= config[:tech_docs][:team] %> Team Shared Inbox](mailto:<%= config[:tech_docs][:email] %>)

@@ -1,0 +1,51 @@
+# Check Destructive Terraform Warnings in Pull Requests
+
+## Overview
+
+Use this guide when a pull request shows a destructive Terraform warning.
+A destructive change means Terraform plans to delete one or more resources.
+You must confirm each delete is intentional before approval.
+
+## Before you start
+
+- Confirm you can view pull request checks and workflow summaries.
+- Confirm you understand the intended destructive changes.
+
+## Check the warning in the pull request
+
+1. Open the pull request checks.
+2. Open the Terraform plan summary.
+3. Look for the destructive warning block.
+4. Record how many delete actions were detected.
+
+## Decide whether deletions are expected
+
+1. Match planned deletes to the intended change scope.
+2. Confirm removed configuration entries are deliberate.
+3. Check whether project owners are happy with the impact of the deletions.
+
+If any deletion is unclear, review and remediate, prior for asking for approval.
+
+## How to progress a PR with destructive changes
+
+- If deletes are expected: continue review with normal controls.
+- If deletes are not expected: review and remediate the plan prior to requesting approvals.
+- If this is an urgent request: accept risk of unplanned destructive changes.
+
+## Understand what the automation now does
+
+The pull request workflow in `.github/workflows/workflow_pull_request.yml` now:
+- parses Terraform plan JSON (structured plan data) using `jq` (a command-line JSON processor)
+- counts delete-only actions
+- exposes `has_destructive` and `delete_count` outputs
+- prints an explicit warning when deletes are present
+
+## Outcomes
+
+- Reviewers can identify high-risk changes earlier.
+- Teams can challenge unintended resource deletions before merge.
+- Pull request decisions become clearer for technical and non-technical stakeholders.
+
+## Get support
+
+If you cannot confirm deletion intent, contact the DISO IDAM team at IDAM@justice.gov.uk or post in the Slack channel (#staff-identity-authentication-services)[https://moj.enterprise.slack.com/archives/C04AFS7TV7S]
