@@ -12,7 +12,7 @@
 
     <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html">
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/OIDC-immutable-subjects.html">
       <link rel="icon" sizes="48x48" href="../../assets/govuk/assets/rebrand/images/favicon.ico">
       <link rel="icon" sizes="any" href="../../assets/govuk/assets/rebrand/images/favicon.svg" type="image/svg+xml">
       <link rel="mask-icon" href="../../assets/govuk/assets/rebrand/images/govuk-icon-mask.svg" color="#0b0c0c">
@@ -24,12 +24,12 @@
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/assets/govuk/assets/rebrand/images/govuk-opengraph-image.png" />
       <meta name="twitter:title" content="Digital Infrastructure &amp; Security Operations - Identity &amp; Access Management End User Guidance" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/OIDC-immutable-subjects.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/assets/govuk/assets/rebrand/images/govuk-opengraph-image.png" />
       <meta property="og:site_name" content="Digital Infrastructure &amp; Security Operations - Identity &amp; Access Management End User Guidance" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/OIDC-immutable-subjects.html" />
 
     
   </head>
@@ -105,43 +105,63 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#entra-security-m365-group"><span>Entra Security/M365 Group</span></a>
+    <a href="#github-actions-oidc-immutable-subject-claims"><span>GitHub Actions OIDC Immutable Subject Claims</span></a>
     <ul>
       <li>
-        <a href="#self-service-security-group"><span>Self Service Security Group</span></a>
+        <a href="#summary"><span>Summary</span></a>
+      </li>
+      <li>
+        <a href="#impact-on-your-organization"><span>Impact on Your Organization</span></a>
         <ul>
           <li>
-            <a href="#governance"><span>Governance</span></a>
+            <a href="#who-is-affected"><span>Who Is Affected</span></a>
           </li>
           <li>
-            <a href="#how-to-manage-your-security-m365-group"><span>How to manage your Security/M365 Group</span></a>
-            <ul>
-              <li>
-                <a href="#adding-removing-users"><span>Adding/Removing Users</span></a>
-              </li>
-              <li>
-                <a href="#adding-removing-owners"><span>Adding/Removing Owners</span></a>
-              </li>
-            </ul>
+            <a href="#platforms-and-services"><span>Platforms and Services</span></a>
           </li>
         </ul>
       </li>
       <li>
-        <a href="#idam-team-managed-static-security-group"><span>IDAM Team Managed Static Security Group</span></a>
+        <a href="#what-is-changing"><span>What Is Changing?</span></a>
         <ul>
           <li>
-            <a href="#adding-a-new-entra-security-group"><span>Adding a new Entra Security Group</span></a>
+            <a href="#name-based-format"><span>Name-Based Format</span></a>
           </li>
           <li>
-            <a href="#adding-removing-new-users-to-a-entra-security-group"><span>Adding/Removing new users to a Entra Security Group</span></a>
+            <a href="#immutable-format"><span>Immutable Format</span></a>
           </li>
         </ul>
       </li>
       <li>
-        <a href="#send-security-groups-in-user-access-token-claim"><span>Send Security Groups in user Access token claim</span></a>
+        <a href="#what-will-happen"><span>What Will Happen</span></a>
       </li>
       <li>
-        <a href="#resources"><span>Resources</span></a>
+        <a href="#background-how-github-actions-oidc-works"><span>Background: How GitHub Actions OIDC Works</span></a>
+      </li>
+      <li>
+        <a href="#the-security-problem-with-the-old-format"><span>The Security Problem with the Old Format</span></a>
+        <ul>
+          <li>
+            <a href="#example-risk-scenario"><span>Example Risk Scenario</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#who-needs-to-take-action"><span>Who Needs to Take Action?</span></a>
+      </li>
+      <li>
+        <a href="#what-this-means-for-infrastructure-teams"><span>What This Means for Infrastructure Teams</span></a>
+      </li>
+      <li>
+        <a href="#organization-level-vs-repository-level-configuration"><span>Organization-Level vs Repository-Level Configuration</span></a>
+        <ul>
+          <li>
+            <a href="#repository-level"><span>Repository Level</span></a>
+          </li>
+          <li>
+            <a href="#organization-level"><span>Organization Level</span></a>
+          </li>
+        </ul>
       </li>
     </ul>
   </li>
@@ -154,154 +174,141 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="entra-security-m365-group">Entra Security/M365 Group</h1>
-<p>Entra Security Groups have the following uses.</p>
+            <h1 id="github-actions-oidc-immutable-subject-claims">GitHub Actions OIDC Immutable Subject Claims</h1>
+<h2 id="summary">Summary</h2>
+<p>GitHub Actions now supports an immutable OpenID Connect (OIDC) subject format that includes immutable repository and owner IDs.</p>
+<p>This format reduces subject recycling risks associated with Microsoft Entra Federated Identity Credentials (FICs) that rely on mutable repository and owner names.</p>
+<p>Microsoft recommends migrating existing GitHub Actions FICs to the immutable subject format to strengthen workload identity security and reduce the risk of unauthorized access resulting from reused repository or owner names.</p>
+<h2 id="impact-on-your-organization">Impact on Your Organization</h2>
+<h3 id="who-is-affected">Who Is Affected</h3>
 
 <ul>
-<li>Allow you to control who has access to authenticate with your integrated application</li>
-<li>Classify groups of users to manage Roles and Permissions within an integrated application (see <a href="#send-security-groups-in-user-access-token-claim">Send Security Groups user belongs to in the authentication token</a>)</li>
+<li>Organizations that use GitHub Actions OIDC authentication with Microsoft Entra Federated Identity Credentials.</li>
+<li>Administrators who manage App Registrations or User Assigned Managed Identities that trust GitHub Actions OIDC tokens should review existing FICs.</li>
 </ul>
-<p>Entra Security Groups are different from Azure Groups which provide permissions to resources within Azure.</p>
-<p>A user can belong to 1 or many groups at one time.</p>
-<p>There are four types of configuration your Application Registration may use for Entra Security Groups.</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Name</th>
-<th>Description</th>
-</tr><tr>
-<td>All MoJ Users Security Group</td>
-<td>Anyone who has an identity within the Ministry of Justice in Entra will be able to Authenticate to your application. Any Joiners or Leavers will automatically be added or removed for you.</td>
-</tr><tr>
-<td>Dynamic Security Group</td>
-<td>Built around pattern matching, this type of group allows you to specify automatic group assignment of Joiners and Leavers. This can be for example <code>Judiciary Only Group</code> that is setup to automatically add any users where their email address ends in <code>@judiciary.uk</code>.</td>
-</tr><tr>
-<td><a href="#IDAM-team-managed-static-security-group">IDAM Team Managed Static Security Group</a></td>
-<td>A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application.</td>
-</tr><tr>
-<td><a href="#self-service-security-group">Self Service Security Group</a></td>
-<td>The ability to delegate responsibility for the management of users in the Security Group to a set of defined Owners.</td>
-</tr>
-        </table>
-      </div><h2 id="self-service-security-group">Self Service Security Group</h2>
-<p>Upon request, the IDAM Team will set up 1 or many Security Groups for you and assign 2 or more people within your team as Owners of the group. These Owners will be responsible for the management of Users and Owners assigned to the group moving forward.</p>
-<h3 id="governance">Governance</h3>
-<p>The IDAM Team will monitor Governance policies on the groups created. This includes</p>
+<h3 id="platforms-and-services">Platforms and Services</h3>
 
 <ul>
-<li>Does the group have a minimum of 2 Owners</li>
-<li>Does the group only contain Members and not Guest users</li>
-<li>After 365 days, check if the group is still required</li>
+<li>Microsoft Entra</li>
+<li>GitHub Actions</li>
+<li>GitHub.com</li>
 </ul>
-<p>We will use the Owners of the group for any automated notifications for these policies where they are not met. This is to ensure groups are maintained and secure over time.</p>
-<h3 id="how-to-manage-your-security-m365-group">How to manage your Security/M365 Group</h3>
-<p>To manage your Security/M365 Groups, you will use the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> interface.</p>
-<h4 id="adding-removing-users">Adding/Removing Users</h4>
+<h2 id="what-is-changing">What Is Changing?</h2>
+<p>GitHub now supports an immutable subject format.</p>
+<p>Instead of using only repository and owner names, GitHub includes:</p>
 
 <ul>
-<li>Go to the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> web site</li>
-<li>Sign in with your Justice account</li>
-<li>Click <code>Groups I own</code></li>
-<li>Click on the Group they wish to manage</li>
-<li>Click <code>Members</code></li>
-<li>Click the <code>Add</code> button to begin adding new members</li>
+<li>GitHub Owner ID</li>
+<li>GitHub Repository ID</li>
 </ul>
-<h4 id="adding-removing-owners">Adding/Removing Owners</h4>
+<h3 id="name-based-format">Name-Based Format</h3>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>repo:&lt;owner&gt;/&lt;repo&gt;:ref:refs/heads/main
+</code></pre></div><p>Example:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>repo:contoso/webapp:ref:refs/heads/main
+</code></pre></div><h3 id="immutable-format">Immutable Format</h3>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>repo:&lt;owner&gt;@&lt;owner_id&gt;/&lt;repo&gt;@&lt;repo_id&gt;:ref:refs/heads/main
+</code></pre></div><p>Example:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>repo:contoso@123456/webapp@987654321:ref:refs/heads/main
+</code></pre></div><p>The IDs are permanent and never reused.</p>
+<p>Even if a repository is renamed, deleted, or recreated:</p>
 
 <ul>
-<li>Go to the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> web site</li>
-<li>Sign in with your Justice account</li>
-<li>Click <code>Groups I own</code></li>
-<li>Click on the Group they wish to manage</li>
-<li>Click <code>Owners</code></li>
-<li>Click the <code>Add</code> button to begin adding new owners</li>
+<li>Owner ID remains unique.</li>
+<li>Repository ID remains unique.</li>
+<li>Subject values remain tied to the original repository.</li>
 </ul>
-<h2 id="idam-team-managed-static-security-group">IDAM Team Managed Static Security Group</h2>
-<h3 id="adding-a-new-entra-security-group">Adding a new Entra Security Group</h3>
-<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
-<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
-<p>You should provide the following information with the demand request.</p>
+<h2 id="what-will-happen">What Will Happen</h2>
 
 <ul>
-<li>Who will be the Group Owners
-
-<ul>
-<li>minimum of 2 people, these people will be responsible for sign off of adding and removing users in the future</li>
-<li>1 or more Business Owners</li>
-<li>1 or more Technical Owners</li>
-</ul></li>
-<li>Name of the group
-
-<ul>
-<li>Pattern should be all lowercase <code>&lt;organisation&gt;-&lt;team&gt;-&lt;function-of-group&gt;</code>. e.g. <code>DISO-IDAM-cmsadministrators</code></li>
-</ul></li>
-<li>Description on the purpose of the group (max 250 characters)</li>
+<li>Existing FICs that use name-based subjects will continue to work for repositories that retain their current names and subject format.</li>
+<li>FICs configured to trust only a previous name-based subject will not match tokens from repositories that use the immutable subject format.</li>
+<li>Affected GitHub Actions workflows might fail to obtain Microsoft Entra tokens until the corresponding FICs are updated.</li>
+<li>Existing repositories can be opted into the immutable subject format through GitHub OIDC settings.</li>
 </ul>
+<h2 id="background-how-github-actions-oidc-works">Background: How GitHub Actions OIDC Works</h2>
+<p>Many organizations no longer store Azure Service Principal secrets in GitHub.</p>
+<p>Instead:</p>
+
+<ol>
+<li>A GitHub Actions workflow requests an OIDC token from GitHub.</li>
+<li>Microsoft Entra validates that token.</li>
+<li>If the token matches a configured Federated Identity Credential (FIC), Entra issues an access token.</li>
+<li>The workflow can access Azure resources without storing credentials.</li>
+</ol>
+<p>A FIC contains a <strong>Subject Identifier</strong> that tells Microsoft Entra which GitHub repository and workflow context are trusted.</p>
+<p>Example:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>repo:contoso/webapp:ref:refs/heads/main
+</code></pre></div><p>Meaning:</p>
 
 <blockquote>
-<p>It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.</p>
+<p>Trust workflows running from the <code>main</code> branch of the <code>contoso/webapp</code> repository.</p>
 </blockquote>
-<h3 id="adding-removing-new-users-to-a-entra-security-group">Adding/Removing new users to a Entra Security Group</h3>
-<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
-<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
-<p>You will need to provide the following details</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Field</th>
-<th>Description</th>
-</tr><tr>
-<td>Users</td>
-<td>List of users email addresses to add to the group.</td>
-</tr><tr>
-<td>Group Name</td>
-<td>Group name in Entra ID to add users too.</td>
-</tr><tr>
-<td>Environment</td>
-<td>Is this for the Entra DEV, NLE or LIVE environment.</td>
-</tr>
-        </table>
-      </div><p>This will then be assigned to the IDAM team to schedule and communicate when we will complete the request.</p>
-<h2 id="send-security-groups-in-user-access-token-claim">Send Security Groups in user Access token claim</h2>
-<p>Optionally, we can enable your SSO Application Registration to send a list of Security Group GUIDs that the user belongs too.</p>
-<p>This can be beneficial for modern applications that require levels of authorisation within their application.</p>
-<p>For example, you could create 3 Security Groups as shown below and when a user logs in, the GUID will be passed down to the application. From here you can setup your application to assign the role appropriate for their group.</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Security Group Name</th>
-<th>GUID</th>
-<th>Description</th>
-</tr><tr>
-<td>DISO-IDAM-cms-admins</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have full admin access to application</td>
-</tr><tr>
-<td>DISO-IDAM-cms-contributors</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have contributor access to application</td>
-</tr><tr>
-<td>DISO-IDAM-cms-readers</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have read only access to application</td>
-</tr>
-        </table>
-      </div><p>Instead of creating more resources to manage users and groups, you can use the Self Service Security Groups within Entra ID to manage users, and the groups they belong too via the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups interface</a>.</p>
-<p>Once the IDAM Team have setup the Security Group for you, we will pass the GUIDs to you and enable this functionality for your application.</p>
-<p>For more information on what information exists within the access token, see this Microsoft article <a href="https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference">https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference</a></p>
-<h2 id="resources">Resources</h2>
+<h2 id="the-security-problem-with-the-old-format">The Security Problem with the Old Format</h2>
+<p>The original subject format relies entirely on repository names and organization names.</p>
+<p>Example:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>repo:contoso/webapp:ref:refs/heads/main
+</code></pre></div><p>Names are mutable:</p>
 
 <ul>
-<li><a href="mailto:IDAM@justice.gov.uk">DISO IDAM Team Shared Inbox</a></li>
+<li>Repositories can be renamed.</li>
+<li>Organizations can be renamed.</li>
+<li>Names can potentially be recycled after deletion.</li>
 </ul>
+<h3 id="example-risk-scenario">Example Risk Scenario</h3>
+
+<ol>
+<li>A FIC trusts:</li>
+</ol>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>   repo:contoso/webapp:ref:refs/heads/main
+</code></pre></div>
+<ol>
+<li><p>The repository is deleted.</p></li>
+<li><p>A different repository is later created using the same name:</p></li>
+</ol>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>   contoso/webapp
+</code></pre></div>
+<ol>
+<li>The generated OIDC subject could match the previous trusted subject.</li>
+</ol>
+<p>This creates what Microsoft refers to as a <strong>subject recycling risk</strong>.</p>
+<p>Microsoft wants trust relationships bound to a specific repository object rather than a reusable repository name.</p>
+<h2 id="who-needs-to-take-action">Who Needs to Take Action?</h2>
+<p>You should review this change if you:</p>
+<p>✅ Use GitHub Actions</p>
+<p>✅ Authenticate to Azure using OIDC</p>
+<p>✅ Have Federated Identity Credentials configured on:</p>
+
+<ul>
+<li>App Registrations</li>
+<li>Service Principals</li>
+<li>User Assigned Managed Identities</li>
+</ul>
+<h2 id="what-this-means-for-infrastructure-teams">What This Means for Infrastructure Teams</h2>
+<p>From an Azure and GitHub administration perspective:</p>
+
+<ul>
+<li>This is primarily a security hardening change.</li>
+<li>Existing repositories are not automatically broken.</li>
+<li>Existing FICs continue working while repositories emit legacy subjects.</li>
+<li>Any repository switched to immutable subjects requires matching Entra FIC updates.</li>
+<li>Azure deployments using GitHub OIDC should be reviewed before enabling immutable subjects broadly.</li>
+</ul>
+<h2 id="organization-level-vs-repository-level-configuration">Organization-Level vs Repository-Level Configuration</h2>
+<p>Immutable subject claims can be enabled at:</p>
+<h3 id="repository-level">Repository Level</h3>
+<p>Individual repositories can opt in to immutable subjects.</p>
+<p>Admins can go to Settings -&gt; Actions -&gt; OIDC and enable immutable subjects here.</p>
+<h3 id="organization-level">Organization Level</h3>
+<p>Organizations can centrally enable immutable subjects for repositories.</p>
+<p>Existing repositories created before 15 July 2026 remain on the legacy format until opted in or governed by organizational configuration.</p>
 
             
           </main>
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/sg.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fsg.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/github/OIDC-immutable-subjects.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fgithub%2FOIDC-immutable-subjects.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
               </ul>
           </aside>

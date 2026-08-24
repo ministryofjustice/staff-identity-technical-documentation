@@ -12,7 +12,7 @@
 
     <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html">
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/codeowners-enforcement.html">
       <link rel="icon" sizes="48x48" href="../../assets/govuk/assets/rebrand/images/favicon.ico">
       <link rel="icon" sizes="any" href="../../assets/govuk/assets/rebrand/images/favicon.svg" type="image/svg+xml">
       <link rel="mask-icon" href="../../assets/govuk/assets/rebrand/images/govuk-icon-mask.svg" color="#0b0c0c">
@@ -24,12 +24,12 @@
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/assets/govuk/assets/rebrand/images/govuk-opengraph-image.png" />
       <meta name="twitter:title" content="Digital Infrastructure &amp; Security Operations - Identity &amp; Access Management End User Guidance" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/codeowners-enforcement.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/assets/govuk/assets/rebrand/images/govuk-opengraph-image.png" />
       <meta property="og:site_name" content="Digital Infrastructure &amp; Security Operations - Identity &amp; Access Management End User Guidance" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/codeowners-enforcement.html" />
 
     
   </head>
@@ -105,43 +105,39 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#entra-security-m365-group"><span>Entra Security/M365 Group</span></a>
+    <a href="#enforce-codeowners-for-terraform-environments"><span>Enforce CODEOWNERS for Terraform Environments</span></a>
     <ul>
       <li>
-        <a href="#self-service-security-group"><span>Self Service Security Group</span></a>
+        <a href="#summary"><span>Summary</span></a>
+      </li>
+      <li>
+        <a href="#why-this-check-exists"><span>Why this check exists</span></a>
+      </li>
+      <li>
+        <a href="#how-the-workflow-runs"><span>How the workflow runs</span></a>
+      </li>
+      <li>
+        <a href="#what-the-script-checks"><span>What the script checks</span></a>
+      </li>
+      <li>
+        <a href="#reading-the-output"><span>Reading the output</span></a>
+      </li>
+      <li>
+        <a href="#fixing-a-failure"><span>Fixing a failure</span></a>
         <ul>
           <li>
-            <a href="#governance"><span>Governance</span></a>
+            <a href="#step-1-open-the-codeowners-file"><span>Step 1 — Open the CODEOWNERS file</span></a>
           </li>
           <li>
-            <a href="#how-to-manage-your-security-m365-group"><span>How to manage your Security/M365 Group</span></a>
-            <ul>
-              <li>
-                <a href="#adding-removing-users"><span>Adding/Removing Users</span></a>
-              </li>
-              <li>
-                <a href="#adding-removing-owners"><span>Adding/Removing Owners</span></a>
-              </li>
-            </ul>
+            <a href="#step-2-add-an-entry-for-your-project"><span>Step 2 — Add an entry for your project</span></a>
+          </li>
+          <li>
+            <a href="#step-3-commit-and-push-the-change"><span>Step 3 — Commit and push the change</span></a>
+          </li>
+          <li>
+            <a href="#step-4-re-run-the-check"><span>Step 4 — Re-run the check</span></a>
           </li>
         </ul>
-      </li>
-      <li>
-        <a href="#idam-team-managed-static-security-group"><span>IDAM Team Managed Static Security Group</span></a>
-        <ul>
-          <li>
-            <a href="#adding-a-new-entra-security-group"><span>Adding a new Entra Security Group</span></a>
-          </li>
-          <li>
-            <a href="#adding-removing-new-users-to-a-entra-security-group"><span>Adding/Removing new users to a Entra Security Group</span></a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#send-security-groups-in-user-access-token-claim"><span>Send Security Groups in user Access token claim</span></a>
-      </li>
-      <li>
-        <a href="#resources"><span>Resources</span></a>
       </li>
     </ul>
   </li>
@@ -154,154 +150,72 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="entra-security-m365-group">Entra Security/M365 Group</h1>
-<p>Entra Security Groups have the following uses.</p>
-
-<ul>
-<li>Allow you to control who has access to authenticate with your integrated application</li>
-<li>Classify groups of users to manage Roles and Permissions within an integrated application (see <a href="#send-security-groups-in-user-access-token-claim">Send Security Groups user belongs to in the authentication token</a>)</li>
-</ul>
-<p>Entra Security Groups are different from Azure Groups which provide permissions to resources within Azure.</p>
-<p>A user can belong to 1 or many groups at one time.</p>
-<p>There are four types of configuration your Application Registration may use for Entra Security Groups.</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Name</th>
-<th>Description</th>
-</tr><tr>
-<td>All MoJ Users Security Group</td>
-<td>Anyone who has an identity within the Ministry of Justice in Entra will be able to Authenticate to your application. Any Joiners or Leavers will automatically be added or removed for you.</td>
-</tr><tr>
-<td>Dynamic Security Group</td>
-<td>Built around pattern matching, this type of group allows you to specify automatic group assignment of Joiners and Leavers. This can be for example <code>Judiciary Only Group</code> that is setup to automatically add any users where their email address ends in <code>@judiciary.uk</code>.</td>
-</tr><tr>
-<td><a href="#IDAM-team-managed-static-security-group">IDAM Team Managed Static Security Group</a></td>
-<td>A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application.</td>
-</tr><tr>
-<td><a href="#self-service-security-group">Self Service Security Group</a></td>
-<td>The ability to delegate responsibility for the management of users in the Security Group to a set of defined Owners.</td>
-</tr>
-        </table>
-      </div><h2 id="self-service-security-group">Self Service Security Group</h2>
-<p>Upon request, the IDAM Team will set up 1 or many Security Groups for you and assign 2 or more people within your team as Owners of the group. These Owners will be responsible for the management of Users and Owners assigned to the group moving forward.</p>
-<h3 id="governance">Governance</h3>
-<p>The IDAM Team will monitor Governance policies on the groups created. This includes</p>
-
-<ul>
-<li>Does the group have a minimum of 2 Owners</li>
-<li>Does the group only contain Members and not Guest users</li>
-<li>After 365 days, check if the group is still required</li>
-</ul>
-<p>We will use the Owners of the group for any automated notifications for these policies where they are not met. This is to ensure groups are maintained and secure over time.</p>
-<h3 id="how-to-manage-your-security-m365-group">How to manage your Security/M365 Group</h3>
-<p>To manage your Security/M365 Groups, you will use the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> interface.</p>
-<h4 id="adding-removing-users">Adding/Removing Users</h4>
-
-<ul>
-<li>Go to the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> web site</li>
-<li>Sign in with your Justice account</li>
-<li>Click <code>Groups I own</code></li>
-<li>Click on the Group they wish to manage</li>
-<li>Click <code>Members</code></li>
-<li>Click the <code>Add</code> button to begin adding new members</li>
-</ul>
-<h4 id="adding-removing-owners">Adding/Removing Owners</h4>
-
-<ul>
-<li>Go to the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> web site</li>
-<li>Sign in with your Justice account</li>
-<li>Click <code>Groups I own</code></li>
-<li>Click on the Group they wish to manage</li>
-<li>Click <code>Owners</code></li>
-<li>Click the <code>Add</code> button to begin adding new owners</li>
-</ul>
-<h2 id="idam-team-managed-static-security-group">IDAM Team Managed Static Security Group</h2>
-<h3 id="adding-a-new-entra-security-group">Adding a new Entra Security Group</h3>
-<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
-<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
-<p>You should provide the following information with the demand request.</p>
-
-<ul>
-<li>Who will be the Group Owners
-
-<ul>
-<li>minimum of 2 people, these people will be responsible for sign off of adding and removing users in the future</li>
-<li>1 or more Business Owners</li>
-<li>1 or more Technical Owners</li>
-</ul></li>
-<li>Name of the group
-
-<ul>
-<li>Pattern should be all lowercase <code>&lt;organisation&gt;-&lt;team&gt;-&lt;function-of-group&gt;</code>. e.g. <code>DISO-IDAM-cmsadministrators</code></li>
-</ul></li>
-<li>Description on the purpose of the group (max 250 characters)</li>
-</ul>
+            <h1 id="enforce-codeowners-for-terraform-environments">Enforce CODEOWNERS for Terraform Environments</h1>
+<h2 id="summary">Summary</h2>
+<p>The <code>Enforce CODEOWNERS</code> GitHub Actions job checks that every changed Terraform (an infrastructure-as-code tool) environment project has an owner listed in <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners">CODEOWNERS</a> (a GitHub file that assigns mandatory reviewers to specific paths). The job fails if it finds a changed project with no matching CODEOWNERS entry.</p>
 
 <blockquote>
-<p>It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.</p>
+<p><strong>Mandatory control:</strong> every Terraform project under <code>terraform/envs/&lt;environment&gt;/&lt;project&gt;</code> must have a CODEOWNERS entry. The pipeline blocks the job until you add one.</p>
 </blockquote>
-<h3 id="adding-removing-new-users-to-a-entra-security-group">Adding/Removing new users to a Entra Security Group</h3>
-<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
-<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
-<p>You will need to provide the following details</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Field</th>
-<th>Description</th>
-</tr><tr>
-<td>Users</td>
-<td>List of users email addresses to add to the group.</td>
-</tr><tr>
-<td>Group Name</td>
-<td>Group name in Entra ID to add users too.</td>
-</tr><tr>
-<td>Environment</td>
-<td>Is this for the Entra DEV, NLE or LIVE environment.</td>
-</tr>
-        </table>
-      </div><p>This will then be assigned to the IDAM team to schedule and communicate when we will complete the request.</p>
-<h2 id="send-security-groups-in-user-access-token-claim">Send Security Groups in user Access token claim</h2>
-<p>Optionally, we can enable your SSO Application Registration to send a list of Security Group GUIDs that the user belongs too.</p>
-<p>This can be beneficial for modern applications that require levels of authorisation within their application.</p>
-<p>For example, you could create 3 Security Groups as shown below and when a user logs in, the GUID will be passed down to the application. From here you can setup your application to assign the role appropriate for their group.</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Security Group Name</th>
-<th>GUID</th>
-<th>Description</th>
-</tr><tr>
-<td>DISO-IDAM-cms-admins</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have full admin access to application</td>
-</tr><tr>
-<td>DISO-IDAM-cms-contributors</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have contributor access to application</td>
-</tr><tr>
-<td>DISO-IDAM-cms-readers</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have read only access to application</td>
-</tr>
-        </table>
-      </div><p>Instead of creating more resources to manage users and groups, you can use the Self Service Security Groups within Entra ID to manage users, and the groups they belong too via the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups interface</a>.</p>
-<p>Once the IDAM Team have setup the Security Group for you, we will pass the GUIDs to you and enable this functionality for your application.</p>
-<p>For more information on what information exists within the access token, see this Microsoft article <a href="https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference">https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference</a></p>
-<h2 id="resources">Resources</h2>
+<h2 id="why-this-check-exists">Why this check exists</h2>
+<p>Terraform environment projects must have a named owner. An owner reviews and approves changes before they merge. Without a CODEOWNERS entry, GitHub cannot enforce mandatory review for that project, so unowned infrastructure changes could merge unreviewed.</p>
+<h2 id="how-the-workflow-runs">How the workflow runs</h2>
+<p>The <code>codeowners</code> job runs the <code>enforce_code_owners.sh</code> script on every push:</p>
+<div class="highlight"><pre class="highlight yaml" tabindex="0"><code><span class="na">codeowners</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Enforce</span><span class="nv"> </span><span class="s">CODEOWNERS"</span>
+  <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Checkout Code</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0</span> <span class="c1"># v7.0.0</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">fetch-depth</span><span class="pi">:</span> <span class="m">0</span>
 
-<ul>
-<li><a href="mailto:IDAM@justice.gov.uk">DISO IDAM Team Shared Inbox</a></li>
-</ul>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Enforce CODEOWNERS</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">bash scripts/pipeline/Enforce-Code-Owners/enforce_code_owners.sh</span>
+</code></pre></div><h2 id="what-the-script-checks">What the script checks</h2>
+<p><code>enforce_code_owners.sh</code> runs these steps in order:</p>
+
+<ol>
+<li><strong>Locate the CODEOWNERS file.</strong> It resolves the repository root and looks for <code>.github/CODEOWNERS</code>. It exits with an error if the file is missing.</li>
+<li><strong>Build a list of relevant CODEOWNERS patterns.</strong> It reads each line of CODEOWNERS, skips blank lines and comments, and keeps only patterns that start with <code>terraform/envs/</code>.</li>
+<li><strong>Find changed Terraform projects.</strong> It reads the changed files from <code>git diff --name-only HEAD^ HEAD</code> and filters for paths that start with <code>terraform/envs/</code>.</li>
+<li><strong>Extract project keys.</strong> For each changed file, it splits the path into segments and builds a project key in the form <code>terraform/envs/&lt;environment&gt;/&lt;project&gt;</code>. It keeps only unique keys, so a project with several changed files is checked once.</li>
+<li><strong>Match each project against CODEOWNERS.</strong> It compares each project key against the CODEOWNERS patterns using bash glob matching, so wildcard patterns in CODEOWNERS work as expected.</li>
+<li><strong>Report the result.</strong> If a project has no matching pattern, the script prints an error and adds it to a list of unowned projects. If that list is not empty at the end, the script exits with status <code>1</code> and fails the job.</li>
+</ol>
+<h2 id="reading-the-output">Reading the output</h2>
+<p>A passing run looks like this:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>Changed files:
+terraform/envs/live/example-project/main.tf
+--------------------
+Terraform file confirmed: terraform/envs/live/example-project/main.tf
+--------------------
+Changed projects: terraform/envs/live/example-project
+--------------------
+All changed projects are listed in CODEOWNERS.
+</code></pre></div><p>A failing run adds an error line and exits with a non-zero status:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>Error: terraform/envs/live/example-project is not listed in /path/to/.github/CODEOWNERS
+Projects not in CODEOWNERS: terraform/envs/live/example-project
+</code></pre></div><h2 id="fixing-a-failure">Fixing a failure</h2>
+<h3 id="step-1-open-the-codeowners-file">Step 1 — Open the CODEOWNERS file</h3>
+<p>Open <code>.github/CODEOWNERS</code> in the repository root.</p>
+<h3 id="step-2-add-an-entry-for-your-project">Step 2 — Add an entry for your project</h3>
+<p>Add a line for your project, for example:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>terraform/envs/live/example-project/ @your-team
+</code></pre></div><h3 id="step-3-commit-and-push-the-change">Step 3 — Commit and push the change</h3>
+<div class="highlight"><pre class="highlight shell" tabindex="0"><code>git add .github/CODEOWNERS
+git commit <span class="nt">-S</span> <span class="nt">-m</span> <span class="s2">"chore: add CODEOWNERS entry for example-project"</span>
+git push
+</code></pre></div><h3 id="step-4-re-run-the-check">Step 4 — Re-run the check</h3>
+<p>The <code>codeowners</code> job re-runs automatically and should now pass.</p>
 
             
           </main>
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/sg.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fsg.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/github/codeowners-enforcement.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fgithub%2Fcodeowners-enforcement.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
               </ul>
           </aside>

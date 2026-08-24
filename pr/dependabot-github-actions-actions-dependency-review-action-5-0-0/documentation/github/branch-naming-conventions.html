@@ -12,7 +12,7 @@
 
     <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html">
+    <link rel="canonical" href="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/branch-naming-conventions.html">
       <link rel="icon" sizes="48x48" href="../../assets/govuk/assets/rebrand/images/favicon.ico">
       <link rel="icon" sizes="any" href="../../assets/govuk/assets/rebrand/images/favicon.svg" type="image/svg+xml">
       <link rel="mask-icon" href="../../assets/govuk/assets/rebrand/images/govuk-icon-mask.svg" color="#0b0c0c">
@@ -24,12 +24,12 @@
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/assets/govuk/assets/rebrand/images/govuk-opengraph-image.png" />
       <meta name="twitter:title" content="Digital Infrastructure &amp; Security Operations - Identity &amp; Access Management End User Guidance" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/branch-naming-conventions.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/assets/govuk/assets/rebrand/images/govuk-opengraph-image.png" />
       <meta property="og:site_name" content="Digital Infrastructure &amp; Security Operations - Identity &amp; Access Management End User Guidance" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/guidance/sg.html" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/staff-identity-technical-documentation/documentation/github/branch-naming-conventions.html" />
 
     
   </head>
@@ -105,43 +105,87 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#entra-security-m365-group"><span>Entra Security/M365 Group</span></a>
+    <a href="#branch-naming-convention"><span>Branch Naming Convention</span></a>
     <ul>
       <li>
-        <a href="#self-service-security-group"><span>Self Service Security Group</span></a>
+        <a href="#overview"><span>Overview</span></a>
+      </li>
+      <li>
+        <a href="#branch-naming-format"><span>Branch Naming Format</span></a>
         <ul>
           <li>
-            <a href="#governance"><span>Governance</span></a>
+            <a href="#validation-pattern"><span>Validation Pattern</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#examples"><span>Examples</span></a>
+        <ul>
+          <li>
+            <a href="#valid-examples"><span>Valid Examples</span></a>
           </li>
           <li>
-            <a href="#how-to-manage-your-security-m365-group"><span>How to manage your Security/M365 Group</span></a>
+            <a href="#invalid-examples"><span>Invalid Examples</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#naming-convention-breakdown"><span>Naming Convention Breakdown</span></a>
+        <ul>
+          <li>
+            <a href="#action"><span>Action</span></a>
             <ul>
               <li>
-                <a href="#adding-removing-users"><span>Adding/Removing Users</span></a>
+                <a href="#supported-values"><span>Supported values</span></a>
               </li>
               <li>
-                <a href="#adding-removing-owners"><span>Adding/Removing Owners</span></a>
+                <a href="#action-examples"><span>Examples</span></a>
+              </li>
+              <li>
+                <a href="#team-name"><span>Team Name</span></a>
+              </li>
+              <li>
+                <a href="#action-examples-2"><span>Examples</span></a>
+              </li>
+              <li>
+                <a href="#examples-in-use"><span>Examples in use</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#ticket-reference-optional"><span>Ticket Reference (Optional)</span></a>
+            <ul>
+              <li>
+                <a href="#format"><span>Format</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#naming-convention-breakdown-examples"><span>Examples</span></a>
+            <ul>
+              <li>
+                <a href="#naming-convention-breakdown-examples-examples-in-use"><span>Examples in use</span></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#description"><span>Description</span></a>
+            <ul>
+              <li>
+                <a href="#example"><span>Example</span></a>
+              </li>
+              <li>
+                <a href="#description-component"><span>Description component</span></a>
+              </li>
+              <li>
+                <a href="#invalid-descriptions"><span>Invalid Descriptions</span></a>
+              </li>
+              <li>
+                <a href="#description-guidance"><span>Description Guidance</span></a>
               </li>
             </ul>
           </li>
         </ul>
-      </li>
-      <li>
-        <a href="#idam-team-managed-static-security-group"><span>IDAM Team Managed Static Security Group</span></a>
-        <ul>
-          <li>
-            <a href="#adding-a-new-entra-security-group"><span>Adding a new Entra Security Group</span></a>
-          </li>
-          <li>
-            <a href="#adding-removing-new-users-to-a-entra-security-group"><span>Adding/Removing new users to a Entra Security Group</span></a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#send-security-groups-in-user-access-token-claim"><span>Send Security Groups in user Access token claim</span></a>
-      </li>
-      <li>
-        <a href="#resources"><span>Resources</span></a>
       </li>
     </ul>
   </li>
@@ -154,145 +198,119 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="entra-security-m365-group">Entra Security/M365 Group</h1>
-<p>Entra Security Groups have the following uses.</p>
+            <h1 id="branch-naming-convention">Branch Naming Convention</h1>
+<h2 id="overview">Overview</h2>
+<p>To improve consistency, auditability, and automation across our repositories, we are introducing a standardised branch naming convention.</p>
+<p>This convention ensures that branch names:</p>
 
 <ul>
-<li>Allow you to control who has access to authenticate with your integrated application</li>
-<li>Classify groups of users to manage Roles and Permissions within an integrated application (see <a href="#send-security-groups-in-user-access-token-claim">Send Security Groups user belongs to in the authentication token</a>)</li>
+<li>Clearly identify the type of change being made.</li>
+<li>Indicate the team making the change.</li>
+<li>Optional service management ticket or work item reference.</li>
+<li>Provide a meaningful description of the change.</li>
 </ul>
-<p>Entra Security Groups are different from Azure Groups which provide permissions to resources within Azure.</p>
-<p>A user can belong to 1 or many groups at one time.</p>
-<p>There are four types of configuration your Application Registration may use for Entra Security Groups.</p>
-<div class="table-container">
+<p>By adopting a common structure, teams can quickly understand the purpose and ownership of each branch.</p>
+<h2 id="branch-naming-format">Branch Naming Format</h2>
+<h3 id="validation-pattern">Validation Pattern</h3>
+<p>The following regular expression is used to validate branch names:</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>^(new|update|removal|fix)\/[a-z0-9-]+\/([a-z]+-[0-9]+\/)?[a-z0-9-]+(?:-[a-z0-9-]+)*$
+</code></pre></div><div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>action/team-name/ticket-reference?/description
+</code></pre></div><p>Where:</p>
+
+<ul>
+<li><code>action</code> is mandatory.</li>
+<li><code>team-name</code> is mandatory.</li>
+<li><code>ticket-reference</code> is optional.</li>
+<li><code>description</code> is mandatory.</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<h3 id="valid-examples">Valid Examples</h3>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/adding-new-app
+new/idam/jira-1234/adding-new-app
+update/ai/ado-5678/update-api-permissions
+removal/mwp/removing-api-perms
+fix/platform/ABC-999/fix-auth-timeout
+</code></pre></div><h3 id="invalid-examples">Invalid Examples</h3>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>feature/idam/new-app
+new/adding-new-app
+new/idam/jira/new-app
+new/idam/jira-1234
+</code></pre></div><h2 id="naming-convention-breakdown">Naming Convention Breakdown</h2>
+<h3 id="action">Action</h3>
+<p>The action identifies the type of change being introduced.</p>
+<h4 id="supported-values">Supported values</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new
+update
+removal
+fix
+</code></pre></div><div class="table-container">
         <table>
           <tr>
-<th>Name</th>
-<th>Description</th>
+<th>Action</th>
+<th>Usage</th>
 </tr><tr>
-<td>All MoJ Users Security Group</td>
-<td>Anyone who has an identity within the Ministry of Justice in Entra will be able to Authenticate to your application. Any Joiners or Leavers will automatically be added or removed for you.</td>
+<td><code>new</code></td>
+<td>Introducing a new capability, application, feature, or resource</td>
 </tr><tr>
-<td>Dynamic Security Group</td>
-<td>Built around pattern matching, this type of group allows you to specify automatic group assignment of Joiners and Leavers. This can be for example <code>Judiciary Only Group</code> that is setup to automatically add any users where their email address ends in <code>@judiciary.uk</code>.</td>
+<td><code>update</code></td>
+<td>Modifying or enhancing an existing capability</td>
 </tr><tr>
-<td><a href="#IDAM-team-managed-static-security-group">IDAM Team Managed Static Security Group</a></td>
-<td>A group where users are manually added or removed as required. An example of this may be a small set of users across different departments who need access to a COTS application.</td>
+<td><code>removal</code></td>
+<td>Removing a capability, configuration, permission, or resource</td>
 </tr><tr>
-<td><a href="#self-service-security-group">Self Service Security Group</a></td>
-<td>The ability to delegate responsibility for the management of users in the Security Group to a set of defined Owners.</td>
+<td><code>fix</code></td>
+<td>Correcting a defect, issue, or unexpected behaviour</td>
 </tr>
         </table>
-      </div><h2 id="self-service-security-group">Self Service Security Group</h2>
-<p>Upon request, the IDAM Team will set up 1 or many Security Groups for you and assign 2 or more people within your team as Owners of the group. These Owners will be responsible for the management of Users and Owners assigned to the group moving forward.</p>
-<h3 id="governance">Governance</h3>
-<p>The IDAM Team will monitor Governance policies on the groups created. This includes</p>
+      </div><h4 id="action-examples">Examples</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/adding-new-app
+update/ai/improve-model-processing
+removal/mwp/removing-api-perms
+fix/platform/fix-auth-timeout
+</code></pre></div><h4 id="team-name">Team Name</h4>
+<p>The team name identifies ownership of the change.</p>
+<p>The value is not restricted to a predefined list and can represent any current or future team.</p>
+<h4 id="action-examples-2">Examples</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>idam
+ai
+mwp
+platform
+cloud-team
+developer-experience
+</code></pre></div><h4 id="examples-in-use">Examples in use</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/adding-new-app
+update/cloud-team/update-network-rules
+fix/platform/fix-auth-timeout
+</code></pre></div><h3 id="ticket-reference-optional">Ticket Reference (Optional)</h3>
+<p>A ticket reference can be included when work is associated with a tracked item in Jira, Azure DevOps, or another work management platform.</p>
+<h4 id="format">Format</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>&lt;ticket-prefix&gt;-&lt;number&gt;
+</code></pre></div><h3 id="naming-convention-breakdown-examples">Examples</h3>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>jira-1234
+ado-5678
+workitem-999
+</code></pre></div><h4 id="naming-convention-breakdown-examples-examples-in-use">Examples in use</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/jira-1234/
+</code></pre></div><h3 id="description">Description</h3>
+<p>The description portion of the branch name should provide a concise, meaningful summary of the change being made.</p>
+<h4 id="example">Example</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>new/idam/jira-1234/adding-new-app
+</code></pre></div><h4 id="description-component">Description component</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>adding-new-app
+</code></pre></div><h4 id="invalid-descriptions">Invalid Descriptions</h4>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>Adding-New-App
+adding_new_App
+adding new app 
+adding/new/app
+</code></pre></div><h4 id="description-guidance">Description Guidance</h4>
+<p>When creating a description:</p>
 
 <ul>
-<li>Does the group have a minimum of 2 Owners</li>
-<li>Does the group only contain Members and not Guest users</li>
-<li>After 365 days, check if the group is still required</li>
-</ul>
-<p>We will use the Owners of the group for any automated notifications for these policies where they are not met. This is to ensure groups are maintained and secure over time.</p>
-<h3 id="how-to-manage-your-security-m365-group">How to manage your Security/M365 Group</h3>
-<p>To manage your Security/M365 Groups, you will use the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> interface.</p>
-<h4 id="adding-removing-users">Adding/Removing Users</h4>
-
-<ul>
-<li>Go to the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> web site</li>
-<li>Sign in with your Justice account</li>
-<li>Click <code>Groups I own</code></li>
-<li>Click on the Group they wish to manage</li>
-<li>Click <code>Members</code></li>
-<li>Click the <code>Add</code> button to begin adding new members</li>
-</ul>
-<h4 id="adding-removing-owners">Adding/Removing Owners</h4>
-
-<ul>
-<li>Go to the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups</a> web site</li>
-<li>Sign in with your Justice account</li>
-<li>Click <code>Groups I own</code></li>
-<li>Click on the Group they wish to manage</li>
-<li>Click <code>Owners</code></li>
-<li>Click the <code>Add</code> button to begin adding new owners</li>
-</ul>
-<h2 id="idam-team-managed-static-security-group">IDAM Team Managed Static Security Group</h2>
-<h3 id="adding-a-new-entra-security-group">Adding a new Entra Security Group</h3>
-<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
-<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
-<p>You should provide the following information with the demand request.</p>
-
-<ul>
-<li>Who will be the Group Owners
-
-<ul>
-<li>minimum of 2 people, these people will be responsible for sign off of adding and removing users in the future</li>
-<li>1 or more Business Owners</li>
-<li>1 or more Technical Owners</li>
-</ul></li>
-<li>Name of the group
-
-<ul>
-<li>Pattern should be all lowercase <code>&lt;organisation&gt;-&lt;team&gt;-&lt;function-of-group&gt;</code>. e.g. <code>DISO-IDAM-cmsadministrators</code></li>
-</ul></li>
-<li>Description on the purpose of the group (max 250 characters)</li>
-</ul>
-
-<blockquote>
-<p>It is important that there are always 2 Owners minimum for these groups. Requests to add or remove users in the future will only be approved if these owners are the requestors or provide sign off.</p>
-</blockquote>
-<h3 id="adding-removing-new-users-to-a-entra-security-group">Adding/Removing new users to a Entra Security Group</h3>
-<p>You will need to raise a Demand through the existing demand process for this option. This will be triaged by the Demand Team and sent through to the IDAM Team to action.</p>
-<p>The link to the demand process can be found at <a href="https://justiceuk.sharepoint.com/sites/DemandandBusinessRelationshipManagement/SitePages/New-Demand-Request.aspx">Technology Services New Demand Request</a></p>
-<p>You will need to provide the following details</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Field</th>
-<th>Description</th>
-</tr><tr>
-<td>Users</td>
-<td>List of users email addresses to add to the group.</td>
-</tr><tr>
-<td>Group Name</td>
-<td>Group name in Entra ID to add users too.</td>
-</tr><tr>
-<td>Environment</td>
-<td>Is this for the Entra DEV, NLE or LIVE environment.</td>
-</tr>
-        </table>
-      </div><p>This will then be assigned to the IDAM team to schedule and communicate when we will complete the request.</p>
-<h2 id="send-security-groups-in-user-access-token-claim">Send Security Groups in user Access token claim</h2>
-<p>Optionally, we can enable your SSO Application Registration to send a list of Security Group GUIDs that the user belongs too.</p>
-<p>This can be beneficial for modern applications that require levels of authorisation within their application.</p>
-<p>For example, you could create 3 Security Groups as shown below and when a user logs in, the GUID will be passed down to the application. From here you can setup your application to assign the role appropriate for their group.</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Security Group Name</th>
-<th>GUID</th>
-<th>Description</th>
-</tr><tr>
-<td>DISO-IDAM-cms-admins</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have full admin access to application</td>
-</tr><tr>
-<td>DISO-IDAM-cms-contributors</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have contributor access to application</td>
-</tr><tr>
-<td>DISO-IDAM-cms-readers</td>
-<td>a000000bc-00d0-00e0-00f0-00000000000</td>
-<td>Users assigned to this group have read only access to application</td>
-</tr>
-        </table>
-      </div><p>Instead of creating more resources to manage users and groups, you can use the Self Service Security Groups within Entra ID to manage users, and the groups they belong too via the <a href="https://myaccount.microsoft.com/groups/">Microsoft My Groups interface</a>.</p>
-<p>Once the IDAM Team have setup the Security Group for you, we will pass the GUIDs to you and enable this functionality for your application.</p>
-<p>For more information on what information exists within the access token, see this Microsoft article <a href="https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference">https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference</a></p>
-<h2 id="resources">Resources</h2>
-
-<ul>
-<li><a href="mailto:IDAM@justice.gov.uk">DISO IDAM Team Shared Inbox</a></li>
+<li>Use lowercase characters only.</li>
+<li>Separate words using hyphens (<code>-</code>).</li>
+<li>Clearly describe the purpose of the change.</li>
+<li>Keep descriptions concise and readable.</li>
+<li>Avoid generic terms such as <code>changes</code>, <code>updates</code>, <code>test</code>, or <code>misc</code>.</li>
 </ul>
 
             
@@ -300,8 +318,8 @@
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/guidance/sg.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fguidance%2Fsg.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/blob/main/source/documentation/github/branch-naming-conventions.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation/issues/new?body=Problem+with+%27%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fstaff-identity-technical-documentation%2Fdocumentation%2Fgithub%2Fbranch-naming-conventions.html%29&amp;labels=bug&amp;title=Re%3A+%27%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/staff-identity-technical-documentation">GitHub Repo</a></li>
               </ul>
           </aside>
