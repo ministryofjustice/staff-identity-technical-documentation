@@ -1,0 +1,88 @@
+# Enforce CODEOWNERS for Terraform Environments
+
+## Summary
+
+The `Enforce CODEOWNERS` GitHub Actions job checks that every changed Terraform (an infrastructure-as-code tool) environment project has an owner listed in [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) (a GitHub file that assigns mandatory reviewers to specific paths). The job fails if it finds a changed project with no matching CODEOWNERS entry.
+
+> **Mandatory control:** every Terraform project under `terraform/envs/<environment>/<project>` must have a CODEOWNERS entry. The pipeline blocks the job until you add one.
+
+## Why this check exists
+
+Terraform environment projects must have a named owner. An owner reviews and approves changes before they merge. Without a CODEOWNERS entry, GitHub cannot enforce mandatory review for that project, so unowned infrastructure changes could merge unreviewed.
+
+## How the workflow runs
+
+The `codeowners` job runs the `enforce_code_owners.sh` script on every push:
+
+```yaml
+codeowners:
+  name: "Enforce CODEOWNERS"
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout Code
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      with:
+        fetch-depth: 0
+
+    - name: Enforce CODEOWNERS
+      run: bash scripts/pipeline/Enforce-Code-Owners/enforce_code_owners.sh
+```
+
+## What the script checks
+
+`enforce_code_owners.sh` runs these steps in order:
+
+1. **Locate the CODEOWNERS file.** It resolves the repository root and looks for `.github/CODEOWNERS`. It exits with an error if the file is missing.
+2. **Build a list of relevant CODEOWNERS patterns.** It reads each line of CODEOWNERS, skips blank lines and comments, and keeps only patterns that start with `terraform/envs/`.
+3. **Find changed Terraform projects.** It reads the changed files from `git diff --name-only HEAD^ HEAD` and filters for paths that start with `terraform/envs/`.
+4. **Extract project keys.** For each changed file, it splits the path into segments and builds a project key in the form `terraform/envs/<environment>/<project>`. It keeps only unique keys, so a project with several changed files is checked once.
+5. **Match each project against CODEOWNERS.** It compares each project key against the CODEOWNERS patterns using bash glob matching, so wildcard patterns in CODEOWNERS work as expected.
+6. **Report the result.** If a project has no matching pattern, the script prints an error and adds it to a list of unowned projects. If that list is not empty at the end, the script exits with status `1` and fails the job.
+
+## Reading the output
+
+A passing run looks like this:
+
+```text
+Changed files:
+terraform/envs/live/example-project/main.tf
+--------------------
+Terraform file confirmed: terraform/envs/live/example-project/main.tf
+--------------------
+Changed projects: terraform/envs/live/example-project
+--------------------
+All changed projects are listed in CODEOWNERS.
+```
+
+A failing run adds an error line and exits with a non-zero status:
+
+```text
+Error: terraform/envs/live/example-project is not listed in /path/to/.github/CODEOWNERS
+Projects not in CODEOWNERS: terraform/envs/live/example-project
+```
+
+## Fixing a failure
+
+### Step 1 — Open the CODEOWNERS file
+
+Open `.github/CODEOWNERS` in the repository root.
+
+### Step 2 — Add an entry for your project
+
+Add a line for your project, for example:
+
+```text
+terraform/envs/live/example-project/ @your-team
+```
+
+### Step 3 — Commit and push the change
+
+```bash
+git add .github/CODEOWNERS
+git commit -S -m "chore: add CODEOWNERS entry for example-project"
+git push
+```
+
+### Step 4 — Re-run the check
+
+The `codeowners` job re-runs automatically and should now pass.
