@@ -1,0 +1,268 @@
+---
+title: Require multi-factor authentication (MFA) for your application
+---
+
+
+# Standard Worker Device Sign In Auth (ASIS)
+
+``` mermaid
+flowchart LR
+
+    User[Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|Logs onto a device in a| HS
+    User -->|Logs onto a device in a| LS
+
+    HS -->|Using a| HSD[Shared Device]
+    HSD -->|Requires them to use| NoneHS[MFA: None]
+    NoneHS --> NoProtection[None]
+
+    LS -->|Using a| LSD[Shared Device]
+    LS -->|Using a| MAC[Mac]
+    LS -->|Using a| AVD[AVD]
+    LS -->|Using a| SUL[Single Use Laptop]
+
+    LSD -->|Requires them to use| NoneLS[MFA: None]
+    MAC -->|Requires them to use| NoneMac[MFA: None]
+
+    NoneLS --> NoProtection
+    NoneMac --> NoProtection
+
+    AVD -->|Requires them to use| SMS[MFA: SMS/Voice]
+    SMS --> StandardMFA[Standard MFA]
+
+    SUL -->|Requires them to use| WHFB[MFA: WHfB]
+    WHFB --> PR[Phishing Resistant MFA]
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef mfa fill:#b6d7a8,stroke:#666;
+    classDef outcome fill:#fff2cc,stroke:#666;
+
+    class HS,LS,HSD,LSD,MAC,AVD,SUL env;
+    class NoneHS,NoneLS,NoneMac,SMS,WHFB mfa;
+    class NoProtection,StandardMFA,PR outcome;
+```
+
+# Standard Worker Device Sign In Auth (TOBE)
+
+``` mermaid
+flowchart LR
+
+    User[Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|Logs onto a device in a| HS
+    User -->|Logs onto a device in a| LS
+
+    HS -->|Using a| HSD[Shared Device]
+    HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
+    FIDO2 --> PR[Phishing Resistant MFA]
+
+    LS -->|Using a| LSD[Shared Device]
+    LS -->|Using a| AVD[AVD]
+    LS -->|Using a| SUL[Single Use Laptop]
+    LS -->|Using a| MAC[Mac]
+
+    LSD -->|Gives them a| Choice{Choice of<br/>Authentication Method}
+    AVD -->|Gives them a| Choice
+
+    Choice -->|Using| Passkey["MFA: MS Authenticator<br/>Passkey"]
+    Choice -->|Using| Push["MFA: MS Authenticator<br/>Push"]
+    Choice -->|Using| AuthFido[MFA: FIDO2]
+
+    AuthFido --> PR
+    Passkey --> PR
+
+    Push --> SMFA[Standard MFA]
+
+    SUL -->|Requires them to use| WHFB[MFA: WHfB]
+    WHFB --> PR
+
+    MAC -->|Requires them to use| PSSO[MFA: Platform SSO]
+    PSSO --> PR
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef mfa fill:#b6d7a8,stroke:#666;
+    classDef outcome fill:#fff2cc,stroke:#666;
+    classDef decision fill:#00cc66,stroke:#666;
+
+    class HS,LS,HSD,LSD,AVD,SUL,MAC env;
+    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO mfa;
+    class PR,SMFA outcome;
+    class Choice decision;
+```
+
+# Privileged Standard Worker account Auth options (ASIS)
+
+``` mermaid
+flowchart LR
+
+    User[Privileged Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|My users are sometimes based in a| HS
+    User -->|My users are based in a| LS
+
+    %% High Side
+    HS -->|Using a| HSShared[Shared Device]
+    HS -->|Using a| HSLaptop[Single Use Laptop]
+
+    HSShared -->|They need| HSSharedPR[Phishing Resistant MFA]
+    HSShared -->|They need| HSSharedStd[Standard MFA]
+
+    HSLaptop -->|They need| HSLaptopPR[Phishing Resistant MFA]
+    HSLaptop -->|They need| HSLaptopStd[Standard MFA]
+
+    HSSharedPR --> HSSharedNone["1. No MFA Options"]
+    HSSharedStd --> HSSharedNone2["1. No MFA Options"]
+
+    HSLaptopPR --> HSLaptopWhfb["1. WHfB"]
+    HSLaptopStd --> HSLaptopNone["1. No MFA Options"]
+
+    %% Low Side
+    LS -->|Using a| Mac[Mac]
+    LS -->|Using a| LSShared[Shared Device]
+    LS -->|Using a| LSLaptop[Single Use Laptop]
+    LS -->|Using a| AVD[AVD]
+
+    %% Mac
+    Mac -->|They need| MacPR[Phishing Resistant MFA]
+    Mac -->|They need| MacStd[Standard MFA]
+
+    MacPR --> MacNone["1. No MFA Options"]
+    MacStd --> MacStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+
+    %% Shared Device
+    LSShared -->|They need| SharedPR[Phishing Resistant MFA]
+    LSShared -->|They need| SharedStd[Standard MFA]
+
+    SharedPR --> SharedNone["1. No MFA Options"]
+    SharedStd --> SharedStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+
+    %% Single Use Laptop
+    LSLaptop -->|They need| LaptopPR[Phishing Resistant MFA]
+    LSLaptop -->|They need| LaptopStd[Standard MFA]
+
+    LaptopPR --> LaptopWhfb["1. WHfB"]
+    LaptopStd --> LaptopStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+
+    %% AVD
+    AVD -->|They need| AVDPR[Phishing Resistant MFA]
+    AVD -->|They need| AVDStd[Standard MFA]
+
+    AVDPR --> AVDNone["1. No MFA Options"]
+    AVDStd --> AVDSMS["1. SMS/Voice"]
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef requirement fill:#fff2cc,stroke:#666;
+    classDef option fill:#b6d7a8,stroke:#666;
+    classDef nooption fill:#ff6666,stroke:#666,color:#000;
+
+    class HS,LS,HSShared,HSLaptop,Mac,LSShared,LSLaptop,AVD env;
+    class HSSharedPR,HSSharedStd,HSLaptopPR,HSLaptopStd,MacPR,MacStd,SharedPR,SharedStd,LaptopPR,LaptopStd,AVDPR,AVDStd requirement;
+    class HSLaptopWhfb,MacStdOpts,SharedStdOpts,LaptopWhfb,LaptopStdOpts,AVDSMS option;
+    class HSSharedNone,HSSharedNone2,HSLaptopNone,MacNone,SharedNone,AVDNone nooption;
+```
+
+# Privileged Standard Worker account Auth options (TOBE)
+
+``` mermaid
+flowchart LR
+
+    User[Privileged Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|My users are sometimes based in a| HS
+    User -->|My users are based in a| LS
+
+    %% High Side
+    HS -->|Using a| HSShared[Shared Device]
+    HS -->|Using a| HSLaptop[Single Use Laptop]
+
+    HSShared -->|They need| HSSharedReq[Phishing Resistant MFA or lower]
+    HSLaptop -->|They need| HSLaptopReq[Phishing Resistant MFA or lower]
+
+    HSSharedReq -->|Their options are| HSFIDO2["1. FIDO2"]
+    HSLaptopReq -->|Their options are| HSLaptopOpts["1. WHfB<br/>2. FIDO2"]
+
+    %% Low Side
+    LS -->|Using a| LSShared[Shared Device]
+    LS -->|Using a| AVD[AVD]
+    LS -->|Using a| LSLaptop[Single Use Laptop]
+    LS -->|Using a| Mac[Mac]
+
+    LSShared -->|They need| LSSharedReq[Phishing Resistant MFA or lower]
+    AVD -->|They need| AVDReq[Phishing Resistant MFA or lower]
+    LSLaptop -->|They need| LSLaptopReq[Phishing Resistant MFA or lower]
+    Mac -->|They need| MacReq[Phishing Resistant MFA or lower]
+
+    LSSharedReq --> SharedOpts["1. MS Authenticator Push<br/>2. MS Authenticator Passkey<br/>3. FIDO2"]
+
+    AVDReq --> AVDOpts["1. WHfB<br/>2. MS Authenticator Push<br/>3. MS Authenticator Passkey<br/>4. FIDO2"]
+
+    LSLaptopReq --> LaptopOpts["1. WHfB<br/>2. MS Authenticator Push<br/>3. MS Authenticator Passkey"]
+
+    MacReq --> MacOpts["1. Platform SSO<br/>2. MS Authenticator Push<br/>3. MS Authenticator Passkey<br/>4. FIDO2"]
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef requirement fill:#fff2cc,stroke:#666;
+    classDef options fill:#b6d7a8,stroke:#666;
+
+    class HS,LS,HSShared,HSLaptop,LSShared,AVD,LSLaptop,Mac env;
+    class HSSharedReq,HSLaptopReq,LSSharedReq,AVDReq,LSLaptopReq,MacReq requirement;
+    class HSFIDO2,HSLaptopOpts,SharedOpts,AVDOpts,LaptopOpts,MacOpts options;
+```
+
+# Privileged Admin User flows
+
+``` mermaid
+flowchart LR
+
+    User[Privileged Admin User]
+
+    LS[Low Side Environment]
+
+    User -->|Signs in from a| LS
+
+    Decision{Scenario}
+
+    LS --> Decision
+
+    %% ASIS
+    Decision -->|ASIS| AsisGroup["Device belongs to<br/>MoJO-M365-Admin-Devices<br/>Security Group"]
+
+    AsisGroup -->|Authentication options| AsisPasskey[MS Authenticator Passkey]
+
+    AsisPasskey -->|Provides| AsisResult[Phishing Resistant MFA]
+
+    %% TOBE
+    Decision -->|TOBE| TobeGroup["Device belongs to<br/>MoJO-M365-Admin-Devices<br/>Security Group"]
+
+    TobeGroup -->|Authentication options| TobePasskey[MS Authenticator Passkey]
+    TobeGroup -->|Authentication options| TobeFido2[FIDO2 Security Key]
+
+    TobePasskey -->|Provides| TobeResult[Phishing Resistant MFA]
+    TobeFido2 -->|Provides| TobeResult
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef scenario fill:#34c759,stroke:#333,color:#000;
+    classDef auth fill:#a8ddb5,stroke:#666;
+    classDef outcome fill:#fff2cc,stroke:#666;
+    classDef decision fill:#00cc66,stroke:#333;
+
+    class LS,AsisGroup,TobeGroup env;
+    class AsisPasskey,TobePasskey,TobeFido2 auth;
+    class AsisResult,TobeResult outcome;
+    class Decision decision;
+```
+
+<script src="../../javascripts/mermaid.vendor"></script>
