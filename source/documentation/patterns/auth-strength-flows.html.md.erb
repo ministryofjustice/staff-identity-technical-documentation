@@ -59,6 +59,10 @@ flowchart LR
     User -->|Logs onto a device in a| HS
     User -->|Logs onto a device in a| LS
 
+    HS -->|Using a| HSUL[Single Use Laptop]
+    HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
+    HSWHFB --> HSPR[Phishing Resistant MFA]
+
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| NoneHS[MFA: None]
     NoneHS --> NoProtection[None]
@@ -84,9 +88,9 @@ flowchart LR
     classDef mfa fill:#b6d7a8,stroke:#666;
     classDef outcome fill:#fff2cc,stroke:#666;
 
-    class HS,LS,HSD,LSD,MAC,AVD,SUL env;
-    class NoneHS,NoneLS,NoneMac,SMS,WHFB mfa;
-    class NoProtection,StandardMFA,PR outcome;
+    class HS,LS,HSD,LSD,MAC,AVD,SUL,HSUL env;
+    class NoneHS,NoneLS,NoneMac,SMS,WHFB,HSWHFB mfa;
+    class NoProtection,StandardMFA,PR,HSPR outcome;
 ```
 
 ### Target state (TOBE)
@@ -103,6 +107,10 @@ flowchart LR
 
     User -->|Logs onto a device in a| HS
     User -->|Logs onto a device in a| LS
+
+    HS -->|Using a| HSUL[Single Use Laptop]
+    HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
+    HSWHFB --> HSPR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
@@ -136,9 +144,9 @@ flowchart LR
     classDef outcome fill:#fff2cc,stroke:#666;
     classDef decision fill:#00cc66,stroke:#666;
 
-    class HS,LS,HSD,LSD,AVD,SUL,MAC env;
-    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO mfa;
-    class PR,SMFA outcome;
+    class HS,LS,HSD,LSD,AVD,SUL,MAC,HSUL env;
+    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO,HSWHFB mfa;
+    class PR,SMFA,HSPR outcome;
     class Choice decision;
 ```
 
