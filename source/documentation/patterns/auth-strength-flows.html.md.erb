@@ -61,11 +61,11 @@ flowchart LR
 
     HS -->|Using a| HSUL[Single Use Laptop]
     HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
-    HSWHFB --> HSPR[Phishing Resistant MFA]
+    HSWHFB -->|Grants them| HSPR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| NoneHS[MFA: None]
-    NoneHS --> NoProtection[None]
+    NoneHS -->|Rants them| NoProtection[None]
 
     LS -->|Using a| LSD[Shared Device]
     LS -->|Using a| MAC[Mac]
@@ -75,14 +75,14 @@ flowchart LR
     LSD -->|Requires them to use| NoneLS[MFA: None]
     MAC -->|Requires them to use| NoneMac[MFA: None]
 
-    NoneLS --> NoProtection
-    NoneMac --> NoProtection
+    NoneLS -->|Grants them| NoProtection
+    NoneMac -->|Grants them| NoProtection
 
     AVD -->|Requires them to use| SMS[MFA: SMS/Voice]
-    SMS --> StandardMFA[Standard MFA]
+    SMS -->|Grants them| StandardMFA[Standard MFA]
 
     SUL -->|Requires them to use| WHFB[MFA: WHfB]
-    WHFB --> PR[Phishing Resistant MFA]
+    WHFB -->|Grants them| PR[Phishing Resistant MFA]
 
     classDef env fill:#d9d2f3,stroke:#666;
     classDef mfa fill:#b6d7a8,stroke:#666;
@@ -110,11 +110,11 @@ flowchart LR
 
     HS -->|Using a| HSUL[Single Use Laptop]
     HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
-    HSWHFB --> HSPR[Phishing Resistant MFA]
+    HSWHFB -->|Grants them| HSPR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
-    FIDO2 --> PR[Phishing Resistant MFA]
+    FIDO2 -->|Grants them| PR[Phishing Resistant MFA]
 
     LS -->|Using a| LSD[Shared Device]
     LS -->|Using a| AVD[AVD]
@@ -128,16 +128,16 @@ flowchart LR
     Choice -->|Using| Push["MFA: MS Authenticator<br/>Push"]
     Choice -->|Using| AuthFido[MFA: FIDO2]
 
-    AuthFido --> PR
-    Passkey --> PR
+    AuthFido -->|Grants them| PR
+    Passkey -->|Grants them| PR
 
-    Push --> SMFA[Standard MFA]
+    Push -->|Grants them| SMFA[Standard MFA]
 
     SUL -->|Requires them to use| WHFB[MFA: WHfB]
-    WHFB --> PR
+    WHFB -->|Grants them| PR
 
     MAC -->|Requires them to use| PSSO[MFA: Platform SSO]
-    PSSO --> PR
+    PSSO -->|Grants them| PR
 
     classDef env fill:#d9d2f3,stroke:#666;
     classDef mfa fill:#b6d7a8,stroke:#666;
@@ -179,11 +179,11 @@ flowchart LR
     HSLaptop -->|They need| HSLaptopPR[Phishing Resistant MFA]
     HSLaptop -->|They need| HSLaptopStd[Standard MFA]
 
-    HSSharedPR --> HSSharedNone["1. No MFA Options"]
-    HSSharedStd --> HSSharedNone2["1. No MFA Options"]
+    HSSharedPR -->|Use| HSSharedNone["1. No MFA Options"]
+    HSSharedStd -->|Use| HSSharedNone2["1. No MFA Options"]
 
-    HSLaptopPR --> HSLaptopWhfb["1. WHfB"]
-    HSLaptopStd --> HSLaptopNone["1. No MFA Options"]
+    HSLaptopPR -->|Use| HSLaptopWhfb["1. WHfB"]
+    HSLaptopStd -->|Use| HSLaptopNone["1. No MFA Options"]
 
     %% Low Side
     LS -->|Using a| Mac[Mac]
@@ -195,29 +195,29 @@ flowchart LR
     Mac -->|They need| MacPR[Phishing Resistant MFA]
     Mac -->|They need| MacStd[Standard MFA]
 
-    MacPR --> MacNone["1. No MFA Options"]
-    MacStd --> MacStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+    MacPR -->|Use| MacNone["1. No MFA Options"]
+    MacStd -->|Use| MacStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
 
     %% Shared Device
     LSShared -->|They need| SharedPR[Phishing Resistant MFA]
     LSShared -->|They need| SharedStd[Standard MFA]
 
-    SharedPR --> SharedNone["1. No MFA Options"]
-    SharedStd --> SharedStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+    SharedPR -->|Use| SharedNone["1. No MFA Options"]
+    SharedStd -->|Use| SharedStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
 
     %% Single Use Laptop
     LSLaptop -->|They need| LaptopPR[Phishing Resistant MFA]
     LSLaptop -->|They need| LaptopStd[Standard MFA]
 
-    LaptopPR --> LaptopWhfb["1. WHfB"]
-    LaptopStd --> LaptopStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+    LaptopPR -->|Use| LaptopWhfb["1. WHfB"]
+    LaptopStd -->|Use| LaptopStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
 
     %% AVD
     AVD -->|They need| AVDPR[Phishing Resistant MFA]
     AVD -->|They need| AVDStd[Standard MFA]
 
-    AVDPR --> AVDNone["1. No MFA Options"]
-    AVDStd --> AVDSMS["1. SMS/Voice"]
+    AVDPR -->|Use| AVDNone["1. No MFA Options"]
+    AVDStd -->|Use| AVDSMS["1. SMS/Voice"]
 
     classDef env fill:#d9d2f3,stroke:#666;
     classDef requirement fill:#fff2cc,stroke:#666;
