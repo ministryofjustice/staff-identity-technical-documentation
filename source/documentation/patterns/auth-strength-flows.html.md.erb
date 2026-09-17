@@ -61,7 +61,7 @@ flowchart LR
 
     HS -->|Using a| HSUL[Single Use Laptop]
     HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
-    HSWHFB -->|Grants them| HSPR[Phishing Resistant MFA]
+    HSWHFB -->|Achieves| HSPR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| NoneHS[MFA: None]
@@ -75,14 +75,14 @@ flowchart LR
     LSD -->|Requires them to use| NoneLS[MFA: None]
     MAC -->|Requires them to use| NoneMac[MFA: None]
 
-    NoneLS -->|Grants them| NoProtection
-    NoneMac -->|Grants them| NoProtection
+    NoneLS -->|Achieves| NoProtection
+    NoneMac -->|Achieves| NoProtection
 
     AVD -->|Requires them to use| SMS[MFA: SMS/Voice]
-    SMS -->|Grants them| StandardMFA[Standard MFA]
+    SMS -->|Achieves| StandardMFA[Standard MFA]
 
     SUL -->|Requires them to use| WHFB[MFA: WHfB]
-    WHFB -->|Grants them| PR[Phishing Resistant MFA]
+    WHFB -->|Achieves| PR[Phishing Resistant MFA]
 
     classDef env fill:#d9d2f3,stroke:#666;
     classDef mfa fill:#b6d7a8,stroke:#666;
@@ -110,11 +110,11 @@ flowchart LR
 
     HS -->|Using a| HSUL[Single Use Laptop]
     HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
-    HSWHFB -->|Grants them| HSPR[Phishing Resistant MFA]
+    HSWHFB -->|Achieves| HSPR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
-    FIDO2 -->|Grants them| PR[Phishing Resistant MFA]
+    FIDO2 -->|Achieves| PR[Phishing Resistant MFA]
 
     LS -->|Using a| LSD[Shared Device]
     LS -->|Using a| AVD[AVD]
@@ -128,16 +128,16 @@ flowchart LR
     Choice -->|Using| Push["MFA: MS Authenticator<br/>Push"]
     Choice -->|Using| AuthFido[MFA: FIDO2]
 
-    AuthFido -->|Grants them| PR
-    Passkey -->|Grants them| PR
+    AuthFido -->|Achieves| PR
+    Passkey -->|Achieves| PR
 
-    Push -->|Grants them| SMFA[Standard MFA]
+    Push -->|Achieves| SMFA[Standard MFA]
 
     SUL -->|Requires them to use| WHFB[MFA: WHfB]
-    WHFB -->|Grants them| PR
+    WHFB -->|Achieves| PR
 
     MAC -->|Requires them to use| PSSO[MFA: Platform SSO]
-    PSSO -->|Grants them| PR
+    PSSO -->|Achieves| PR
 
     classDef env fill:#d9d2f3,stroke:#666;
     classDef mfa fill:#b6d7a8,stroke:#666;
@@ -252,8 +252,8 @@ flowchart LR
     HSShared -->|They need| HSSharedReq[Phishing Resistant MFA or lower]
     HSLaptop -->|They need| HSLaptopReq[Phishing Resistant MFA or lower]
 
-    HSSharedReq -->|Their options are| HSFIDO2["FIDO2"]
-    HSLaptopReq -->|Their options are| HSLaptopOpts["WHfB, FIDO2"]
+    HSSharedReq -->|Options are| HSFIDO2["FIDO2"]
+    HSLaptopReq -->|Options are| HSLaptopOpts["WHfB, FIDO2"]
 
     %% Low Side
     LS -->|Using a| LSShared[Shared Device]
@@ -266,13 +266,13 @@ flowchart LR
     LSLaptop -->|They need| LSLaptopReq[Phishing Resistant MFA or lower]
     Mac -->|They need| MacReq[Phishing Resistant MFA or lower]
 
-    LSSharedReq -->|Their options are| SharedOpts["MS Authenticator Push or Passkey,<br/>FIDO2"]
+    LSSharedReq -->|Options are| SharedOpts["MS Authenticator Push or Passkey,<br/>FIDO2"]
 
-    AVDReq -->|Their options are| AVDOpts["WHfB,<br/>MS Authenticator Push or Passkey, FIDO2"]
+    AVDReq -->|Options are| AVDOpts["WHfB,<br/>MS Authenticator Push or Passkey, FIDO2"]
 
-    LSLaptopReq -->|Their options are| LaptopOpts["WHfB,<br/>MS Authenticator Push or Passkey"]
+    LSLaptopReq -->|Options are| LaptopOpts["WHfB,<br/>MS Authenticator Push or Passkey"]
 
-    MacReq -->|Their options are| MacOpts["Platform SSO,<br/>MS Authenticator Push or Passkey, FIDO2"]
+    MacReq -->|Options are| MacOpts["Platform SSO,<br/>MS Authenticator Push or Passkey, FIDO2"]
 
     classDef env fill:#d9d2f3,stroke:#666;
     classDef requirement fill:#fff2cc,stroke:#666;
