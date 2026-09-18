@@ -8,7 +8,7 @@ Use these flows to understand the authentication methods and strengths available
 
 * device sign-in methods and their authentication strengths for standard workers
 * authentication strengths and methods available to privileged standard workers when they access an application
-* sign-in methods for internal `onmicrosoft` privileged admin accounts that access Microsoft portals
+* sign-in methods for internal `onmicrosoft` privileged admin accounts that access Microsoft portals and thrid party applications that require a seperate administrator identity. See [Admin account security in Microsoft 365 for business](https://learn.microsoft.com/en-us/microsoft-365/admin/security-and-compliance/m365b-account-security-admins)
 
 Start with the relevant user journey, account type, environment and device. Then follow the flow to find the methods available now or planned for the future. Single sign-on (SSO) lets a user access an application with their existing Microsoft Entra ID session. Step-up authentication asks the user for an additional method when an application requires a stronger authentication level.
 
@@ -67,6 +67,10 @@ flowchart LR
     HSD -->|Requires them to use| NoneHS[MFA: None]
     NoneHS -->|Achieves| NoProtection[None]
 
+    HS -->|Using a| HSAVD[AVD]
+    HSAVD -->|Requires them to use| NoneHSAVD[MFA: None]
+    NoneHSAVD -->|Achieves| NoProtection[None]
+
     LS -->|Using a| LSD[Shared Device]
     LS -->|Using a| MAC[Mac]
     LS -->|Using a| AVD[AVD]
@@ -88,8 +92,8 @@ flowchart LR
     classDef mfa fill:#b6d7a8,stroke:#666;
     classDef outcome fill:#fff2cc,stroke:#666;
 
-    class HS,LS,HSD,LSD,MAC,AVD,SUL,HSUL env;
-    class NoneHS,NoneLS,NoneMac,SMS,WHFB,HSWHFB mfa;
+    class HS,LS,HSD,LSD,MAC,AVD,SUL,HSUL,HSAVD env;
+    class NoneHS,NoneLS,NoneMac,SMS,WHFB,HSWHFB,HSWHFB,NoneHSAVD mfa;
     class NoProtection,StandardMFA,PR,HSPR outcome;
 ```
 
@@ -110,11 +114,15 @@ flowchart LR
 
     HS -->|Using a| HSUL[Single Use Laptop]
     HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
-    HSWHFB -->|Achieves| HSPR[Phishing Resistant MFA]
+    HSWHFB -->|Achieves| PR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
     FIDO2 -->|Achieves| PR[Phishing Resistant MFA]
+
+    HS -->|Using a| HSAVD[AVD]
+    HSAVD -->|Requires them to use| NoneHSAVD[MFA: FIDO2, WHfB]
+    NoneHSAVD -->|Achieves| PR[Phishing Resistant MFA]
 
     LS -->|Using a| LSD[Shared Device]
     LS -->|Using a| AVD[AVD]
@@ -144,8 +152,8 @@ flowchart LR
     classDef outcome fill:#fff2cc,stroke:#666;
     classDef decision fill:#00cc66,stroke:#666;
 
-    class HS,LS,HSD,LSD,AVD,SUL,MAC,HSUL env;
-    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO,HSWHFB mfa;
+    class HS,LS,HSD,LSD,AVD,SUL,MAC,HSUL,HSAVD env;
+    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO,HSWHFB,NoneHSAVD mfa;
     class PR,SMFA,HSPR outcome;
     class Choice decision;
 ```
@@ -172,6 +180,7 @@ flowchart LR
     %% High Side
     HS -->|Using a| HSShared[Shared Device]
     HS -->|Using a| HSLaptop[Single Use Laptop]
+    HS -->|Using| HSAVD[AVD]
 
     HSShared -->|They need| HSSharedPR[Phishing Resistant MFA]
     HSShared -->|They need| HSSharedStd[Standard MFA]
@@ -184,6 +193,13 @@ flowchart LR
 
     HSLaptopPR -->|Use| HSLaptopWhfb["1. WHfB"]
     HSLaptopStd -->|Use| HSLaptopNone["1. No MFA Options"]
+
+    %% HSAVD
+    HSAVD -->|They need| HSAVDPR[Phishing Resistant MFA]
+    HSAVD -->|They need| HSAVDStd[Standard MFA]
+
+    HSAVDPR -->|Use| HSAVDNone["1. No MFA Options"]
+    HSAVDStd -->|Use| HSAVDSMS["1. SMS/Voice"]
 
     %% Low Side
     LS -->|Using a| Mac[Mac]
@@ -224,10 +240,10 @@ flowchart LR
     classDef option fill:#b6d7a8,stroke:#666;
     classDef nooption fill:#ff6666,stroke:#666,color:#000;
 
-    class HS,LS,HSShared,HSLaptop,Mac,LSShared,LSLaptop,AVD env;
-    class HSSharedPR,HSSharedStd,HSLaptopPR,HSLaptopStd,MacPR,MacStd,SharedPR,SharedStd,LaptopPR,LaptopStd,AVDPR,AVDStd requirement;
-    class HSLaptopWhfb,MacStdOpts,SharedStdOpts,LaptopWhfb,LaptopStdOpts,AVDSMS option;
-    class HSSharedNone,HSSharedNone2,HSLaptopNone,MacNone,SharedNone,AVDNone nooption;
+    class HS,LS,HSShared,HSLaptop,Mac,LSShared,LSLaptop,AVD,HSAVD env;
+    class HSSharedPR,HSSharedStd,HSLaptopPR,HSLaptopStd,MacPR,MacStd,SharedPR,SharedStd,LaptopPR,LaptopStd,AVDPR,AVDStd,HSAVDPR,HSAVDStd requirement;
+    class HSLaptopWhfb,MacStdOpts,SharedStdOpts,LaptopWhfb,LaptopStdOpts,AVDSMS,HSAVDSMS option;
+    class HSSharedNone,HSSharedNone2,HSLaptopNone,MacNone,SharedNone,AVDNone,HSAVDNone nooption;
 ```
 
 ### Target state (TOBE)
@@ -248,12 +264,17 @@ flowchart LR
     %% High Side
     HS -->|Using a| HSShared[Shared Device]
     HS -->|Using a| HSLaptop[Single Use Laptop]
+    HS -->|Using| HSAVD[AVD]
 
     HSShared -->|They need| HSSharedReq[Phishing Resistant MFA or lower]
     HSLaptop -->|They need| HSLaptopReq[Phishing Resistant MFA or lower]
 
     HSSharedReq -->|Options are| HSFIDO2["FIDO2"]
     HSLaptopReq -->|Options are| HSLaptopOpts["WHfB, FIDO2"]
+
+    %% HSAVD
+    HSAVD -->|They need| HSAVDPR[Phishing Resistant MFA or lower]
+    HSAVDPR -->|Use| HSAVDNone["WHfB,<br/>MS Authenticator Push or Passkey, FIDO2"]
 
     %% Low Side
     LS -->|Using a| LSShared[Shared Device]
@@ -278,14 +299,14 @@ flowchart LR
     classDef requirement fill:#fff2cc,stroke:#666;
     classDef options fill:#b6d7a8,stroke:#666;
 
-    class HS,LS,HSShared,HSLaptop,LSShared,AVD,LSLaptop,Mac env;
-    class HSSharedReq,HSLaptopReq,LSSharedReq,AVDReq,LSLaptopReq,MacReq requirement;
-    class HSFIDO2,HSLaptopOpts,SharedOpts,AVDOpts,LaptopOpts,MacOpts options;
+    class HS,LS,HSShared,HSLaptop,LSShared,AVD,LSLaptop,Mac,HSAVD env;
+    class HSSharedReq,HSLaptopReq,LSSharedReq,AVDReq,LSLaptopReq,MacReq,HSAVDPR requirement;
+    class HSFIDO2,HSLaptopOpts,SharedOpts,AVDOpts,LaptopOpts,MacOpts,HSAVDNone options;
 ```
 
 ## Find privileged admin user methods
 
-Use this flow for internal `onmicrosoft` privileged admin accounts that sign in to Microsoft portals from a low-side environment.
+Use this flow for internal `onmicrosoft` privileged admin accounts that sign in to Microsoft portals and thrid party applications that require a seperate administrator identity. See [Admin account security in Microsoft 365 for business](https://learn.microsoft.com/en-us/microsoft-365/admin/security-and-compliance/m365b-account-security-admins).
 
 ``` mermaid
 flowchart LR
