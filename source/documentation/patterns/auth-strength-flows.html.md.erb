@@ -1,0 +1,331 @@
+---
+title: Find available authentication methods and strengths
+---
+
+# Find available authentication methods and strengths
+
+Use these flows to understand the authentication methods and strengths available in the organisation. They cover 3 user journeys:
+
+* device sign-in methods and their authentication strengths for standard workers
+* authentication strengths and methods available to privileged standard workers when they access an application
+* sign-in methods for internal `onmicrosoft` privileged admin accounts that access Microsoft portals
+
+Start with the relevant user journey, account type, environment and device. Then follow the flow to find the methods available now or planned for the future. Single sign-on (SSO) lets a user access an application with their existing Microsoft Entra ID session. Step-up authentication asks the user for an additional method when an application requires a stronger authentication level.
+
+The `ASIS` flows show the methods available now. The `TOBE` flows show the planned target state. **Do not set an application requirement based only on a `TOBE` flow until the Identity team confirms that the method is available**.
+
+> **Security requirement**
+>
+> Applications that provide privileged access or access to sensitive data must require phishing-resistant MFA. Assess your application's risk before selecting an authentication strength.
+
+## Identify the user type
+
+Use these definitions to select the correct flow.
+
+### Standard worker
+
+A standard worker uses their normal worker account to sign in to a device and access applications. They do not have administrative functionality in downstream applications.
+
+### Privileged standard worker
+
+A privileged standard worker uses a normal worker account but has access to administrative functionality in a downstream application. The application connects to Microsoft Entra ID for SSO and may require the user to meet a stronger authentication requirement.
+
+### Privileged admin user
+
+A privileged admin user uses an internal `onmicrosoft` admin account to access Microsoft portals. This account is separate from their normal worker account.
+
+### High-side environment
+
+A high-side environment is a secure location where users cannot take phones or laptops. Users access devices provided within the environment.
+
+### Low-side environment
+
+A low-side environment is a normal access location. Users can use their usual devices, including phones and laptops.
+
+## Find standard worker sign-in methods
+
+Use these flows to understand the methods standard workers use to sign in to devices. Select the user's environment and device to see the available method and its resulting authentication strength.
+
+### Current state (ASIS)
+
+``` mermaid
+flowchart LR
+
+    User[Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|Logs onto a device in a| HS
+    User -->|Logs onto a device in a| LS
+
+    HS -->|Using a| HSUL[Single Use Laptop]
+    HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
+    HSWHFB -->|Achieves| HSPR[Phishing Resistant MFA]
+
+    HS -->|Using a| HSD[Shared Device]
+    HSD -->|Requires them to use| NoneHS[MFA: None]
+    NoneHS -->|Achieves| NoProtection[None]
+
+    LS -->|Using a| LSD[Shared Device]
+    LS -->|Using a| MAC[Mac]
+    LS -->|Using a| AVD[AVD]
+    LS -->|Using a| SUL[Single Use Laptop]
+
+    LSD -->|Requires them to use| NoneLS[MFA: None]
+    MAC -->|Requires them to use| NoneMac[MFA: None]
+
+    NoneLS -->|Achieves| NoProtection
+    NoneMac -->|Achieves| NoProtection
+
+    AVD -->|Requires them to use| SMS[MFA: SMS/Voice]
+    SMS -->|Achieves| StandardMFA[Standard MFA]
+
+    SUL -->|Requires them to use| WHFB[MFA: WHfB]
+    WHFB -->|Achieves| PR[Phishing Resistant MFA]
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef mfa fill:#b6d7a8,stroke:#666;
+    classDef outcome fill:#fff2cc,stroke:#666;
+
+    class HS,LS,HSD,LSD,MAC,AVD,SUL,HSUL env;
+    class NoneHS,NoneLS,NoneMac,SMS,WHFB,HSWHFB mfa;
+    class NoProtection,StandardMFA,PR,HSPR outcome;
+```
+
+### Target state (TOBE)
+
+This flow shows the planned device sign-in methods for standard worker accounts.
+
+``` mermaid
+flowchart LR
+
+    User[Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|Logs onto a device in a| HS
+    User -->|Logs onto a device in a| LS
+
+    HS -->|Using a| HSUL[Single Use Laptop]
+    HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
+    HSWHFB -->|Achieves| HSPR[Phishing Resistant MFA]
+
+    HS -->|Using a| HSD[Shared Device]
+    HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
+    FIDO2 -->|Achieves| PR[Phishing Resistant MFA]
+
+    LS -->|Using a| LSD[Shared Device]
+    LS -->|Using a| AVD[AVD]
+    LS -->|Using a| SUL[Single Use Laptop]
+    LS -->|Using a| MAC[Mac]
+
+    LSD -->|Gives them a| Choice{Choice of<br/>Authentication Method}
+    AVD -->|Gives them a| Choice
+
+    Choice -->|Using| Passkey["MFA: MS Authenticator<br/>Passkey"]
+    Choice -->|Using| Push["MFA: MS Authenticator<br/>Push"]
+    Choice -->|Using| AuthFido[MFA: FIDO2]
+
+    AuthFido -->|Achieves| PR
+    Passkey -->|Achieves| PR
+
+    Push -->|Achieves| SMFA[Standard MFA]
+
+    SUL -->|Requires them to use| WHFB[MFA: WHfB]
+    WHFB -->|Achieves| PR
+
+    MAC -->|Requires them to use| PSSO[MFA: Platform SSO]
+    PSSO -->|Achieves| PR
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef mfa fill:#b6d7a8,stroke:#666;
+    classDef outcome fill:#fff2cc,stroke:#666;
+    classDef decision fill:#00cc66,stroke:#666;
+
+    class HS,LS,HSD,LSD,AVD,SUL,MAC,HSUL env;
+    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO,HSWHFB mfa;
+    class PR,SMFA,HSPR outcome;
+    class Choice decision;
+```
+
+## Find privileged standard worker methods
+
+Use these flows when an application requires a privileged standard worker to meet a specific authentication strength. Follow the user's environment and device to identify methods they already have from their Windows, Mac or Azure Virtual Desktop (AVD) sign-in, or a separate method they can use to step up authentication.
+
+Use this journey when setting an application's SSO authentication requirement. It shows whether the user's existing sign-in method meets the requirement or whether they need to authenticate again with a stronger method.
+
+### Current state (ASIS)
+
+``` mermaid
+flowchart LR
+
+    User[Privileged Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|My users are sometimes based in a| HS
+    User -->|My users are based in a| LS
+
+    %% High Side
+    HS -->|Using a| HSShared[Shared Device]
+    HS -->|Using a| HSLaptop[Single Use Laptop]
+
+    HSShared -->|They need| HSSharedPR[Phishing Resistant MFA]
+    HSShared -->|They need| HSSharedStd[Standard MFA]
+
+    HSLaptop -->|They need| HSLaptopPR[Phishing Resistant MFA]
+    HSLaptop -->|They need| HSLaptopStd[Standard MFA]
+
+    HSSharedPR -->|Use| HSSharedNone["1. No MFA Options"]
+    HSSharedStd -->|Use| HSSharedNone2["1. No MFA Options"]
+
+    HSLaptopPR -->|Use| HSLaptopWhfb["1. WHfB"]
+    HSLaptopStd -->|Use| HSLaptopNone["1. No MFA Options"]
+
+    %% Low Side
+    LS -->|Using a| Mac[Mac]
+    LS -->|Using a| LSShared[Shared Device]
+    LS -->|Using a| LSLaptop[Single Use Laptop]
+    LS -->|Using a| AVD[AVD]
+
+    %% Mac
+    Mac -->|They need| MacPR[Phishing Resistant MFA]
+    Mac -->|They need| MacStd[Standard MFA]
+
+    MacPR -->|Use| MacNone["1. No MFA Options"]
+    MacStd -->|Use| MacStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+
+    %% Shared Device
+    LSShared -->|They need| SharedPR[Phishing Resistant MFA]
+    LSShared -->|They need| SharedStd[Standard MFA]
+
+    SharedPR -->|Use| SharedNone["1. No MFA Options"]
+    SharedStd -->|Use| SharedStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+
+    %% Single Use Laptop
+    LSLaptop -->|They need| LaptopPR[Phishing Resistant MFA]
+    LSLaptop -->|They need| LaptopStd[Standard MFA]
+
+    LaptopPR -->|Use| LaptopWhfb["1. WHfB"]
+    LaptopStd -->|Use| LaptopStdOpts["1. MS Authenticator Push<br/>2. SMS/Voice"]
+
+    %% AVD
+    AVD -->|They need| AVDPR[Phishing Resistant MFA]
+    AVD -->|They need| AVDStd[Standard MFA]
+
+    AVDPR -->|Use| AVDNone["1. No MFA Options"]
+    AVDStd -->|Use| AVDSMS["1. SMS/Voice"]
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef requirement fill:#fff2cc,stroke:#666;
+    classDef option fill:#b6d7a8,stroke:#666;
+    classDef nooption fill:#ff6666,stroke:#666,color:#000;
+
+    class HS,LS,HSShared,HSLaptop,Mac,LSShared,LSLaptop,AVD env;
+    class HSSharedPR,HSSharedStd,HSLaptopPR,HSLaptopStd,MacPR,MacStd,SharedPR,SharedStd,LaptopPR,LaptopStd,AVDPR,AVDStd requirement;
+    class HSLaptopWhfb,MacStdOpts,SharedStdOpts,LaptopWhfb,LaptopStdOpts,AVDSMS option;
+    class HSSharedNone,HSSharedNone2,HSLaptopNone,MacNone,SharedNone,AVDNone nooption;
+```
+
+### Target state (TOBE)
+
+This flow shows the planned methods for privileged standard workers. It lists methods available by default from device sign-in and separate methods available for step-up authentication where an SSO site requires phishing-resistant MFA or a lower authentication strength.
+
+``` mermaid
+flowchart LR
+
+    User[Privileged Standard User]
+
+    HS[High Side Environment]
+    LS[Low Side Environment]
+
+    User -->|My users are sometimes based in a| HS
+    User -->|My users are based in a| LS
+
+    %% High Side
+    HS -->|Using a| HSShared[Shared Device]
+    HS -->|Using a| HSLaptop[Single Use Laptop]
+
+    HSShared -->|They need| HSSharedReq[Phishing Resistant MFA or lower]
+    HSLaptop -->|They need| HSLaptopReq[Phishing Resistant MFA or lower]
+
+    HSSharedReq -->|Options are| HSFIDO2["FIDO2"]
+    HSLaptopReq -->|Options are| HSLaptopOpts["WHfB, FIDO2"]
+
+    %% Low Side
+    LS -->|Using a| LSShared[Shared Device]
+    LS -->|Using a| AVD[AVD]
+    LS -->|Using a| LSLaptop[Single Use Laptop]
+    LS -->|Using a| Mac[Mac]
+
+    LSShared -->|They need| LSSharedReq[Phishing Resistant MFA or lower]
+    AVD -->|They need| AVDReq[Phishing Resistant MFA or lower]
+    LSLaptop -->|They need| LSLaptopReq[Phishing Resistant MFA or lower]
+    Mac -->|They need| MacReq[Phishing Resistant MFA or lower]
+
+    LSSharedReq -->|Options are| SharedOpts["MS Authenticator Push or Passkey,<br/>FIDO2"]
+
+    AVDReq -->|Options are| AVDOpts["WHfB,<br/>MS Authenticator Push or Passkey, FIDO2"]
+
+    LSLaptopReq -->|Options are| LaptopOpts["WHfB,<br/>MS Authenticator Push or Passkey"]
+
+    MacReq -->|Options are| MacOpts["Platform SSO,<br/>MS Authenticator Push or Passkey, FIDO2"]
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef requirement fill:#fff2cc,stroke:#666;
+    classDef options fill:#b6d7a8,stroke:#666;
+
+    class HS,LS,HSShared,HSLaptop,LSShared,AVD,LSLaptop,Mac env;
+    class HSSharedReq,HSLaptopReq,LSSharedReq,AVDReq,LSLaptopReq,MacReq requirement;
+    class HSFIDO2,HSLaptopOpts,SharedOpts,AVDOpts,LaptopOpts,MacOpts options;
+```
+
+## Find privileged admin user methods
+
+Use this flow for internal `onmicrosoft` privileged admin accounts that sign in to Microsoft portals from a low-side environment.
+
+``` mermaid
+flowchart LR
+
+    User[Privileged Admin User]
+
+    LS[Low Side Environment]
+
+    User -->|Signs in from a| LS
+
+    Decision{Scenario}
+
+    LS --> Decision
+
+    %% ASIS
+    Decision -->|ASIS| AsisGroup["Device belongs to Security Group"]
+
+    AsisGroup -->|Authentication options| AsisPasskey[MS Authenticator Passkey]
+
+    AsisPasskey -->|Provides| AsisResult[Phishing Resistant MFA]
+
+    %% TOBE
+    Decision -->|TOBE| TobeGroup["Device belongs to Security Group"]
+
+    TobeGroup -->|Authentication options| TobePasskey[MS Authenticator Passkey]
+    TobeGroup -->|Authentication options| TobeFido2[FIDO2 Security Key]
+
+    TobePasskey -->|Provides| TobeResult[Phishing Resistant MFA]
+    TobeFido2 -->|Provides| TobeResult
+
+    classDef env fill:#d9d2f3,stroke:#666;
+    classDef scenario fill:#34c759,stroke:#333,color:#000;
+    classDef auth fill:#a8ddb5,stroke:#666;
+    classDef outcome fill:#fff2cc,stroke:#666;
+    classDef decision fill:#00cc66,stroke:#333;
+
+    class LS,AsisGroup,TobeGroup env;
+    class AsisPasskey,TobePasskey,TobeFido2 auth;
+    class AsisResult,TobeResult outcome;
+    class Decision decision;
+```
+
+<script src="../../javascripts/mermaid.vendor"></script>

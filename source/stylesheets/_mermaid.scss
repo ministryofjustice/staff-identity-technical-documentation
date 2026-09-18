@@ -1,0 +1,84 @@
+.highlight pre.highlight.plaintext:has(svg) {
+  max-width: 100%;
+  overflow-x: auto;
+  background: govuk-colour("white");
+}
+
+.highlight pre.highlight.plaintext svg {
+  max-width: 100%;
+  height: auto;
+  font-family: $govuk-font-family;
+
+  .node rect,
+  .node circle,
+  .node ellipse,
+  .node polygon,
+  .node path {
+    fill: govuk-colour("light-grey") !important;
+    stroke: govuk-colour("dark-grey") !important;
+    stroke-width: 2px !important;
+  }
+
+  .node.env rect,
+  .node.env circle,
+  .node.env ellipse,
+  .node.env polygon,
+  .node.env path {
+    fill: govuk-colour("blue") !important;
+    stroke: govuk-colour("black") !important;
+  }
+
+  .node.mfa rect,
+  .node.mfa circle,
+  .node.mfa ellipse,
+  .node.mfa polygon,
+  .node.mfa path,
+  .node.option rect,
+  .node.options rect,
+  .node.auth rect {
+    fill: govuk-colour("green") !important;
+    stroke: govuk-colour("black") !important;
+  }
+
+  .node.outcome rect,
+  .node.requirement rect {
+    fill: govuk-colour("yellow") !important;
+    stroke: govuk-colour("black") !important;
+  }
+
+  .node.decision polygon,
+  .node.scenario polygon {
+    fill: govuk-colour("orange") !important;
+    stroke: govuk-colour("black") !important;
+  }
+
+  .node.nooption rect {
+    fill: govuk-colour("red") !important;
+    stroke: govuk-colour("black") !important;
+  }
+
+  text,
+  .label,
+  .nodeLabel,
+  .edgeLabel {
+    color: govuk-colour("black") !important;
+    fill: govuk-colour("black") !important;
+  }
+
+  .edgePath .path,
+  .flowchart-link {
+    stroke: govuk-colour("dark-grey") !important;
+    stroke-width: 3px !important;
+    stroke-dasharray: 5 5 !important;
+  }
+
+  marker path {
+    fill: govuk-colour("dark-grey") !important;
+    stroke: govuk-colour("dark-grey") !important;
+  }
+
+  .edgeLabel {
+    color: govuk-colour("black") !important;
+    background-color: govuk-colour("white") !important;
+  }
+}
