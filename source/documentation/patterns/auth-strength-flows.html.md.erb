@@ -92,8 +92,8 @@ flowchart LR
     classDef mfa fill:#b6d7a8,stroke:#666;
     classDef outcome fill:#fff2cc,stroke:#666;
 
-    class HS,LS,HSD,LSD,MAC,AVD,SUL,HSUL env;
-    class NoneHS,NoneLS,NoneMac,SMS,WHFB,HSWHFB mfa;
+    class HS,LS,HSD,LSD,MAC,AVD,SUL,HSUL,HSAVD env;
+    class NoneHS,NoneLS,NoneMac,SMS,WHFB,HSWHFB,HSWHFB,NoneHSAVD mfa;
     class NoProtection,StandardMFA,PR,HSPR outcome;
 ```
 
@@ -114,7 +114,7 @@ flowchart LR
 
     HS -->|Using a| HSUL[Single Use Laptop]
     HSUL -->|Requires them to use| HSWHFB[MFA: WHfB]
-    HSWHFB -->|Achieves| HSPR[Phishing Resistant MFA]
+    HSWHFB -->|Achieves| PR[Phishing Resistant MFA]
 
     HS -->|Using a| HSD[Shared Device]
     HSD -->|Requires them to use| FIDO2[MFA: FIDO2]
@@ -122,7 +122,7 @@ flowchart LR
 
     HS -->|Using a| HSAVD[AVD]
     HSAVD -->|Requires them to use| NoneHSAVD[MFA: FIDO2, WHfB]
-    NoneHSAVD -->|Achieves| NoProtection[Phishing Resistant MFA]
+    NoneHSAVD -->|Achieves| PR[Phishing Resistant MFA]
 
     LS -->|Using a| LSD[Shared Device]
     LS -->|Using a| AVD[AVD]
@@ -152,8 +152,8 @@ flowchart LR
     classDef outcome fill:#fff2cc,stroke:#666;
     classDef decision fill:#00cc66,stroke:#666;
 
-    class HS,LS,HSD,LSD,AVD,SUL,MAC,HSUL env;
-    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO,HSWHFB mfa;
+    class HS,LS,HSD,LSD,AVD,SUL,MAC,HSUL,HSAVD env;
+    class FIDO2,AuthFido,Passkey,Push,WHFB,PSSO,HSWHFB,NoneHSAVD mfa;
     class PR,SMFA,HSPR outcome;
     class Choice decision;
 ```
@@ -241,9 +241,9 @@ flowchart LR
     classDef nooption fill:#ff6666,stroke:#666,color:#000;
 
     class HS,LS,HSShared,HSLaptop,Mac,LSShared,LSLaptop,AVD env;
-    class HSSharedPR,HSSharedStd,HSLaptopPR,HSLaptopStd,MacPR,MacStd,SharedPR,SharedStd,LaptopPR,LaptopStd,AVDPR,AVDStd requirement;
-    class HSLaptopWhfb,MacStdOpts,SharedStdOpts,LaptopWhfb,LaptopStdOpts,AVDSMS option;
-    class HSSharedNone,HSSharedNone2,HSLaptopNone,MacNone,SharedNone,AVDNone nooption;
+    class HSSharedPR,HSSharedStd,HSLaptopPR,HSLaptopStd,MacPR,MacStd,SharedPR,SharedStd,LaptopPR,LaptopStd,AVDPR,AVDStd,HSAVDPR,HSAVDStd requirement;
+    class HSLaptopWhfb,MacStdOpts,SharedStdOpts,LaptopWhfb,LaptopStdOpts,AVDSMS,HSAVDSMS option;
+    class HSSharedNone,HSSharedNone2,HSLaptopNone,MacNone,SharedNone,AVDNone,HSAVDNone nooption;
 ```
 
 ### Target state (TOBE)
